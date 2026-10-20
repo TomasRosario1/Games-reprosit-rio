@@ -25,6 +25,7 @@ var performance_elapsed: float = 0.0
 var _safe_transform: Transform3D
 var _checkpoint_time: float = 0.0
 var _notice_timer: float = 0.0
+var _notice_is_subtitle: bool = false
 var _death_time: float = 0.0
 var _audio_distance: float = -60.0
 var _light_pulse: float = 0.0
@@ -66,11 +67,34 @@ var _song_start: Button
 var _font: Font
 var _serif: Font
 var _preview: bool = false
+var _performance_camera: Camera3D
+var _population_choice: OptionButton
+var _quality_choice: OptionButton
+var _npc_budget: int = 10
+var _quality_low: bool = true
+var _npc_notice_time: float = -10.0
+var _game_menu: Control
+var _game_hud: Control
+var _vehicles: Node3D
+var _police: Node3D
+var _wanted: RefCounted
+var _editor: Control
+var _brightness_rect: ColorRect
+var _audio_levels := {"master": 1.0, "music": 0.8, "ambient": 0.8, "effects": 0.8}
+var _brightness: float = 1.0
+var _subtitles: bool = true
+var _quality_index: int = 0
+var _attack_cooldown: float = 0.0
+var _editor_unlocked: bool = false
+var _password_dialog: ConfirmationDialog
+var _password_input: LineEdit
+var _password_feedback: Label
 
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
 	_setup_input()
+	_load_preferences()
 	store = SAVE_SCRIPT.new()
 	store.load_game()
 	rhythm = RHYTHM_SCRIPT.new()
@@ -83,12 +107,26 @@ func _ready() -> void:
 	player = PLAYER_SCRIPT.new()
 	player.position = world.rooftop_spawn.origin
 	player.display_name = ARTISTS[clampi(store.artist_index, 0, 2)]
+	player.appearance_id = [0, 3, 6][clampi(store.artist_index, 0, 2)]
 	add_child(player)
 	player.movement_locked = true
 	player.died.connect(_on_player_died)
+	world.set_player(player)
+	world.set_population_budget(_npc_budget)
+	world.set_npcs_enabled(true)
+	world.npc_message.connect(_on_npc_message)
+	_performance_camera = Camera3D.new()
+	_performance_camera.name = "CamaraDaAtuacao"
+	_performance_camera.fov = 58.0
+	add_child(_performance_camera)
+	_performance_camera.position = world.stage_position + Vector3(7.5, 3.2, -4.8)
+	_performance_camera.look_at(world.stage_position + Vector3(0, 1.1, 2.7))
+	player.get_camera().make_current()
+	_apply_quality()
 	_safe_transform = world.street_safe
 	_setup_audio()
 	_build_ui()
+	_setup_extended_systems()
 	_show_menu()
 
 
@@ -103,6 +141,13 @@ func _setup_input() -> void:
 	_bind("interact", [KEY_E], JOY_BUTTON_Y)
 	_bind("inventory", [KEY_B, KEY_TAB], JOY_BUTTON_BACK)
 	_bind("pause", [KEY_ESCAPE], JOY_BUTTON_START)
+	_bind("attack", [], JOY_BUTTON_X)
+	var attack_mouse := InputEventMouseButton.new()
+	attack_mouse.button_index = MOUSE_BUTTON_LEFT
+	InputMap.action_add_event("attack", attack_mouse)
+	_bind("editor_toggle", [KEY_F10])
+	_bind("vehicle_brake", [KEY_SPACE], JOY_BUTTON_B)
+	_bind("vehicle_horn", [KEY_H], JOY_BUTTON_RIGHT_SHOULDER)
 	for i in 4:
 		_bind("rhythm_%d" % i, [[KEY_D, KEY_F, KEY_J, KEY_K][i]], [JOY_BUTTON_DPAD_LEFT, JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_BUTTON_DPAD_RIGHT][i])
 	for action in ["move_left", "move_right", "move_forward", "move_back"]:
@@ -136,6 +181,11 @@ func _setup_audio() -> void:
 	AudioServer.add_bus_effect(_bus_distance, _lowpass)
 	_panner = AudioEffectPanner.new()
 	AudioServer.add_bus_effect(_bus_distance, _panner)
+	if AudioServer.get_bus_index("AlbumEffects") < 0:
+		AudioServer.add_bus()
+		AudioServer.set_bus_name(AudioServer.bus_count - 1, "AlbumEffects")
+	if is_instance_valid(player.get("_footsteps")):
+		player.get("_footsteps").bus = "AlbumEffects"
 	if AudioServer.get_bus_index("AlbumAnalysis") == -1:
 		AudioServer.add_bus()
 		AudioServer.set_bus_name(AudioServer.bus_count - 1, "AlbumAnalysis")
@@ -166,10 +216,17 @@ func _setup_audio() -> void:
 
 func _process(delta: float) -> void:
 	elapsed_world += delta
+	_attack_cooldown = maxf(0.0, _attack_cooldown - delta)
+	if _police and state == "explore":
+		_police.tick(delta)
+	if _game_hud:
+		_game_hud.set_status(store.money, player.health, store.equipped if not store.equipped.is_empty() else "PUNHOS", _wanted.heat)
+	if _game_menu and state == "paused":
+		_game_menu.set_context(_menu_context())
 	if state == "explore":
 		_update_interaction()
 		_checkpoint_time += delta
-		if _checkpoint_time > 0.7 and player.is_on_floor() and player.health > 0.0:
+		if _checkpoint_time > 0.7 and player.is_on_floor() and player.health > 0.0 and not (_vehicles and _vehicles.is_driving()):
 			_checkpoint_time = 0.0
 			_safe_transform = player.global_transform
 	elif state == "performance":
@@ -177,7 +234,7 @@ func _process(delta: float) -> void:
 		performance_elapsed += delta
 		_sync_performance_clock()
 		_score.text = "%06d\n%d € EM ATUAÇÃO" % [rhythm.score, rhythm.pending_money]
-		_crowd.text = "PÚBLICO  %d%%\n%s" % [roundi(rhythm.audience), "O público está contigo" if rhythm.audience > 50 else "Recupera o ritmo"]
+		_crowd.text = "ENTUSIASMO  %d%%\n%s" % [roundi(rhythm.audience), "O público está contigo" if rhythm.audience > 50 else "Alguns começam a sair"]
 		world.set_audience(rhythm.audience)
 	elif state == "death":
 		_death_time += delta
@@ -191,12 +248,15 @@ func _process(delta: float) -> void:
 		_death_label.visible = _death_button.visible
 	if _notice_timer > 0.0:
 		_notice_timer -= delta
-		_notice.visible = _notice_timer > 0.0 and state == "explore"
+		_notice.visible = _notice_timer > 0.0 and state == "explore" and (not _notice_is_subtitle or _subtitles)
 	_update_audio(delta)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.echo:
+		return
+	if event.is_action_pressed("editor_toggle") and state in ["explore", "paused"]:
+		_request_editor()
 		return
 	if state == "performance":
 		for lane in 4:
@@ -215,6 +275,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			_open_inventory()
 		elif event.is_action_pressed("pause"):
 			_show_pause()
+		elif event.is_action_pressed("attack"):
+			_player_attack()
 	elif state in ["songs", "inventory", "paused", "result"] and event.is_action_pressed("pause"):
 		_resume_explore()
 
@@ -228,7 +290,7 @@ func _update_audio(delta: float) -> void:
 	else:
 		# Bar door / walls determine leakage. Distance is continuous, no sound toggle.
 		var distance: float = player.global_position.distance_to(world.stage_position + Vector3.UP)
-		var indoors: bool = player.global_position.x < -7.0 and player.global_position.x > -25.0 and player.global_position.z < -6.0 and player.global_position.z > -25.0 and player.global_position.y < 3.8
+		var indoors: bool = world.is_inside_bar(player.global_position)
 		var radius: float = 32.0
 		var gain: float = pow(clampf(1.0 - distance / radius, 0.0, 1.0), 2.0)
 		if not indoors:
@@ -248,7 +310,7 @@ func _update_audio(delta: float) -> void:
 	var offset: Vector3 = world.stage_position - player.global_position
 	var camera_right: Vector3 = player.get_camera().global_basis.x
 	_panner.pan = clampf(offset.dot(camera_right) / 14.0, -0.65, 0.65) if state == "explore" else 0.0
-	ambience.volume_db = lerpf(ambience.volume_db, -17.0 if state == "performance" else -4.0, minf(delta * 2.0, 1.0))
+	ambience.volume_db = lerpf(ambience.volume_db, (-17.0 if state == "performance" else -4.0) + linear_to_db(maxf(_audio_levels.ambient, 0.0001)), minf(delta * 2.0, 1.0))
 
 
 func _sync_performance_clock() -> void:
@@ -276,6 +338,15 @@ func _update_interaction() -> void:
 	var distance_band: float = player.global_position.distance_to(world.wristband_position)
 	world.set_wristband_visible(not store.bar_unlocked and not store.bag.has("Pulseira perdida") and store.equipped != "Pulseira perdida" and distance_band < 13.0)
 	_hint.text = ""
+	if _vehicles and _vehicles.is_driving():
+		_hint.text = "E / Y   SAIR DO VEÍCULO   •   ESPAÇO / B   TRAVAR"
+		return
+	if _vehicles and _vehicles.find_nearest(player.global_position) != null:
+		_hint.text = "E / Y   ENTRAR NO VEÍCULO"
+	if _editor:
+		var nearby_mission: Dictionary = _editor.get_nearest_mission(player.global_position)
+		if not nearby_mission.is_empty():
+			_hint.text = "E / Y   " + String(nearby_mission.get("title", "MISSÃO"))
 	_held.text = "NA MÃO   " + store.equipped if not store.equipped.is_empty() else ""
 	if distance_band < 2.1 and not store.bar_unlocked and not store.bag.has("Pulseira perdida") and store.equipped != "Pulseira perdida":
 		_hint.text = "E / Y   RECOLHER PULSEIRA"
@@ -292,6 +363,20 @@ func _update_interaction() -> void:
 
 
 func _interact() -> void:
+	if _vehicles and _vehicles.is_driving():
+		_vehicles.interact()
+		return
+	if _editor:
+		var mission: Dictionary = _editor.get_nearest_mission(player.global_position)
+		if not mission.is_empty():
+			var outcome: Dictionary = _editor.interact_mission(String(mission.id))
+			store.money += int(outcome.get("reward", 0))
+			_persist()
+			_notify(String(outcome.get("text", "Missão concluída.")))
+			return
+	if _vehicles and _vehicles.find_nearest(player.global_position) != null:
+		if _vehicles.interact():
+			return
 	if player.global_position.distance_to(world.wristband_position) < 2.1 and not store.bar_unlocked and not store.bag.has("Pulseira perdida") and store.equipped != "Pulseira perdida":
 		if store.collect("Pulseira perdida"):
 			store.mission_state = "return_wristband"
@@ -306,9 +391,9 @@ func _interact() -> void:
 			store.mission_state = "play_music"
 			world.set_bar_unlocked(true)
 			_persist()
-			_notify("SEGURANÇA   /   Era esta. Podes entrar, a mesa está lá dentro.", 7.0)
+			_notify("SEGURANÇA   /   Era esta. Podes entrar, a mesa está lá dentro.", 7.0, true)
 		else:
-			_notify("SEGURANÇA   /   Perdi uma pulseira aqui na rua. Traz-ma e falamos.", 7.0)
+			_notify("SEGURANÇA   /   Perdi uma pulseira aqui na rua. Traz-ma e falamos.", 7.0, true)
 	elif player.global_position.distance_to(world.stage_position) < 2.8 and store.bar_unlocked:
 		_open_songs()
 
@@ -316,15 +401,18 @@ func _interact() -> void:
 func _begin_exploration(index: int) -> void:
 	store.artist_index = clampi(index, 0, 2)
 	player.display_name = ARTISTS[store.artist_index]
-	# Placeholder differences. Final identities and authored animations are pending.
-	player.walk_speed = [3.4, 3.6, 3.2][store.artist_index]
-	player.run_speed = [5.9, 6.2, 5.6][store.artist_index]
+	player.set_appearance([0, 3, 6][store.artist_index])
+	player.walk_speed = [1.85, 2.0, 1.7][store.artist_index]
+	player.run_speed = [4.6, 4.9, 4.3][store.artist_index]
 	_persist()
 	_resume_explore()
 	_notify("WASD / stick: andar   •   Rato / stick direito: câmara   •   E / Y: interagir", 9.0)
 
 
 func _show_menu() -> void:
+	if _vehicles:
+		_vehicles.force_exit()
+	_set_world_paused(false)
 	state = "menu"
 	_hide_panels()
 	_menu.show()
@@ -335,10 +423,14 @@ func _show_menu() -> void:
 
 
 func _resume_explore() -> void:
+	_set_world_paused(false)
+	player.get_camera().make_current()
 	state = "explore"
 	_hide_panels()
 	_hud.show()
-	player.movement_locked = false
+	player.movement_locked = _vehicles.is_driving() if _vehicles else false
+	if _vehicles:
+		_vehicles.set_controls_enabled(true)
 	music.pitch_scale = 1.0
 	_lowpass.cutoff_hz = 18000.0
 	if _preview:
@@ -350,12 +442,17 @@ func _resume_explore() -> void:
 func _show_pause() -> void:
 	state = "paused"
 	_hide_panels()
-	_pause.show()
 	_hud.hide()
 	player.movement_locked = true
+	_set_world_paused(true)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_persist()
-	_focus_first(_pause)
+	if _game_menu:
+		_game_menu.set_context(_menu_context())
+		_game_menu.open_menu("brief")
+	else:
+		_pause.show()
+		_focus_first(_pause)
 
 
 func _open_songs() -> void:
@@ -403,6 +500,9 @@ func _start_performance() -> void:
 	music.play(0.0)
 	performance_elapsed = 0.0
 	player.set_performing(true, SONGS[selected_song].bpm)
+	player.face_direction(Vector3(0, 0, 1))
+	world.set_performance(true, SONGS[selected_song].bpm)
+	_performance_camera.make_current()
 	rhythm.start(music.stream.get_length(), selected_difficulty, SONGS[selected_song].bpm)
 	_song_info.text = "%s\n%s   •   D F J K / CRUZ DIRECIONAL" % [SONGS[selected_song].title, ["FÁCIL", "NORMAL", "DIFÍCIL"][selected_difficulty]]
 	_judgement.text = "ENCONTRA O RITMO"
@@ -419,6 +519,7 @@ func _note_judged(lane: int, hit: bool) -> void:
 
 func _performance_finished(success: bool, money: int) -> void:
 	player.set_performing(false)
+	world.set_performance(false)
 	store.money += money
 	if success:
 		store.performances += 1
@@ -434,6 +535,7 @@ func _performance_finished(success: bool, money: int) -> void:
 
 func _abandon_performance() -> void:
 	player.set_performing(false)
+	world.set_performance(false)
 	rhythm.stop()
 	world.set_audience(75.0)
 	_resume_explore()
@@ -441,6 +543,7 @@ func _abandon_performance() -> void:
 
 
 func _open_inventory() -> void:
+	_set_world_paused(true)
 	state = "inventory"
 	_hide_panels()
 	_inventory.show()
@@ -480,10 +583,15 @@ func _unequip_item() -> void:
 
 
 func _on_player_died() -> void:
+	if _vehicles:
+		_vehicles.force_exit()
+	if _wanted:
+		_wanted.clear()
 	if state == "death" or state == "menu":
 		return
 	rhythm.stop()
 	player.set_performing(false)
+	world.set_performance(false)
 	store.apply_death()
 	_persist()
 	state = "death"
@@ -529,14 +637,15 @@ func _quit_game() -> void:
 	get_tree().quit()
 
 
-func _notify(message: String, seconds: float = 5.0) -> void:
+func _notify(message: String, seconds: float = 5.0, subtitle: bool = false) -> void:
 	_notice.text = message
-	_notice.show()
+	_notice_is_subtitle = subtitle
+	_notice.visible = not subtitle or _subtitles
 	_notice_timer = seconds
 
 
 func _hide_panels() -> void:
-	for panel in [_menu, _song_sheet, _pause, _inventory, _performance, _result, _death_screen]:
+	for panel in [_menu, _song_sheet, _pause, _inventory, _performance, _result, _death_screen, _game_menu]:
 		if panel:
 			panel.hide()
 
@@ -655,15 +764,15 @@ func _build_ui() -> void:
 	title.position = Vector2(65, 52)
 	title.size = Vector2(540, 610)
 	title.add_theme_constant_override("separation", 16)
-	_text(title, "ÁLBUM VISUAL   /   ESTUDO JOGÁVEL 01", 14, Color("8de1d0"))
+	_text(title, "ÁLBUM VISUAL   /   ESTUDO JOGÁVEL 02", 14, Color("8de1d0"))
 	_text(title, "ÓDIO PURO\nNO MEU PEITO", 43, Color("f2e5ce"), true)
 	_text(title, "LISBOA. DEPOIS DAS DUAS.", 18)
-	_text(title, "Uma entrada para a noite.\nDesce do telhado, encontra o bar e faz-te ouvir.", 17, Color("b8c7c5"))
+	_text(title, "Saldanha, depois das duas.\nDesce à praça. Encontra o Lado B e faz-te ouvir.", 17, Color("b8c7c5"))
 	_text(title, "ESCOLHE UMA PERSONAGEM PROVISÓRIA", 12, Color("8ca4a6"))
 	for i in 3:
 		_button(title, "%02d   %s   /   %s" % [i + 1, ARTISTS[i], ["VOZ", "INSTRUMENTO", "DJ"][i]], _begin_exploration.bind(i))
 	_text(title, "Faixas sintetizadas de teste. Música da banda ainda por integrar.\nPersonagens e cenário provisórios; jogo desktop totalmente offline.", 12, Color("a5b5b3"))
-	var stamp := _text(_menu, "LISBOA\n02:17", 30, Color("d2d4c8"), true)
+	var stamp := _text(_menu, "SALDANHA\n02:17", 26, Color("d2d4c8"), true)
 	stamp.position = Vector2(1060, 58)
 
 	_hud = _full(root)
@@ -738,9 +847,27 @@ func _build_ui() -> void:
 
 	_pause = _full(root)
 	_shade(_pause)
-	var pause_box := _box(_pause, 640, 490)
+	var pause_box := _box(_pause, 720, 610)
 	_text(pause_box, "A noite pode esperar.", 31, Color("f2e5ce"), true)
-	_text(pause_box, "Progresso gravado localmente. Ao reabrir, voltas ao telhado.\n\nEste protótipo inclui exploração, uma missão e atuações.\nVeículos conduzíveis, combate e editor com IA são etapas seguintes.", 15)
+	_text(pause_box, "Progresso gravado localmente. Ao reabrir, voltas ao telhado.\n\nPraça, peões, uma missão e atuações num clube em movimento.\nVeículos conduzíveis, combate e editor com IA são etapas seguintes.", 15)
+	_text(pause_box, "AJUSTAR AO TEU COMPUTADOR", 12, Color("8de1d0"))
+	var options_row := HBoxContainer.new()
+	options_row.add_theme_constant_override("separation", 12)
+	pause_box.add_child(options_row)
+	_population_choice = OptionButton.new()
+	_population_choice.custom_minimum_size = Vector2(320, 44)
+	for caption in ["Peões: reduzido (6)", "Peões: moderado (10)", "Peões: animado (16)"]:
+		_population_choice.add_item(caption)
+	_population_choice.select([6, 10, 16].find(_npc_budget))
+	_population_choice.item_selected.connect(_population_changed)
+	options_row.add_child(_population_choice)
+	_quality_choice = OptionButton.new()
+	_quality_choice.custom_minimum_size = Vector2(300, 44)
+	_quality_choice.add_item("Qualidade: leve / HP")
+	_quality_choice.add_item("Qualidade: equilibrada / ASUS")
+	_quality_choice.select(0 if _quality_low else 1)
+	_quality_choice.item_selected.connect(_quality_changed)
+	options_row.add_child(_quality_choice)
 	_button(pause_box, "CONTINUAR", _resume_explore)
 	_button(pause_box, "ABRIR A BOLSA", _open_inventory)
 	_button(pause_box, "TROCAR PERSONAGEM  /  PROVISÓRIO", _show_menu)
@@ -760,11 +887,12 @@ func _build_ui() -> void:
 	_button(bag_box, "FECHAR A BOLSA", _resume_explore)
 
 	_performance = _full(root)
-	_shade(_performance, 0.40)
+	_shade(_performance, 0.18)
 	_rhythm_view = VIEW_SCRIPT.new()
 	_rhythm_view.rhythm = rhythm
 	_performance.add_child(_rhythm_view)
 	_rhythm_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_rhythm_view._panel_style.bg_color.a = 0.72
 	_score = _text(_performance, "", 25, Color("f1e5cc"))
 	_score.position = Vector2(35, 35)
 	_song_info = _text(_performance, "", 16)
@@ -807,3 +935,307 @@ func _build_ui() -> void:
 	_death_button.offset_top = 5
 	_death_button.offset_bottom = 57
 	_hide_panels()
+
+
+func _on_npc_message(message: String) -> void:
+	if state == "explore" and elapsed_world - _npc_notice_time > 3.0:
+		_npc_notice_time = elapsed_world
+		_notify(message, 3.0)
+
+
+func _load_preferences() -> void:
+	var config := ConfigFile.new()
+	if config.load("user://preferences.cfg") == OK:
+		var requested: int = int(config.get_value("quality", "pedestrians", 10))
+		_npc_budget = requested if requested in [6, 10, 16] else 10
+		_quality_low = bool(config.get_value("quality", "low", true))
+
+
+func _save_preferences() -> void:
+	var config := ConfigFile.new()
+	config.set_value("quality", "pedestrians", _npc_budget)
+	config.set_value("quality", "low", _quality_low)
+	if config.save("user://preferences.cfg") != OK:
+		_notify("Não foi possível guardar as opções gráficas.")
+
+
+func _population_changed(index: int) -> void:
+	_npc_budget = [6, 10, 16][clampi(index, 0, 2)]
+	world.set_population_budget(_npc_budget)
+	_save_preferences()
+
+
+func _quality_changed(index: int) -> void:
+	_quality_low = index == 0
+	_apply_quality()
+	_save_preferences()
+
+
+func _apply_quality() -> void:
+	world.set_quality(_quality_low)
+	player.get_camera().far = 95.0 if _quality_low else 125.0
+	if _performance_camera:
+		_performance_camera.far = player.get_camera().far
+
+
+func _setup_extended_systems() -> void:
+	_vehicles = load("res://scripts/vehicle_manager.gd").new()
+	world.add_child(_vehicles)
+	_vehicles.set_player(player)
+	if _vehicles.get("_horn") is AudioStreamPlayer3D:
+		_vehicles.get("_horn").bus = "AlbumEffects"
+	_vehicles.rider_crashed.connect(_vehicle_crash)
+	_vehicles.message.connect(func(text: String): _notify(text))
+	_vehicles.driving_changed.connect(_driving_changed)
+	_vehicles.collided_person.connect(_vehicle_hit_person)
+	_wanted = load("res://scripts/wanted_system.gd").new()
+	_police = load("res://scripts/police_manager.gd").new()
+	world.add_child(_police)
+	_police.set_player(player)
+	_police.set_wanted(_wanted)
+	var root_control: Control = _ui.get_child(0)
+	# Brightness affects the rendered world. Menus and HUD retain their contrast.
+	_brightness_rect = ColorRect.new()
+	root_control.add_child(_brightness_rect)
+	root_control.move_child(_brightness_rect, 0)
+	_brightness_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_brightness_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var brightness_shader := Shader.new()
+	brightness_shader.code = "shader_type canvas_item; uniform sampler2D screen_texture:hint_screen_texture,filter_linear; uniform float brightness=1.0; void fragment(){COLOR=vec4(texture(screen_texture,SCREEN_UV).rgb*brightness,1.0);}"
+	var brightness_material := ShaderMaterial.new()
+	brightness_material.shader = brightness_shader
+	_brightness_rect.material = brightness_material
+	_game_hud = load("res://scripts/game_hud.gd").new()
+	_hud.add_child(_game_hud)
+	_game_hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_game_menu = load("res://scripts/game_menu.gd").new()
+	root_control.add_child(_game_menu)
+	_game_menu.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_game_menu.configure({"quality": _quality_index, "population": _npc_budget})
+	_game_menu.resumed.connect(_resume_explore)
+	_game_menu.save_requested.connect(_manual_save)
+	_game_menu.load_requested.connect(_manual_load)
+	_game_menu.exit_requested.connect(_confirmed_quit)
+	_game_menu.editor_requested.connect(_request_editor)
+	_game_menu.quality_changed.connect(_menu_quality_changed)
+	_game_menu.population_changed.connect(_menu_population_changed)
+	_game_menu.audio_changed.connect(_menu_audio_changed)
+	_game_menu.brightness_changed.connect(_menu_brightness_changed)
+	_game_menu.subtitles_changed.connect(func(enabled: bool): _subtitles = enabled)
+	var settings: Dictionary = _game_menu.get_settings()
+	_menu_quality_changed(int(settings.get("quality", 0)))
+	_menu_population_changed(int(settings.get("population", 10)))
+	for channel in ["master", "music", "ambient", "effects"]:
+		_menu_audio_changed(channel, float(settings.get("audio_" + channel, 1.0 if channel == "master" else 0.8)))
+	_menu_brightness_changed(float(settings.get("brightness", 1.0)))
+	_subtitles = bool(settings.get("subtitles", true))
+	_editor = load("res://scripts/world_editor.gd").new()
+	root_control.add_child(_editor)
+	_editor.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_editor.configure(world, player, _vehicles)
+	_editor.closed.connect(_resume_explore)
+	_editor.hide()
+	_game_menu.hide()
+	_create_editor_password_dialog(root_control)
+
+
+func _menu_context() -> Dictionary:
+	return {"player_position": player.global_position, "money": store.money, "health": player.health, "bar_unlocked": store.bar_unlocked, "mission": _mission.text}
+
+
+func _set_world_paused(paused: bool) -> void:
+	world.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
+	player.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
+	if _vehicles:
+		_vehicles.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
+		_vehicles.set_controls_enabled(not paused)
+
+
+func _menu_quality_changed(index: int) -> void:
+	_quality_index = clampi(index, 0, 2)
+	_quality_low = _quality_index == 0
+	_apply_quality()
+	world.set_quality_level(_quality_index)
+	if _quality_index == 1:
+		player.get_camera().far = 110.0
+	elif _quality_index == 2:
+		player.get_camera().far = 140.0
+
+
+func _menu_population_changed(count: int) -> void:
+	_npc_budget = clampi(count, 0, 20)
+	world.set_population_budget(_npc_budget)
+
+
+func _menu_audio_changed(channel: String, value: float) -> void:
+	_audio_levels[channel] = clampf(value, 0.0, 1.0)
+	if channel == "master":
+		AudioServer.set_bus_volume_db(0, linear_to_db(maxf(value, 0.0001)))
+	elif channel == "music":
+		music.volume_db = linear_to_db(maxf(value, 0.0001))
+	elif channel == "effects":
+		AudioServer.set_bus_volume_db(AudioServer.get_bus_index("AlbumEffects"), linear_to_db(maxf(value, 0.0001)))
+
+
+func _menu_brightness_changed(value: float) -> void:
+	_brightness = clampf(value, 0.65, 1.45)
+	if _brightness_rect:
+		_brightness_rect.material.set_shader_parameter("brightness", _brightness)
+
+
+func _manual_save() -> void:
+	var previous_path: String = store.save_path
+	store.save_path = "user://manual_save.json"
+	var ok: bool = store.save_game()
+	store.save_path = previous_path
+	if ok:
+		var file := FileAccess.open("user://manual_position.json", FileAccess.WRITE)
+		if file:
+			var save_at: Vector3 = _safe_transform.origin if _vehicles.is_driving() else player.global_position
+			file.store_string(JSON.stringify({"position": [save_at.x, save_at.y, save_at.z], "health": player.health}))
+		_game_menu.set_context({"status": "Jogo guardado no espaço manual."})
+	else:
+		_game_menu.set_context({"status": "Não foi possível guardar o jogo."})
+
+
+func _manual_load() -> void:
+	var saved = SAVE_SCRIPT.new()
+	saved.save_path = "user://manual_save.json"
+	if not saved.load_game():
+		_game_menu.set_context({"status": "Ainda não existe uma gravação manual válida."})
+		return
+	_vehicles.force_exit()
+	store = saved
+	store.save_path = "user://album_save.json"
+	world.set_bar_unlocked(store.bar_unlocked)
+	player.display_name = ARTISTS[clampi(store.artist_index, 0, 2)]
+	player.set_appearance([0, 3, 6][clampi(store.artist_index, 0, 2)])
+	player.walk_speed = [1.85, 2.0, 1.7][clampi(store.artist_index, 0, 2)]
+	player.run_speed = [4.6, 4.9, 4.3][clampi(store.artist_index, 0, 2)]
+	var at: Vector3 = world.rooftop_spawn.origin
+	var health: float = 100.0
+	if FileAccess.file_exists("user://manual_position.json"):
+		var data: Variant = JSON.parse_string(FileAccess.get_file_as_string("user://manual_position.json"))
+		if data is Dictionary and data.get("position") is Array and data.position.size() == 3:
+			var candidate := Vector3(float(data.position[0]), float(data.position[1]), float(data.position[2]))
+			if candidate.is_finite() and absf(candidate.x) < 100 and absf(candidate.z) < 100 and candidate.y > -5 and candidate.y < 60:
+				at = candidate + Vector3.UP * 0.1
+				health = clampf(float(data.get("health", 100)), 1, 100)
+	player.respawn_at(Transform3D(Basis.IDENTITY, at))
+	player.health = health
+	_wanted.clear()
+	_persist()
+	_resume_explore()
+	_notify("Gravação manual carregada.")
+
+
+func _confirmed_quit(save_first: bool = true) -> void:
+	if save_first:
+		_manual_save()
+	_quit_game()
+
+
+func _vehicle_crash(force: float) -> void:
+	player.health = maxf(0.0, player.health - maxf(0.0, force - 6.0) * 8.0)
+	if player.health <= 0.0:
+		player._die()
+
+
+func _player_attack() -> void:
+	if player.movement_locked or _attack_cooldown > 0 or _vehicles.is_driving():
+		return
+	_attack_cooldown = 0.55
+	player.perform_attack()
+	if _police.try_player_attack():
+		return
+	var forward: Vector3 = -player.get_camera().global_basis.z
+	forward.y = 0.0
+	forward = forward.normalized()
+	for npc in get_tree().get_nodes_in_group("album_npcs"):
+		if npc == world.get("_guard") or not npc.has_method("take_damage") or not npc.visible:
+			continue
+		var offset: Vector3 = npc.global_position - player.global_position
+		offset.y = 0.0
+		if offset.length() < 2.1 and offset.normalized().dot(forward) > 0.3:
+			npc.take_damage(20.0, player.global_position)
+			_wanted.record_event("civilian_assault", _police.can_see_crime(npc.global_position))
+			break
+
+
+func _create_editor_password_dialog(parent: Node) -> void:
+	_password_dialog = ConfirmationDialog.new()
+	_password_dialog.title = "Acesso ao editor local"
+	_password_dialog.min_size = Vector2i(480, 220)
+	parent.add_child(_password_dialog)
+	var content := VBoxContainer.new()
+	_password_dialog.add_child(content)
+	_password_feedback = _text(content, "Define uma palavra-passe na primeira utilização.
+Fica guardada apenas neste computador.", 14)
+	_password_input = LineEdit.new()
+	_password_input.secret = true
+	_password_input.placeholder_text = "Palavra-passe do editor"
+	content.add_child(_password_input)
+	_password_dialog.confirmed.connect(_verify_editor_password)
+	_password_dialog.canceled.connect(_show_pause)
+	_password_input.text_submitted.connect(func(_value: String): _verify_editor_password())
+
+
+func _request_editor() -> void:
+	if _vehicles.is_driving():
+		_notify("Sai do veículo antes de abrir o editor.")
+		return
+	_show_pause()
+	_game_menu.hide()
+	if _editor_unlocked:
+		_enter_editor()
+		return
+	_password_input.text = ""
+	_password_feedback.text = "Introduz a palavra-passe do editor." if FileAccess.file_exists("user://editor_access.cfg") else "Cria uma palavra-passe com pelo menos quatro caracteres."
+	_password_dialog.popup_centered()
+	_password_input.grab_focus()
+
+
+func _verify_editor_password() -> void:
+	var password: String = _password_input.text
+	var config := ConfigFile.new()
+	if config.load("user://editor_access.cfg") == OK:
+		var salt: String = config.get_value("editor", "salt", "")
+		if (salt + password).sha256_text() != config.get_value("editor", "hash", ""):
+			_password_feedback.text = "Palavra-passe incorreta."
+			_password_dialog.popup_centered()
+			return
+	else:
+		if password.length() < 4:
+			_password_feedback.text = "Usa pelo menos quatro caracteres."
+			_password_dialog.popup_centered()
+			return
+		var salt: String = Crypto.new().generate_random_bytes(16).hex_encode()
+		config.set_value("editor", "salt", salt)
+		config.set_value("editor", "hash", (salt + password).sha256_text())
+		if config.save("user://editor_access.cfg") != OK:
+			return
+	_password_input.text = ""
+	_password_dialog.hide()
+	_editor_unlocked = true
+	_enter_editor()
+
+
+func _enter_editor() -> void:
+	state = "editor"
+	_hide_panels()
+	_hud.hide()
+	_editor.enter_editor()
+
+
+func _vehicle_hit_person(person: Node, strength: float) -> void:
+	if strength < 3.0 or not is_instance_valid(person):
+		return
+	var witnessed: bool = _police.can_see_crime(person.global_position)
+	_wanted.record_event("police_assault" if person.get_meta("is_police", false) else "vehicle_collision", witnessed)
+
+
+func _driving_changed(driving: bool) -> void:
+	if driving and is_instance_valid(_vehicles.active_vehicle):
+		player.set_meta("vehicle_body", _vehicles.active_vehicle)
+	elif player.has_meta("vehicle_body"):
+		player.remove_meta("vehicle_body")

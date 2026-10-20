@@ -33,7 +33,7 @@ func _run() -> void:
 	Input.action_press("move_forward")
 	await _step(30)
 	Input.action_release("move_forward")
-	_expect(player.position.z < -1.0, "moves forward relative to initial camera")
+	_expect(player.position.z < -0.65 and player.position.z > -1.4, "moves forward at a human walking pace relative to the camera")
 	await _step(16)
 
 	Input.action_press("jump")
@@ -65,11 +65,11 @@ func _run() -> void:
 	_expect(player.position.distance_to(locked_start) < 0.1, "performance lock prevents movement and jumping")
 	player.set_performing(true, 110.0)
 	await _step(30)
-	_expect(player._right_arm.rotation.x > 1.2 and player._microphone.visible, "performance raises microphone hand while movement stays locked")
+	_expect(player.get_character_visual().animation_player.current_animation.to_lower().ends_with("dance"), "performance plays a skinned whole-body animation while movement stays locked")
 	_expect(player.position.distance_to(locked_start) < 0.1, "performance pose moves visuals without moving the physical body")
 	player.set_performing(false)
 	await _step(25)
-	_expect(not player._microphone.visible and absf(player._right_arm.rotation.x) < 0.1, "ending performance hides microphone and restores resting pose")
+	_expect(player.get_character_visual().animation_player.current_animation.to_lower().ends_with("idle"), "ending performance restores the skinned idle pose")
 	player.movement_locked = false
 
 	# Orbit away from the facing direction. The magnet must wait, then converge.

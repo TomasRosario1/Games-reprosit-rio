@@ -1,3 +1,4 @@
 .godot/
 exports/
 *.tmp
+*.blend[0-9]

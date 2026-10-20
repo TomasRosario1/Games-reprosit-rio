@@ -1,0 +1,382 @@
+[
+  {
+    "id": 0,
+    "gender": "male",
+    "style": "beto",
+    "name": "Camisa e malha",
+    "outfit": "shirt / slim",
+    "height": 1.83,
+    "scene": "res://assets/characters/person_00.glb",
+    "triangles": 2248,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 1,
+    "gender": "male",
+    "style": "alternativo",
+    "name": "Casaco comprido",
+    "outfit": "longcoat / slim",
+    "height": 1.86,
+    "scene": "res://assets/characters/person_01.glb",
+    "triangles": 2220,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 2,
+    "gender": "male",
+    "style": "chunga",
+    "name": "Fato de treino",
+    "outfit": "tracksuit / track",
+    "height": 1.77,
+    "scene": "res://assets/characters/person_02.glb",
+    "triangles": 2212,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 3,
+    "gender": "male",
+    "style": "emo",
+    "name": "T-shirt e jeans justos",
+    "outfit": "tshirt / skinny",
+    "height": 1.74,
+    "scene": "res://assets/characters/person_03.glb",
+    "triangles": 2254,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 4,
+    "gender": "male",
+    "style": "normal",
+    "name": "Blusão e ganga",
+    "outfit": "jacket / jeans",
+    "height": 1.8,
+    "scene": "res://assets/characters/person_04.glb",
+    "triangles": 2216,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 5,
+    "gender": "male",
+    "style": "indie",
+    "name": "Camisa aberta",
+    "outfit": "overshirt / slim",
+    "height": 1.88,
+    "scene": "res://assets/characters/person_05.glb",
+    "triangles": 2510,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 6,
+    "gender": "male",
+    "style": "alternativo",
+    "name": "Casaco técnico",
+    "outfit": "hoodie / cargo",
+    "height": 1.79,
+    "scene": "res://assets/characters/person_06.glb",
+    "triangles": 2312,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 7,
+    "gender": "male",
+    "style": "normal",
+    "name": "Sweat e calças largas",
+    "outfit": "sweat / wide",
+    "height": 1.72,
+    "scene": "res://assets/characters/person_07.glb",
+    "triangles": 2212,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 8,
+    "gender": "male",
+    "style": "beto",
+    "name": "Polo e chinos",
+    "outfit": "polo / slim",
+    "height": 1.85,
+    "scene": "res://assets/characters/person_08.glb",
+    "triangles": 2248,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 9,
+    "gender": "male",
+    "style": "indie",
+    "name": "Blusão de ganga",
+    "outfit": "denim / straight",
+    "height": 1.81,
+    "scene": "res://assets/characters/person_09.glb",
+    "triangles": 2216,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 10,
+    "gender": "female",
+    "style": "beto",
+    "name": "Gabardina e saia reta",
+    "outfit": "coat / pencil",
+    "height": 1.72,
+    "scene": "res://assets/characters/person_10.glb",
+    "triangles": 2356,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 11,
+    "gender": "female",
+    "style": "alternativo",
+    "name": "Casaco e saia rodada",
+    "outfit": "jacket / flared",
+    "height": 1.69,
+    "scene": "res://assets/characters/person_11.glb",
+    "triangles": 2314,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 12,
+    "gender": "female",
+    "style": "chunga",
+    "name": "Sweat e cargo",
+    "outfit": "hoodie / cargo",
+    "height": 1.67,
+    "scene": "res://assets/characters/person_12.glb",
+    "triangles": 2408,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 13,
+    "gender": "female",
+    "style": "emo",
+    "name": "T-shirt e saia plissada",
+    "outfit": "tshirt / pleated",
+    "height": 1.65,
+    "scene": "res://assets/characters/person_13.glb",
+    "triangles": 2382,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 14,
+    "gender": "female",
+    "style": "normal",
+    "name": "Malha e jeans",
+    "outfit": "sweat / jeans",
+    "height": 1.73,
+    "scene": "res://assets/characters/person_14.glb",
+    "triangles": 2212,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 15,
+    "gender": "female",
+    "style": "indie",
+    "name": "Camisa e saia longa",
+    "outfit": "overshirt / longskirt",
+    "height": 1.76,
+    "scene": "res://assets/characters/person_15.glb",
+    "triangles": 2268,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 16,
+    "gender": "female",
+    "style": "alternativo",
+    "name": "Blusão e calças largas",
+    "outfit": "denim / wide",
+    "height": 1.7,
+    "scene": "res://assets/characters/person_16.glb",
+    "triangles": 2554,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 17,
+    "gender": "female",
+    "style": "normal",
+    "name": "Casaco curto e saia",
+    "outfit": "jacket / aline",
+    "height": 1.62,
+    "scene": "res://assets/characters/person_17.glb",
+    "triangles": 2408,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 18,
+    "gender": "female",
+    "style": "beto",
+    "name": "Malha e calças direitas",
+    "outfit": "polo / straight",
+    "height": 1.78,
+    "scene": "res://assets/characters/person_18.glb",
+    "triangles": 2248,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  },
+  {
+    "id": 19,
+    "gender": "female",
+    "style": "indie",
+    "name": "Casaco comprido e ganga",
+    "outfit": "longcoat / slim",
+    "height": 1.74,
+    "scene": "res://assets/characters/person_19.glb",
+    "triangles": 2220,
+    "animations": [
+      "idle",
+      "walk",
+      "run",
+      "crouch",
+      "talk",
+      "flinch",
+      "dance"
+    ]
+  }
+]

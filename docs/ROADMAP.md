@@ -1,87 +1,130 @@
 # Plano de desenvolvimento — Álbum Visual
 
-O projeto está a iniciar a primeira experiência jogável. As funcionalidades abaixo são objetivos por fase, não uma declaração de que já estão prontas. O código, os testes e o README da versão entregue estabelecem o que realmente foi implementado.
+Este plano distingue a base implementada, a revisão do protótipo 02 e o trabalho seguinte. «Implementado» significa que existe código e uma experiência de teste; não significa recurso artístico definitivo, exportação Windows validada ou desempenho garantido no HP. O README e o registo de validação acompanham a versão entregue.
 
-## 1. Primeira experiência jogável
+## 1. Base da primeira experiência — implementada
 
-**Percurso de referência:** telhado → rua → favor a um NPC → entrada num bar → atuação musical.
+**Percurso:** telhado → rua → pulseira → segurança → Lado B → escolha de faixa → atuação.
 
-Preparar uma aplicação Godot 4 desktop em Compatibility, com um quarteirão noturno pequeno. Priorizar a sensação de explorar e descobrir música, antes de expandir combate ou cidade.
+- Aplicação Godot 4 desktop, offline, com renderizador Compatibility.
+- Exploração em terceira pessoa, andar/correr/agachar/saltar, colisões e câmara com recentramento.
+- Missão curta de acesso ao bar e fonte musical com aproximação/afastamento suaves e relógio virtual.
+- Repertório com pré-escuta, três dificuldades e quatro teclas de ritmo.
+- Público recuperável, falha sem pagamento e dinheiro entregue uma única vez no fim de uma atuação bem-sucedida.
+- Bolsa de oito espaços, objeto equipado separado, gravação local e backup.
+- Morte com distorção e funil, regresso a ponto seguro próximo, perda do dinheiro e do objeto equipado e preservação da bolsa.
+- Ao reabrir, início no telhado com o progresso conservado.
 
-- Personagem provisória texturada e em terceira pessoa; andar, correr, agachar, saltar e câmara com colisão e recentramento.
-- Telhado inicial, acesso à rua e bar reconhecível, com materiais de desgaste e iluminação noturna.
-- Interação contextual e um favor simples que permita experimentar o acesso ao bar.
-- Fonte de música com aproximação e afastamento suaves; comportamento de loop consistente.
-- Lista de músicas e pré-escuta, seleção de dificuldade e atuação de quatro teclas.
-- Público que perde e recupera entusiasmo, falha sem pagamento e pagamento apenas ao terminar com sucesso.
-- Controlos de teclado e comando, morte/renascimento e persistência mínima apropriada ao percurso implementado.
-- Exportação ou instruções locais para abrir no Godot de Windows.
+A música continua a ser de ensaio sintetizado. Os ficheiros definitivos do álbum e a caracterização final dos três protagonistas ainda não foram integrados.
 
-**Recursos nesta fase:** música de teste gerada e materiais/modelos provisórios. Nenhuma destas faixas deve ser apresentada como música da banda. Não foram fornecidos os áudios ou modelos definitivos dos protagonistas.
+## 2. Protótipo 02 — revisão implementada
 
-**Critério de conclusão:** abrir o projeto, percorrer o cenário, descobrir a interação musical e completar ou falhar uma atuação com regras de dinheiro verificadas. Validar o que existe e declarar explicitamente o que ainda falta; não chamar ao protótipo «jogo completo».
+### Lisboa, profundidade e personagens
 
-## 2. Editor dentro do jogo e IA local
+- Praça e ruas inspiradas no Saldanha, com continuidade do telhado, escadas, missão e bar.
+- Fachadas, iluminação quente, materiais e profundidade atmosférica orientados pela imagem fornecida e pela leitura low-poly de GTA III.
+- Nevoeiro simples associado a limites reais de detalhe e visibilidade; três perfis de qualidade.
+- Vinte adultos originais, dez homens e dez mulheres, com malhas humanas articuladas e texturas próprias.
+- Variação de anatomia, altura, cabelo, roupa e silhueta: saias, calças de cortes diferentes, camisolas, sweats e casacos.
+- Estilos beto, alternativo, chunga, emo, normal, indie e combinações, separados dos parâmetros de personalidade.
+- Animações de estudo com flexão de joelhos/cotovelos e movimento coordenado de bacia, peito e braços. Continuam a precisar de afinação artística, de transições e de contacto com o chão.
 
-O editor é requisito do criador e deve ficar dentro da aplicação, acessível num modo próprio com câmara de voo. Construir uma ferramenta visual útil antes de lhe ligar o modelo de linguagem.
+### Peões e vida do clube
 
-1. Seleção, deslocamento, rotação e escala de objetos.
-2. Catálogo de peças, luzes e materiais; importação de recursos preparados.
-3. Guardar/carregar o mundo editado, IDs estáveis, cópia de segurança e desfazer/refazer.
-4. Painel de texto e geração de Scene Graph da seleção e vizinhança.
-5. Modelo offline executado localmente; testar no computador com RX 7600 XT.
-6. Ações estruturadas validadas e pré-visualização com Aplicar, Cancelar e Desfazer.
-7. Ampliar operações para personagens, áreas e comportamentos. Alterações de scripts exigem teste e possibilidade de recuperação.
+- Passeio, espera, olhar, desvio, perceção por campo de visão e linha de visão, encontrão e recuperação do percurso.
+- Perfis calmo, alcoolizado, distraído, tímido e segurança, sem ligar agressividade ao guarda-roupa.
+- Catálogo estável de vinte variantes, com população próxima ajustável a seis, dez ou dezasseis peões de rua e suspensão à distância.
+- Clube com DJ/pista e público que dança e caminha pela entrada real ao sair ou regressar; preservação dos acessos ao jogador.
+- Manutenção das regras de atuação, pagamento, inventário, morte e gravação.
 
-**Critério de conclusão:** pedir uma alteração de luz ou objeto, inspecionar a proposta, aplicar, desfazer e conservar o mundo correto após reiniciar. Editor manual deve continuar utilizável quando a IA estiver desligada. Não colocar o modelo como requisito para jogar no HP.
+A circulação e as animações são uma base funcional, não uma multidão urbana ou coreografia final. As vocalizações próprias dos arquétipos ainda precisam de produção e integração.
 
-## 3. Afinar estética, movimento e espaços
+### Condução e pressão policial
 
-- Definir referências comuns de Lisboa noturna, paleta, materiais e dimensões.
-- Substituir recursos provisórios por GLB/GLTF, texturas PBR de desgaste e personagens finais.
-- Construir os três protagonistas, seleção inicial, troca no mundo e diferenças de movimento/atuação.
-- Afinar animações, transições, casaco e enquadramentos da câmara.
-- Integrar músicas autorizadas da banda, mapear notas e medir sincronização.
-- Reatividade real das luzes ao espectro do áudio, com limites de custo e suavização.
-- Ajustar arquitetura, percursos, interiores e locais de escuta através de sessões de jogo.
+- Carro, mota, bicicleta e trotinete provisórios conduzíveis, com aproximação ao acesso, poses e transições de entrada/saída, travão e buzina.
+- Resposta a impactos e danos para experimentar acidentes; controlos e física de estilo arcade sujeitos a afinação.
+- Soco simples desarmado e reação aos danos; combate mantém-se secundário.
+- Dois agentes locais, com perceção, patrulha, perseguição, aviso e bastão, sem atacar por um encontrão normal.
+- Pressão contínua que aumenta pelos eventos configurados e reduz quando o jogador fica fora de vista, após o período de espera. A morte do jogador limpa a pressão.
+- Crimes de civis e acidentes dependem da política configurada e de testemunho; não confundir isto com uma simulação policial completa de GTA.
 
-**Critério de conclusão:** o quarteirão transmite a identidade do álbum, com movimento legível, som sem cortes e recursos consistentes.
+### HUD e pausa
 
-## 4. Expandir a vida noturna e a progressão
+- HUD de estado com euros a nove algarismos, vida, punhos/objeto equipado e pressão policial numa barra contínua dividida em cinco partes; nome sobre a personagem.
+- Nove separadores de pausa: Jogo/Brief, Mapa, Qualidade, HUD, Controlos, Áudio, Guardar/Carregar, Editor e Sair.
+- Mapa esquemático, população independente da qualidade, volumes por canal, brilho, legendas, redefinição de controlos e confirmação de saída.
+- Definições do menu guardadas separadamente do progresso do jogador.
 
-Estas funcionalidades pertencem ao jogo pretendido, mas não devem ser confundidas com o primeiro percurso funcional:
+### Editor e ligação local à IA
 
-- Missões de transporte, procura, recuperação e ajuda ao bar; acessos por favores, dinheiro ou objetos.
-- Cinco perfis de NPCs, vocalizações e texto contextual; seguranças e polícia com variação de personalidade.
-- Combate secundário e combos simples; bosses que protegem acessos.
-- Bolsa de oito espaços, objeto equipado separado, efeitos temporários e recuperação de vida.
-- Morte com música distorcida e funil, perda de dinheiro/objeto equipado, preservação da bolsa e ponto seguro próximo.
-- Atividades musicais próprias dos protagonistas e distribuição de receitas.
-- Trânsito e quatro veículos conduzíveis: bicicleta, trotinete, mota e carro; animações de entrada/saída e acidentes.
-- Mais bares e áreas estilizadas de Lisboa, incluindo Pink Street e Galito.
-- Persistência do progresso com início de sessão no telhado; falhas e espera de cinco minutos nas missões secundárias.
+- Acesso dentro do jogo por F10 ou pelo menu, com palavra-passe criada localmente na primeira utilização.
+- Câmara de voo, seleção na cena/lista e inspetor de transformações, materiais, luzes e propriedades expostas dos NPCs.
+- Catálogo de objetos, NPCs, luzes, portas, quatro veículos e marcadores de missão; instância de GLB/GLTF já integrados no projeto.
+- Duplicar/remover, Desfazer/Refazer e mundo em JSON com escrita temporária, validação e backup.
+- Missões simples de visita/encontro/recolha com título e recompensa, conclusão guardada e pagamento único.
+- Scene Graph e ligação HTTP ao Ollama local, com proposta JSON sobre IDs existentes, pré-visualização, Aplicar, Cancelar e Desfazer.
 
-Cada expansão precisa de uma pequena situação de teste jogável e de medição de custo; a ordem interna pode mudar com o que o criador aprender ao experimentar.
+**Limite da IA nesta entrega:** não há modelo incluído nem inferência com modelo real validada neste ambiente. O editor manual não depende do Ollama. O painel não é ainda uma IA geral capaz de criar qualquer modelo, animação, missão ou mecânica, nem executa código arbitrário devolvido pelo modelo.
 
-## 5. Desempenho, distribuição e validação
+## 3. Próxima etapa — afinação visual e de utilização
 
-- Medir primeiro no ASUS e depois no HP EliteBook 745 G2 real. Não extrapolar 60 FPS a partir de testes headless ou de uma máquina mais potente.
-- Alvo inicial para o HP: 720p, qualidade baixa, renderizador Compatibility; 60 FPS é um objetivo por validar.
-- Preparar LOD, distâncias de desenho, carregamento por zonas, luz estática e atualizações de simulação por distância.
-- Testar entrada/saída de bares, múltiplas fontes musicais, trânsito e povoamento nas situações de maior carga.
-- Validar teclado/rato, comando, áudio, gravação, recuperação de ficheiros e arranque sem Internet.
-- Manter requisitos do editor/IA separados dos requisitos do jogo.
-- Preparar uma versão Windows exportada, com créditos, licenças e indicação clara dos recursos provisórios que ainda existam.
+1. Experimentar o protótipo no ASUS com Windows e recolher exemplos concretos de movimentos, roupas, enquadramentos e acessos a melhorar.
+2. Afinar passada, apoio dos pés, transições, mãos, postura, casaco, poses de condução e entrada/saída dos quatro veículos.
+3. Refinar rostos, anatomia e guarda-roupa do catálogo; construir as identidades e diferenças finais dos três protagonistas.
+4. Ajustar densidade de peões, percursos, filas, dança e circulação do clube através de sessões de jogo.
+5. Trabalhar a coerência de Lisboa: arquitetura, sinalética, calçada, iluminação e ligação dos espaços, em vez de apenas aumentar o mapa.
+6. Melhorar legibilidade, navegação por comando e controlo de volume/brilho do HUD e da pausa com o criador.
+7. Testar edição, gravação, recuperação e retomada do jogo após aplicar mudanças no cenário.
 
-## Verificações que devem acompanhar a implementação
+**Critério de conclusão:** o percurso é compreensível e consistente, as pessoas têm silhuetas humanas e movimento legível, e o criador consegue alterar o cenário sem perder o estado correto.
+
+## 4. Ampliar o editor com IA offline
+
+1. Instalar e iniciar Ollama no computador de desenvolvimento, descarregar um modelo adequado e testar a resposta real.
+2. Medir memória, tempo de resposta e compatibilidade no equipamento com RX 7600 XT; manter o HP apenas como máquina de jogo.
+3. Avaliar propostas sobre objetos identificados, rejeição de dados inválidos, ambiguidade, pré-visualização e Desfazer com pedidos reais em português.
+4. Ampliar gradualmente o esquema para operações novas, mantendo validação, limites e versões recuperáveis do mundo.
+5. Só depois acrescentar alterações de comportamento e scripts com verificações e recuperação próprias.
+6. Separar a ferramenta de edição do pacote mínimo para jogar, sem tornar o modelo um requisito de execução do jogo.
+
+**Critério de conclusão:** um pedido real produz uma proposta pertinente, verificável e reversível no mundo correto. A existência de um painel ou de uma resposta HTTP não comprova a qualidade geral da IA.
+
+## 5. Expandir o álbum, a progressão e a cidade
+
+- Integrar músicas autorizadas da banda, mapear as notas e afinar a análise de graves e a mistura sonora com essas faixas.
+- Criar a sequência visual da história, missões principais/secundárias, transporte, recuperação de objetos e favores com condições reais de acesso.
+- Implementar os cinco minutos de indisponibilidade das missões secundárias, contados com a aplicação ligada, sem contagem visível.
+- Expandir o catálogo simples de missões do editor para condições, diálogos e cadeias narrativas, sem pagamentos duplicados.
+- Produzir vocalizações e comportamentos característicos dos habitantes, seguranças e polícias.
+- Desenvolver combos, bosses de acesso e consequências de combate sem substituir a exploração e a música como prioridades.
+- Completar recuperação de vida, objetos, efeitos temporários de álcool/drogas e opções para reduzir efeitos desconfortáveis.
+- Expandir ruas, bares e interiores estilizados, incluindo Pink Street e Galito, mantendo escala e orçamento de desempenho controlados.
+- Afinar trânsito, colisões, acidentes e controlo próprio de cada veículo.
+
+## 6. Desempenho e distribuição
+
+- Medir no ASUS e no **HP EliteBook 745 G2 real**, com resolução, perfil de qualidade e cenário registados. A meta de 60 FPS no HP continua **não medida e não garantida**.
+- Começar por 720p, Compatibility e qualidade leve; verificar ruas, clube, multidão e trânsito nas situações de maior carga.
+- Confirmar redução efetiva de detalhe, objetos desenhados e simulação à distância, com o nevoeiro a disfarçar as transições.
+- Afinar luzes estáticas/dinâmicas, sombras, transparências, animação e áudio conforme os resultados medidos.
+- Gaussian splatting permanece investigação opcional, sujeita a recursos próprios, colisões separadas e comparação de memória/tempo de frame. Não foi implementado nem assumido como mais leve.
+- Testar comando físico, mistura de áudio por audição e utilização sem Internet no computador do criador.
+- Preparar e validar uma exportação Windows com créditos, licenças e indicação dos recursos provisórios que ainda existam.
+
+## Verificações a manter
 
 | Sistema | Evidência útil |
 | --- | --- |
-| Movimento | Percurso real em terceira pessoa, colisões e retomada após morte. |
-| Áudio espacial | Aproximar, afastar e regressar sem cortes nem reinícios indevidos. |
-| Ritmo | Acertos, erros, recuperação de público, dificuldades, falha sem pagamento e pagamento único correto. |
-| Progressão | Guardar, reiniciar e restaurar o progresso mantendo o ponto inicial definido. |
-| Editor | Aplicar, desfazer e carregar o mesmo estado depois de reiniciar. |
-| Desempenho | Medições na máquina alvo, com resolução, qualidade e cenário registados. |
+| Personagens e movimento | Catálogo humano variado, locomoção ligada à velocidade, articulações, transições, colisões e queda/renascimento. |
+| Peões | Visão com obstáculos, desvio, contacto real, recuperação, orçamento e suspensão distante. |
+| Clube | Porta e circulação, dança, saída por falha e regresso por recuperação sem aparecimento no meio da sala. |
+| Veículos | Entrada/saída, avatar, comandos, travagem, colisão e local seguro de saída. |
+| Polícia | Contacto sem crime, testemunhos, aumento/decadência de pressão, perseguição e proteção durante atuação. |
+| HUD e menu | Estado correto, nove separadores, redefinição, gravação de definições e navegação por teclado/comando. |
+| Música e economia | Pré-escuta, loop virtual, relógio da atuação, dificuldades, público, pagamento correto e único. |
+| Progresso | Bolsa/equipamento, perdas por morte, backup e restauro sem misturar dados do mundo. |
+| Editor | Seleção, catálogo, edição, Desfazer/Refazer, gravação/carregamento e missões sem recompensa repetida. |
+| IA | Schema restrito e pré-visualização, mais testes reais de inferência quando o modelo estiver disponível. |
+| Equipamento alvo | Medições no computador especificado e exportação Windows efetivamente executada. |
 
-Os repositórios de referência guardados no ambiente servem para estudo. A sua presença não significa que os jogos foram instalados, executados ou que o seu código está automaticamente autorizado para reutilização.
+As referências estudadas estão em `REFERENCIAS_NPCS.md`, com fontes e limites de licença. Nenhum modelo, textura, música ou código não licenciado de GTA foi copiado para esta implementação. Arquivos de referência não equivalem a jogos instalados ou executados.
