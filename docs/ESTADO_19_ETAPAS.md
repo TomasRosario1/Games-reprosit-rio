@@ -4,6 +4,8 @@ Auditoria de **21 de outubro de 2026**, a partir do protótipo 02 (`402151c`) e 
 
 O novo documento acrescenta uma visão de três bairros ligados, geografia, trânsito e streaming. Isso não significa que estes sistemas já estejam implementados. Os recursos e sistemas funcionais do protótipo continuam a ser a base de trabalho.
 
+Este relatório retrata a auditoria inicial dos commits indicados acima. Posteriormente o criador autorizou alterações de código, incluindo motion blur e melhorias no editor; consultar [a atualização e respetiva validação](VALIDACAO_EDITOR.md). Os mapas locais e a ponte continuam dependentes da [entrega dos ficheiros](ENTREGAR_MAPAS.md).
+
 **Decisões confirmadas pelo criador em 21 de outubro:** a referência «GTA LISBOA» expande o **Álbum Visual**; música e exploração continuam no centro. O mapa será **compacto**, com dimensões proporcionais e realistas de personagens e edifícios, sem exigir as distâncias reais de Lisboa à escala 1:1.
 
 ## Estrutura encontrada

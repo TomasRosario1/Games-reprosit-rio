@@ -10,6 +10,7 @@ signal quality_changed(index: int)
 signal population_changed(count: int)
 signal audio_changed(channel: String, value: float)
 signal brightness_changed(value: float)
+signal motion_blur_changed(value: float)
 signal subtitles_changed(enabled: bool)
 signal binding_changed(action: String, event: InputEvent)
 
@@ -19,7 +20,7 @@ const ACTION_LABELS := {
 	"inventory": "BOLSA", "pause": "PAUSA", "rhythm_0": "NOTA 1", "rhythm_1": "NOTA 2", "rhythm_2": "NOTA 3", "rhythm_3": "NOTA 4", "attack": "ATAQUE", "editor_toggle": "MODO CRIADOR", "vehicle_brake": "TRAVÃO / VEÍCULO", "vehicle_horn": "BUZINA"
 }
 const TAB_LABELS := {"brief": "JOGO / BRIEF", "map": "MAPA", "quality": "QUALIDADE", "hud": "HUD", "controls": "CONTROLOS", "audio": "ÁUDIO", "save": "GUARDAR / CARREGAR", "editor": "EDITOR", "exit": "SAIR"}
-const DEFAULT_SETTINGS := {"quality": 0, "population": 10, "audio_master": 1.0, "audio_music": 0.8, "audio_ambient": 0.8, "audio_effects": 0.8, "brightness": 1.0, "subtitles": true, "binding_keys": {}, "binding_buttons": {}, "binding_mouse": {}}
+const DEFAULT_SETTINGS := {"quality": 0, "population": 10, "audio_master": 1.0, "audio_music": 0.8, "audio_ambient": 0.8, "audio_effects": 0.8, "brightness": 1.0, "motion_blur": 0.35, "subtitles": true, "binding_keys": {}, "binding_buttons": {}, "binding_mouse": {}}
 var save_path := "user://menu_settings.cfg"
 var settings: Dictionary = DEFAULT_SETTINGS.duplicate(true)
 var current_tab := "brief"
@@ -150,6 +151,7 @@ func _merge_settings(values: Dictionary) -> void:
 	for channel in ["master", "music", "ambient", "effects"]:
 		settings["audio_" + channel] = clampf(_numeric(settings["audio_" + channel], float(DEFAULT_SETTINGS["audio_" + channel])), 0.0, 1.0)
 	settings.brightness = clampf(_numeric(settings.brightness, 1.0), 0.65, 1.45)
+	settings.motion_blur = clampf(_numeric(settings.motion_blur, 0.35),0.0,1.0)
 	settings.subtitles = settings.subtitles if settings.subtitles is bool else true
 	for bindings in ["binding_keys", "binding_buttons", "binding_mouse"]:
 		if not settings[bindings] is Dictionary:
@@ -381,6 +383,7 @@ func _select_tab(tab: String) -> void:
 		"quality":
 			_option("QUALIDADE GRÁFICA", ["BAIXA / LEVE", "MÉDIA / EQUILIBRADA", "ALTA"], int(settings.quality), _change_quality)
 			_option("POPULAÇÃO PRÓXIMA", ["6 PESSOAS", "10 PESSOAS", "16 PESSOAS"], [6, 10, 16].find(int(settings.population)), _change_population)
+			_slider("MOTION BLUR DA CÂMARA · 0 DESLIGA",float(settings.motion_blur),0.0,1.0,_change_motion_blur)
 			_label(_content, "A QUALIDADE CONTROLA DETALHE, DISTÂNCIA E ILUMINAÇÃO. A POPULAÇÃO É AJUSTADA SEPARADAMENTE. O OBJETIVO DE 60 FPS NO HP PRECISA DE MEDIÇÃO NO PORTÁTIL.", 15, Color("939c9f"))
 		"hud":
 			var checkbox := CheckButton.new()
@@ -475,6 +478,11 @@ func _change_subtitles(enabled: bool) -> void:
 	settings.subtitles = enabled
 	_save_settings()
 	subtitles_changed.emit(enabled)
+
+func _change_motion_blur(value: float) -> void:
+	settings.motion_blur = clampf(value,0.0,1.0)
+	_save_settings()
+	motion_blur_changed.emit(settings.motion_blur)
 
 
 func _build_controls() -> void:

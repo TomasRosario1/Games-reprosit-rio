@@ -2,6 +2,10 @@
 
 Experiência **desktop, offline e em terceira pessoa**, em Godot 4 Compatibility, para o álbum de «Odio puro no meu peito». Esta revisão acrescenta uma praça inspirada no Saldanha, personagens articuladas, habitantes com reações, veículos conduzíveis, menus e um editor dentro do jogo. Continua a ser um protótipo com recursos provisórios.
 
+**Atualização de 21 de outubro:** motion blur da câmara em **Esc → Qualidade**, com intensidade regulável; editor com eixos arrastáveis, grelha, foco, vistas rápidas e prédio-base texturado. F10 avisa quando há alterações por guardar. As melhorias continuam nesta mesma branch para manter o link de descarga atualizado.
+
+Os mapas locais indicados pelo criador ainda precisam de ser enviados para este ambiente. A importação/recorte do Saldanha, Pink Street e Bairro Alto, e a colocação da Ponte 25 de Abril junto ao Tejo, **ainda não foram executadas**. Consulta [como entregar os mapas](docs/ENTREGAR_MAPAS.md).
+
 ## Descarregar e abrir no Windows
 
 1. Abre [a versão 02 no GitHub](https://github.com/TomasRosario1/Games-reprosit-rio/tree/codex/album-visual-prototipo-02), com a tua conta ligada. Confirma a branch **codex/album-visual-prototipo-02**.
@@ -112,6 +116,8 @@ Ainda faltam músicas e personagens definitivas da banda, animações de entrada
 - [Próximas etapas](docs/ROADMAP.md)
 - [Resultados dos testes e capturas reais](docs/VALIDACAO.md)
 - [Editor e instalação opcional da IA](docs/EDITOR.md)
+- [Validação da atualização do editor e motion blur](docs/VALIDACAO_EDITOR.md)
+- [Entrega e recorte dos mapas do criador](docs/ENTREGAR_MAPAS.md)
 - [Referências técnicas](docs/REFERENCIAS_NPCS.md)
 - [Créditos dos recursos](assets/CREDITOS.md)
 

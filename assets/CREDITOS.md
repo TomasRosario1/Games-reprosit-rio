@@ -14,6 +14,7 @@ Os recursos visuais e sonoros abaixo são estudos provisórios para o Álbum Vis
 - A geometria da cidade e do bar é construída no projeto. A praça é uma interpretação estilizada inspirada em Saldanha, sem reprodução exata dos edifícios. A imagem fornecida pelo criador serviu de referência visual; não foi aplicada como textura ou fundo do jogo.
 - Carro, mota, bicicleta e trotinete são modelos originais provisórios construídos em [vehicle.gd](../scripts/vehicle.gd), com materiais do projeto. Não foram importados veículos de GTA ou de outro jogo.
 - O desenho do menu, o mapa esquemático, o ícone do punho e o indicador policial foram criados no projeto. As referências GTA orientam a apresentação; não foram usadas fontes, ícones ou imagens de interface desses jogos.
+- O shader de motion blur estilizado da câmara, os eixos/grelha do editor e o prédio-base em `scripts/editor_building.gd` são originais. O prédio reutiliza as texturas PBR do projeto e agrupa janelas e cornijas por material. Não foram introduzidos mapas externos ou recursos de Gaussian splatting nesta atualização.
 
 ## Som e fontes
 

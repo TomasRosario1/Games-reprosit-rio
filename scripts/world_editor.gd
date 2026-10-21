@@ -4,9 +4,10 @@ extends Control
 ## AI outputs are data proposals with a closed schema, never executable scripts.
 
 signal closed
+signal application_exit_requested
 const SAVE_VERSION := 1
 const MAX_HISTORY := 80
-const CATALOG := ["Parede", "Porta", "Luz", "NPC", "Missão", "Carro", "Mota", "Bicicleta", "Trotinete", "Peça"]
+const CATALOG := ["Parede", "Porta", "Prédio", "Luz", "NPC", "Missão", "Carro", "Mota", "Bicicleta", "Trotinete", "Peça"]
 const MATERIALS := ["existing", "stucco", "wood", "metal", "tiles", "city_stone"]
 const PERSONALITIES := ["calm", "intoxicated", "dreamy", "timid", "security"]
 const RESERVED_ROOT := "EditorObjects"
@@ -63,6 +64,24 @@ var _apply_ai: Button
 var _cancel_ai: Button
 var _ai_send: Button
 var _glb_path: LineEdit
+var _gizmo: Node3D
+var transform_mode := "move"
+var transform_axis := 0
+var snap_enabled := true
+var snap_step := 0.25
+var dirty := false
+var _dirty_label: Label
+var _exit_dialog: ConfirmationDialog
+var _drag_before: Dictionary = {}
+var _drag_id := ""
+var _drag_start := Vector2.ZERO
+var _drag_screen_axis := Vector2.RIGHT
+var _drag_pixels_per_unit := 30.0
+var _mode_buttons: Dictionary = {}
+var _inspection_light: OmniLight3D
+var _exit_application := false
+var _leave_without_save: Button
+var _bookmarks: OptionButton
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -92,8 +111,17 @@ func configure(map: Node3D, actor: Node3D, vehicles: Node3D = null) -> void:
 	camera.near = 0.08
 	camera.far = 130.0
 	world.add_child(camera)
+	_inspection_light = OmniLight3D.new()
+	_inspection_light.light_color = Color("dedfd2")
+	_inspection_light.light_energy = 1.5
+	_inspection_light.omni_range = 26.0
+	_inspection_light.shadow_enabled = false
+	_inspection_light.visible = false
+	camera.add_child(_inspection_light)
 	_build_selection_box()
 	_index_base(world)
+	_gizmo = load("res://scripts/editor_gizmo.gd").new()
+	world.add_child(_gizmo)
 	_refresh_list()
 	if FileAccess.file_exists(save_path) or FileAccess.file_exists(save_path + ".bak"):
 		load_world()
@@ -110,6 +138,7 @@ func enter_editor() -> void:
 	_yaw = angles.y
 	_pitch = angles.x
 	camera.make_current()
+	_inspection_light.show()
 	_previous_world_process_mode = world.process_mode
 	world.process_mode = Node.PROCESS_MODE_DISABLED
 	active = true
@@ -120,6 +149,7 @@ func enter_editor() -> void:
 	_set_status("Editor local • rato direito: olhar • WASD: voar • Q/E: altura • Shift: acelerar")
 
 func exit_editor() -> void:
+	end_transform(false)
 	cancel_ai_preview()
 	active = false
 	if is_instance_valid(world): world.process_mode = _previous_world_process_mode
@@ -128,9 +158,43 @@ func exit_editor() -> void:
 	set_process(false)
 	set_process_unhandled_input(false)
 	_selection_box.hide()
+	_inspection_light.hide()
+	if is_instance_valid(_gizmo): _gizmo.hide()
 	if is_instance_valid(_previous_camera): _previous_camera.make_current()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	closed.emit()
+
+func request_exit(close_application: bool = false) -> void:
+	_exit_application = close_application
+	_looking = false
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	end_transform(false)
+	cancel_ai_preview()
+	if dirty:
+		_exit_dialog.ok_button_text = "Guardar e sair do jogo" if close_application else "Guardar e voltar"
+		_leave_without_save.text = "Sair sem guardar o mundo" if close_application else "Voltar sem guardar"
+		_exit_dialog.popup_centered()
+	else:
+		_finish_exit()
+
+func _finish_exit() -> void:
+	var close_application := _exit_application
+	_exit_application = false
+	exit_editor()
+	if close_application: application_exit_requested.emit()
+
+func _save_and_exit() -> void:
+	if save_world():
+		_exit_dialog.hide()
+		_finish_exit()
+	else:
+		_exit_dialog.popup_centered()
+
+func _set_dirty(value: bool) -> void:
+	dirty = value
+	if _dirty_label:
+		_dirty_label.text = "● ALTERAÇÕES POR GUARDAR" if dirty else "✓ MUNDO GUARDADO"
+		_dirty_label.modulate = Color("e8bc83") if dirty else Color("92cdb8")
 
 func _process(delta: float) -> void:
 	if not active: return
@@ -141,6 +205,24 @@ func _process(delta: float) -> void:
 		var speed := 16.0 if Input.is_physical_key_pressed(KEY_SHIFT) else 6.0
 		camera.global_position += direction.limit_length(1.0)*delta*speed
 	_update_selection_box()
+	_update_gizmo()
+
+func _input(event: InputEvent) -> void:
+	if not active or _drag_before.is_empty(): return
+	if event is InputEventMouseMotion:
+		var pixels: float = (event.position-_drag_start).dot(_drag_screen_axis)
+		var amount := pixels/_drag_pixels_per_unit if transform_mode == "move" else pixels*0.6 if transform_mode == "rotate" else pixels*0.01
+		preview_transform(amount)
+		get_viewport().set_input_as_handled()
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+		end_transform(true)
+		get_viewport().set_input_as_handled()
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		end_transform(false)
+		get_viewport().set_input_as_handled()
+	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		end_transform(false)
+		get_viewport().set_input_as_handled()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not active: return
@@ -154,11 +236,103 @@ func _unhandled_input(event: InputEvent) -> void:
 		camera.global_rotation = Vector3(_pitch,_yaw,0)
 		get_viewport().set_input_as_handled()
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		_select_ray(event.position)
+		var axis: int = _gizmo.pick_axis(camera,event.position) if is_instance_valid(_gizmo) else -1
+		if axis >= 0:
+			_start_axis_drag(axis,event.position)
+		else:
+			_select_ray(event.position)
 	elif event is InputEventKey and event.pressed and not event.echo and event.ctrl_pressed:
 		if event.keycode == KEY_Z: undo()
 		elif event.keycode == KEY_Y: redo()
 		elif event.keycode == KEY_S: save_world()
+		elif event.keycode == KEY_D: duplicate_selected()
+	elif event is InputEventKey and event.pressed and not event.echo:
+		match event.keycode:
+			KEY_G: set_transform_mode("move")
+			KEY_R: set_transform_mode("rotate")
+			KEY_S: if not _looking: set_transform_mode("scale")
+			KEY_X: transform_axis = 0
+			KEY_Y: transform_axis = 1
+			KEY_Z: transform_axis = 2
+			KEY_F: focus_selected()
+			KEY_DELETE: delete_selected()
+			KEY_ESCAPE: request_exit()
+
+func set_transform_mode(mode: String) -> void:
+	if mode not in ["move","rotate","scale"]: return
+	end_transform(false)
+	transform_mode = mode
+	for key in _mode_buttons: _mode_buttons[key].button_pressed = key == mode
+	_set_status("Arrasta um eixo colorido. Esc cancela; largar confirma. "+{"move":"Mover","rotate":"Rodar","scale":"Escalar"}[mode])
+
+func begin_transform(mode: String, axis: int) -> bool:
+	if not targets.has(selected_id) or mode not in ["move","rotate","scale"] or axis < 0 or axis > 2: return false
+	end_transform(false)
+	cancel_ai_preview()
+	transform_mode = mode
+	transform_axis = axis
+	_drag_id = selected_id
+	_drag_before = get_target_state(selected_id).duplicate(true)
+	return true
+
+func preview_transform(amount: float) -> bool:
+	if _drag_before.is_empty() or not is_finite(amount): return false
+	var key: String = {"move":"position","rotate":"rotation","scale":"scale"}[transform_mode]
+	var values: Array = _drag_before[key].duplicate()
+	var step := snap_step if transform_mode == "move" else 15.0 if transform_mode == "rotate" else 0.1
+	var delta := snappedf(amount,step) if snap_enabled else amount
+	if transform_mode == "scale": values[transform_axis] = clampf(float(values[transform_axis])*(1.0+delta),0.05,15.0)
+	else: values[transform_axis] = float(values[transform_axis])+delta
+	if not _valid_changes({key:values}): return false
+	var state := _drag_before.duplicate(true)
+	state[key] = values
+	_apply_state(_drag_id,state)
+	_refresh_inspector()
+	_update_selection_box()
+	_update_gizmo()
+	return true
+
+func end_transform(commit: bool) -> void:
+	if _drag_before.is_empty(): return
+	var after := get_target_state(_drag_id)
+	if commit and after != _drag_before:
+		_record({_drag_id:_drag_before},{_drag_id:after})
+	else:
+		_apply_state(_drag_id,_drag_before)
+	_drag_before.clear()
+	_drag_id = ""
+	_refresh_inspector()
+	_update_selection_box()
+
+func _start_axis_drag(axis: int, screen: Vector2) -> void:
+	if not begin_transform(transform_mode,axis): return
+	var origin := _array_vec(_drag_before.position)
+	var direction: Vector3 = [Vector3.RIGHT,Vector3.UP,Vector3.BACK][axis]
+	var screen_axis := camera.unproject_position(origin+direction)-camera.unproject_position(origin)
+	_drag_pixels_per_unit = maxf(5.0,screen_axis.length())
+	_drag_screen_axis = screen_axis.normalized() if screen_axis.length() > 1.0 else Vector2.UP
+	_drag_start = screen
+
+func _update_gizmo() -> void:
+	if not is_instance_valid(_gizmo): return
+	if not active or _looking or not targets.has(selected_id) or not get_target_state(selected_id).get("visible",true):
+		_gizmo.hide()
+		return
+	_gizmo.place(camera,_array_vec(get_target_state(selected_id).position),transform_axis,snap_enabled)
+
+func focus_selected() -> bool:
+	if not targets.has(selected_id): return false
+	var bounds := _world_bounds(selected_id)
+	var center := bounds.get_center()
+	var distance := maxf(3.0,bounds.size.length()*0.65/sin(deg_to_rad(camera.fov*0.5)))
+	var direction := camera.global_basis.z.normalized()
+	camera.global_position = center+direction*distance
+	camera.look_at(center)
+	var angles := camera.global_basis.get_euler()
+	_yaw = angles.y
+	_pitch = angles.x
+	_update_gizmo()
+	return true
 
 func _index_base(parent: Node) -> void:
 	for child in parent.get_children():
@@ -337,6 +511,7 @@ func _record(before: Dictionary, after: Dictionary) -> void:
 	_history.append({"before":before.duplicate(true),"after":after.duplicate(true)})
 	if _history.size() > MAX_HISTORY: _history.pop_front()
 	_redo.clear()
+	_set_dirty(true)
 
 func undo() -> bool:
 	cancel_ai_preview()
@@ -344,6 +519,7 @@ func undo() -> bool:
 	var change: Dictionary = _history.pop_back()
 	for id in change.before: _apply_state(id,change.before[id])
 	_redo.append(change)
+	_set_dirty(true)
 	_refresh_inspector()
 	_update_selection_box()
 	_set_status("Alteração desfeita.")
@@ -355,6 +531,7 @@ func redo() -> bool:
 	var change: Dictionary = _redo.pop_back()
 	for id in change.after: _apply_state(id,change.after[id])
 	_history.append(change)
+	_set_dirty(true)
 	_refresh_inspector()
 	_update_selection_box()
 	_set_status("Alteração refeita.")
@@ -455,6 +632,9 @@ func _make_catalog_node(kind: String, at: Vector3, resource_path: String = "", g
 		if not resource is PackedScene: return null
 		node = resource.instantiate()
 		_add_mesh_collision(node)
+	elif kind == "Prédio":
+		node = load("res://scripts/editor_building.gd").new()
+		node.dimensions = _array_vec(geometry.get("size",[8,10,8]))
 	else:
 		node = Node3D.new()
 		var body := StaticBody3D.new()
@@ -488,6 +668,7 @@ func _set_collision_visibility(node: Node, enabled: bool) -> void:
 	for child in node.get_children(): _set_collision_visibility(child,enabled)
 
 func _set_object_material(node: Node, mat: Material) -> void:
+	if node.get_meta("editor_keep_material",false): return
 	if node is MeshInstance3D:
 		node.material_override = mat
 		return
@@ -594,6 +775,9 @@ func _array_vec(value: Array) -> Vector3:
 
 func save_world() -> bool:
 	if not _valid_save_path(): return false
+	if not _drag_before.is_empty():
+		_set_status("Termina ou cancela o arrasto antes de guardar.")
+		return false
 	if not _preview_before.is_empty():
 		_set_status("Aplica ou cancela a pré-visualização antes de guardar.")
 		return false
@@ -622,6 +806,7 @@ func save_world() -> bool:
 				_set_status("Falha ao confirmar o backup. O mundo anterior foi preservado.")
 				return false
 	var result := DirAccess.rename_absolute(ProjectSettings.globalize_path(temporary),ProjectSettings.globalize_path(save_path))
+	if result == OK: _set_dirty(false)
 	_set_status("Mundo guardado localmente em world_edits.json." if result == OK else "Falha ao substituir o ficheiro de dados.")
 	return result == OK
 
@@ -650,6 +835,7 @@ func _read_file(path: String) -> Dictionary:
 
 func load_world() -> bool:
 	if not _valid_save_path(): return false
+	end_transform(false)
 	cancel_ai_preview()
 	var data := _read_file(save_path)
 	if data.is_empty(): data = _read_file(save_path+".bak")
@@ -679,15 +865,18 @@ func load_world() -> bool:
 		_counter = maxi(_counter,int(saved_id.get_slice("/",1)))
 	_history.clear()
 	_redo.clear()
+	_set_dirty(false)
 	_refresh_list()
 	select_target("")
 	_set_status("Mundo carregado. As alterações do jogador permanecem separadas.")
 	return true
 
 func select_target(id: String) -> void:
+	end_transform(false)
 	selected_id = id if targets.has(id) else ""
 	_refresh_inspector()
 	_update_selection_box()
+	_update_gizmo()
 
 func _select_ray(screen: Vector2) -> void:
 	var origin := camera.project_ray_origin(screen)
@@ -717,6 +906,7 @@ func _world_bounds(id: String) -> AABB:
 	if node is MeshInstance3D: return at*node.mesh.get_aabb()
 	if node is Light3D: return AABB(at.origin-Vector3.ONE*0.25,Vector3.ONE*0.5)
 	if node is CharacterBody3D: return at*AABB(Vector3(-0.45,0,-0.45),Vector3(0.9,1.9,0.9))
+	if node.has_method("get_editor_bounds"): return at*node.get_editor_bounds()
 	var result := AABB(at.origin-Vector3(0.5,0,0.5),Vector3(1,2,1))
 	for child in node.get_children():
 		if child is MeshInstance3D and child.mesh: result = result.merge(child.global_transform*child.mesh.get_aabb())
@@ -829,6 +1019,7 @@ func _build_ui() -> void:
 	self.theme = theme
 	var left := _panel(Vector2(12,12),Vector2(255,-24),false)
 	_text(left,"CRIADOR • LISBOA",19)
+	_dirty_label = _text(left,"✓ MUNDO GUARDADO",11)
 	_text(left,"Rato direito + WASD: voar\nQ/E: subir/descer • Shift: rápido",12)
 	var save_row := HBoxContainer.new()
 	left.add_child(save_row)
@@ -856,7 +1047,8 @@ func _build_ui() -> void:
 	_glb_path.placeholder_text = "res://assets/modelo.glb"
 	left.add_child(_glb_path)
 	_button(left,"Colocar GLB/GLTF",func(): spawn_catalog("GLB",camera.global_position-camera.global_basis.z*5.0,{},_glb_path.text.strip_edges()))
-	_button(left,"VOLTAR AO JOGO • F10",exit_editor)
+	_button(left,"VOLTAR AO JOGO • F10",request_exit)
+	_build_transform_toolbar()
 	var right := _panel(Vector2(-318,12),Vector2(306,-24),true)
 	_selection_name = _text(right,"Seleciona um objeto",16)
 	for key in ["position","rotation","scale"]:
@@ -970,6 +1162,80 @@ func _build_ui() -> void:
 	_request.body_size_limit = 262144
 	_request.request_completed.connect(_ai_completed)
 	add_child(_request)
+	_exit_dialog = ConfirmationDialog.new()
+	_exit_dialog.title = "Alterações no mundo"
+	_exit_dialog.dialog_text = "Há alterações por guardar no editor."
+	_exit_dialog.ok_button_text = "Guardar e voltar"
+	_exit_dialog.cancel_button_text = "Continuar a editar"
+	_leave_without_save = _exit_dialog.add_button("Voltar sem guardar",false,"leave")
+	_exit_dialog.confirmed.connect(_save_and_exit)
+	_exit_dialog.custom_action.connect(func(action: StringName):
+		if action == &"leave":
+			_exit_dialog.hide()
+			_finish_exit())
+	add_child(_exit_dialog)
+
+func _build_transform_toolbar() -> void:
+	var panel := PanelContainer.new()
+	add_child(panel)
+	panel.anchor_right = 1.0
+	panel.offset_left = 278
+	panel.offset_right = -330
+	panel.offset_top = 12
+	panel.offset_bottom = 100
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.025,0.045,0.05,0.94)
+	style.content_margin_left = 10
+	style.content_margin_right = 10
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	panel.add_theme_stylebox_override("panel",style)
+	var box := VBoxContainer.new()
+	panel.add_child(box)
+	var row := HBoxContainer.new()
+	box.add_child(row)
+	for mode in ["move","rotate","scale"]:
+		var button := _button(row,{"move":"Mover G","rotate":"Rodar R","scale":"Escala S"}[mode],set_transform_mode.bind(mode))
+		button.toggle_mode = true
+		button.button_pressed = mode == transform_mode
+		_mode_buttons[mode] = button
+	_button(row,"F · Focar",focus_selected)
+	var snap := CheckButton.new()
+	snap.text = "Grelha"
+	snap.button_pressed = snap_enabled
+	snap.toggled.connect(func(enabled: bool): snap_enabled = enabled)
+	row.add_child(snap)
+	var second := HBoxContainer.new()
+	box.add_child(second)
+	var hint := _text(second,"Arrasta X/Y/Z · Esc cancela · passo",11)
+	hint.autowrap_mode = TextServer.AUTOWRAP_OFF
+	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var step := SpinBox.new()
+	step.min_value = 0.05
+	step.max_value = 2.0
+	step.step = 0.05
+	step.value = snap_step
+	step.custom_minimum_size.x = 80
+	step.value_changed.connect(func(value: float): snap_step = value)
+	second.add_child(step)
+	var bookmarks := OptionButton.new()
+	_bookmarks = bookmarks
+	bookmarks.add_item("Ir para…")
+	var views: Array = world.get_editor_bookmarks() if is_instance_valid(world) and world.has_method("get_editor_bookmarks") else []
+	# configure() supplies the world after UI creation, so populate on demand.
+	bookmarks.get_popup().about_to_popup.connect(func():
+		bookmarks.clear()
+		bookmarks.add_item("Ir para…")
+		views.assign(world.get_editor_bookmarks() if is_instance_valid(world) and world.has_method("get_editor_bookmarks") else [])
+		for view in views: bookmarks.add_item(view.label))
+	bookmarks.item_selected.connect(func(index: int):
+		if index > 0 and index <= views.size():
+			camera.global_position = views[index-1].position
+			camera.look_at(views[index-1].target)
+			var angles := camera.global_basis.get_euler()
+			_yaw = angles.y
+			_pitch = angles.x)
+	second.add_child(bookmarks)
 
 func _panel(at: Vector2, dimensions: Vector2, from_right: bool) -> VBoxContainer:
 	var panel := PanelContainer.new()
@@ -1070,6 +1336,7 @@ func _ai_completed(result: int, code: int, _headers: PackedStringArray, body: Pa
 		_set_status("Proposta rejeitada: IDs ou propriedades fora das operações permitidas.")
 
 func preview_actions(actions: Array) -> bool:
+	end_transform(false)
 	cancel_ai_preview()
 	if actions.is_empty() or actions.size()>12: return false
 	var before := {}

@@ -80,6 +80,7 @@ var _police: Node3D
 var _wanted: RefCounted
 var _editor: Control
 var _brightness_rect: ColorRect
+var _motion_blur: Node
 var _audio_levels := {"master": 1.0, "music": 0.8, "ambient": 0.8, "effects": 0.8}
 var _brightness: float = 1.0
 var _subtitles: bool = true
@@ -250,10 +251,16 @@ func _process(delta: float) -> void:
 		_notice_timer -= delta
 		_notice.visible = _notice_timer > 0.0 and state == "explore" and (not _notice_is_subtitle or _subtitles)
 	_update_audio(delta)
+	if _motion_blur:
+		_motion_blur.update_camera(get_viewport().get_camera_3d(),delta,state == "explore")
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.echo:
+		return
+	if event.is_action_pressed("editor_toggle") and state == "editor":
+		_editor.request_exit()
+		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("editor_toggle") and state in ["explore", "paused"]:
 		_request_editor()
@@ -622,7 +629,10 @@ func _persist() -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		_quit_game()
+		if state == "editor" and _editor:
+			_editor.request_exit(true)
+		else:
+			_quit_game()
 
 
 func _quit_game() -> void:
@@ -979,6 +989,8 @@ func _apply_quality() -> void:
 
 
 func _setup_extended_systems() -> void:
+	_motion_blur = load("res://scripts/camera_motion_blur.gd").new()
+	add_child(_motion_blur)
 	_vehicles = load("res://scripts/vehicle_manager.gd").new()
 	world.add_child(_vehicles)
 	_vehicles.set_player(player)
@@ -1000,11 +1012,7 @@ func _setup_extended_systems() -> void:
 	root_control.move_child(_brightness_rect, 0)
 	_brightness_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_brightness_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var brightness_shader := Shader.new()
-	brightness_shader.code = "shader_type canvas_item; uniform sampler2D screen_texture:hint_screen_texture,filter_linear; uniform float brightness=1.0; void fragment(){COLOR=vec4(texture(screen_texture,SCREEN_UV).rgb*brightness,1.0);}"
-	var brightness_material := ShaderMaterial.new()
-	brightness_material.shader = brightness_shader
-	_brightness_rect.material = brightness_material
+	_motion_blur.attach_surface(_brightness_rect)
 	_game_hud = load("res://scripts/game_hud.gd").new()
 	_hud.add_child(_game_hud)
 	_game_hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -1021,6 +1029,7 @@ func _setup_extended_systems() -> void:
 	_game_menu.population_changed.connect(_menu_population_changed)
 	_game_menu.audio_changed.connect(_menu_audio_changed)
 	_game_menu.brightness_changed.connect(_menu_brightness_changed)
+	_game_menu.motion_blur_changed.connect(func(value: float): _motion_blur.set_strength(value))
 	_game_menu.subtitles_changed.connect(func(enabled: bool): _subtitles = enabled)
 	var settings: Dictionary = _game_menu.get_settings()
 	_menu_quality_changed(int(settings.get("quality", 0)))
@@ -1028,12 +1037,14 @@ func _setup_extended_systems() -> void:
 	for channel in ["master", "music", "ambient", "effects"]:
 		_menu_audio_changed(channel, float(settings.get("audio_" + channel, 1.0 if channel == "master" else 0.8)))
 	_menu_brightness_changed(float(settings.get("brightness", 1.0)))
+	_motion_blur.set_strength(float(settings.get("motion_blur",0.35)))
 	_subtitles = bool(settings.get("subtitles", true))
 	_editor = load("res://scripts/world_editor.gd").new()
 	root_control.add_child(_editor)
 	_editor.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_editor.configure(world, player, _vehicles)
 	_editor.closed.connect(_resume_explore)
+	_editor.application_exit_requested.connect(func(): _confirmed_quit(true))
 	_editor.hide()
 	_game_menu.hide()
 	_create_editor_password_dialog(root_control)

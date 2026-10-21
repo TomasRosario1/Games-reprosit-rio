@@ -817,6 +817,13 @@ func is_inside_bar(at: Vector3) -> bool:
 func get_environment() -> Environment:
 	return _environment
 
+func get_editor_bookmarks() -> Array:
+	return [
+		{"label":"Saldanha","position":Vector3(10,7,19),"target":Vector3(24,4,0)},
+		{"label":"Telhado","position":rooftop_spawn.origin+Vector3(4,3,5),"target":rooftop_spawn.origin},
+		{"label":"Lado B","position":stage_position+Vector3(6,3,-4),"target":stage_position+Vector3(0,1,3)}
+	]
+
 func get_city_metrics() -> Dictionary:
 	var batches := 0
 	var static_instances := 0

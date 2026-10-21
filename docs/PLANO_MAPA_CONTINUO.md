@@ -2,6 +2,8 @@
 
 Análise de 21 de outubro de 2026, a partir de [Ter como referencia](<../Ter como referencia>) e do protótipo 02. Este documento propõe a migração; **nenhum sistema de streaming, mapa OSM ou bairro novo foi implementado nesta revisão documental**.
 
+**Instrução posterior do criador:** usar os mapas próprios que tem na pasta `Maps` do Windows, recortando o excesso e conservando Saldanha/avenida, Pink Street/bares e Bairro Alto/peões e bares. Esses ficheiros ainda não foram entregues à nuvem. A [primeira inspeção](ENTREGAR_MAPAS.md) precede a escolha do processo de importação; a secção OSM deste plano é uma alternativa/complemento técnico, não uma substituição autorizada dos mapas indicados. A ponte deve representar a Ponte 25 de Abril junto ao Tejo, proporcional ao mapa compacto.
+
 ## Decisões confirmadas pelo criador
 
 - «GTA LISBOA» expande o **Álbum Visual**. A música, a história do álbum e a exploração mantêm a prioridade; veículos, polícia e combate são sistemas de apoio.

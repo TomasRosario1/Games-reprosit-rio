@@ -4,6 +4,8 @@ Este documento regista as decisões do criador e distingue a visão final do pro
 
 ## Visão e prioridades
 
+Atualização posterior no mesmo dia: o criador autorizou avançar no código, confirmou **motion blur** como escolha artística e admitiu Gaussian splatting em planos/fundos específicos, quando justificado pela imagem e compatível com o orçamento. Pediu uma **Ponte 25 de Abril proporcional ao mapa, junto ao Tejo**, e melhorias no editor. Indicou mapas próprios no computador Windows para recortar e integrar: Saldanha/avenida, Pink Street/bares e Bairro Alto/ruas pedonais. Os ficheiros ainda não estão acessíveis no ambiente da nuvem; a expansão geográfica depende da sua entrega. O motion blur e as ferramentas do editor foram desenvolvidos entretanto; consultar [validação desta atualização](VALIDACAO_EDITOR.md).
+
 Atualização de 21 de outubro de 2026: o criador confirmou que a referência «GTA LISBOA», em [Ter como referencia](<../Ter como referencia>), expande este Álbum Visual. Música e exploração continuam no centro. O mapa será compacto, com proporções realistas de edifícios e pessoas, sem reproduzir as distâncias reais entre bairros. A [auditoria das 19 etapas](ESTADO_19_ETAPAS.md) separa o que existe do que falta e o [plano do mapa contínuo](PLANO_MAPA_CONTINUO.md) descreve a migração proposta; esta revisão não implementa os bairros novos.
 
 Aplicação desktop nativa, single-player e utilizável offline, desenvolvida em Godot 4. A história do álbum e a exploração são o centro da experiência. Combate, veículos, atividades musicais e personalidades dos habitantes dão vida à cidade e condicionam o acesso a alguns locais.
