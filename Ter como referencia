@@ -1,0 +1,455 @@
+# GTA LISBOA — Documento de Conceito e Desenvolvimento
+
+## 1. Visão geral
+
+Desenvolver um videojogo 3D de mundo aberto inspirado em GTA III (2001), GTA Vice City (2002), GTA San Andreas (2004), GTA Liberty City Stories (2005) e GTA Vice City Stories (2006).
+
+O jogo será ambientado numa versão de Lisboa, construída com referências geográficas reais e adaptada à jogabilidade de um GTA clássico.
+
+**Tecnologias utilizadas:**
+- Motor de jogo: Godot 4
+- Linguagem principal: GDScript
+- Repositório e controlo de versões: GitHub
+- Assistente de programação: OpenAI Codex
+- Dados geográficos: OpenStreetMap
+- Conversão de mapas 3D: OSM2World
+- Formatos de modelos: GLB/glTF
+
+Técnicas que usavam na ps2 (Importante ter como referencia):
+1Nevoeiro, Adicionar nevoeiro para reduzir o contraste e esconder detalhes distantes, serrilhados e objetos que ainda não eram desenhados. Também permitia limitar a distância de renderização.
+2Motion Blur, Simular o arrastamento visual dos objetos em movimento, tornando as transições entre imagens mais suaves e reduzindo a perceção de irregularidades nas bordas.
+3Bloom e Glow, Criar halos luminosos à volta de luzes, do céu ou de superfícies brilhantes. O brilho suavizava os limites dos objetos e dava uma aparência mais cinematográfica.
+4Escuridão e iluminação seletiva, Utilizar sombras e áreas escuras para esconder superfícies simples, pormenores pouco definidos e cenários distantes. A atenção era direcionada para as zonas iluminadas.
+5Bilinear Filtering: mistura os píxeis de uma textura quando esta é ampliada, evitando que pareça composta por quadrados demasiado definidos. O preço é perder alguma nitidez.
+6Mipmapping, utiliza versões progressivamente mais pequenas da mesma textura conforme a distância. Reduz cintilação, padrões instáveis e ruído visual.
+7Dithering, cria padrões de píxeis de diferentes cores para simular gradientes e tonalidades que a profundidade de cor do framebuffer não consegue representar diretamente.
+8Field Blending, combina informação dos campos ou linhas adjacentes para produzir uma imagem visualmente mais estável.
+9O Gaussian Splatting (frequentemente chamado de G-Splat) é uma técnica revolucionária de digitalização 3D
+10Half-Pixel Offset, desloca ligeiramente a posição de renderização entre campos, permitindo reconstruir uma apresentação entrelaçada mais detalhada.
+11Temporal Blending, mistura a imagem atual com informação de imagens anteriores para suavizar o movimento. Pode, no entanto, introduzir arrastamento visual.
+12Edge Anti-Aliasing, suaviza determinados contornos geométricos, diminuindo o efeito de escada.
+13Resolução de renderização diferente da resolução de saída, permite desenhar internamente uma imagem mais pequena e adaptá-la à saída televisiva, poupando memória e recursos.
+14Redução deliberada de microdetalhes, evitar padrões demasiado finos que, numa imagem de 480i, criariam cintilação ou ruído.
+15exture Atlasing, reunir várias texturas pequenas numa textura maior, reduzindo desperdício de memória e mudanças de textura.
+16Paletted Textures 4-bit/8-bit armazenar texturas através de índices de cores, economizando memória.
+17Vertex Colors, adicionar informação de cor aos vértices dos modelos para simular variações de iluminação sem exigir texturas adicionais.
+18Vertex Colors, adicionar informação de cor aos vértices dos modelos para simular variações de iluminação sem exigir texturas adicionais.
+19Baked Lighting, calcular a iluminação previamente e incorporá-la nos dados do cenário.
+20Lightmaps, utilizar texturas com informação de luz e sombra previamente calculada.
+21Ambient Shading, escurecer cantos, paredes e superfícies para simular profundidade e evitar a aparência excessivamente plana.
+22Fake Bump Mapping, simular relevo e rugosidade utilizando várias passagens de renderização, texturas ou variações de iluminação, em vez de geometria detalhada.
+23Detail Textures, sobrepor texturas pequenas e repetidas para criar a sensação de maior detalhe nas superfícies próximas, quando o orçamento gráfico o permitia.
+24Alpha Textures, tilizar transparência para representar elementos complexos com geometria muito simples, como vegetação, grades, fumo e sujidade.
+25Decals, adicionar manchas, rachaduras, buracos de bala e outros detalhes através de pequenas imagens colocadas sobre superfícies.
+26Normalização artística das texturas, evitar texturas excessivamente ruidosas e privilegiar formas reconhecíveis, contrastes e detalhes grandes.
+27Reutilização inteligente de texturas, empregar as mesmas texturas em diferentes objetos, alterando a sua cor, orientação ou escala.
+28Texturas pintadas com sombras, incluir sombras, desgaste, reflexos ou iluminação diretamente na textura base para criar uma aparência mais elaborada.
+29Level of Detail (LOD) Os objetos distantes eram substituídos por versões com menos polígonos e, por vezes, texturas simplificadas. Quando o jogador se aproximava, surgiam modelos mais detalhados.
+30Billboards, utilizar imagens planas que se orientam para a câmara, simulando árvores, vegetação, luzes e objetos distantes.
+31Impostors, substituir objetos tridimensionais complexos por representações bidimensionais ou modelos muito simplificados.
+32Skyboxes, representar o céu e paisagens muito afastadas sem construir toda essa geometria em 3D.
+33Background Geometry, adicionar montanhas, prédios ou paisagens simplificadas para criar a sensação de um mundo maior.
+34 Occlusion Culling, não renderizar objetos escondidos atrás de outros objetos.
+35Frustum Culling, não renderizar objetos fora do campo de visão da câmara.
+36Distance Culling, deixar de renderizar objetos para além de determinada distância.
+37Object Fading: fazer os objetos aparecer ou desaparecer gradualmente, em vez de surgirem subitamente.
+38Portals e Room Culling: utilizar divisões, corredores e portas para restringir as partes do cenário que precisam de ser desenhadas.
+39Streaming de cenários: carregar gradualmente partes do mundo à medida que o jogador se desloca.
+40Transições escondidas pela arquitetura: colocar curvas, túneis, edifícios e corredores em locais estratégicos para reduzir a quantidade de cenário simultaneamente visível.
+41Explosões e partículas, Poeira, faíscas, fogo e detritos tornavam as cenas mais dinâmicas e visualmente ricas, desviando a atenção da simplicidade dos objetos.
+42Light Shafts / God Rays, Simulavam feixes de luz através de superfícies transparentes e outros truques de renderização, acrescentando profundidade e atmosfera.
+43Film Grain / Noise, Acrescentar granulação à imagem para produzir uma aparência semelhante à película cinematográfica. Pode ajudar a disfarçar algumas imperfeições, embora também introduza ruído visual.
+44Depth of Field: desfocar regiões fora do plano de foco, aproximando a imagem da linguagem visual do cinema.
+45Color Grading: aplicar uma paleta e tonalidade consistentes, criando uma identidade visual capaz de tornar a imagem mais coesa.
+46Desaturation: reduzir a saturação das cores para obter um ambiente cinematográfico, sombrio ou melancólico.
+47Desaturation: reduzir a saturação das cores para obter um ambiente cinematográfico, sombrio ou melancólico.
+48Vignetting: escurecer as extremidades do ecrã para orientar o olhar para o siteo que o jogador deve ir.
+49Screen Distortion: distorcer certas zonas do ecrã para simular água, calor, explosões ou efeitos sobrenaturais.
+50Lens Flare: representar reflexos e halos produzidos por fontes luminosas intensas.
+51Additive Blending: misturar elementos luminosos com o cenário, criando efeitos de brilho, fogo e magia.
+52Screen-Space Overlays: aplicar imagens semitransparentes por cima da imagem final, simulando chuva, sujidade, sangue ou filtros.
+53Fake Volumetric Lighting: simular iluminação volumétrica com planos transparentes e efeitos de partículas.
+54Animated Texture Effects: usar texturas animadas para simular água, fogo e outras superfícies sem grande complexidade geométrica.
+55 2D Particle Systems: representar muitos efeitos visuais através de sprites em vez de objetos tridimensionais complexos.
+56 2D Particle Systems: representar muitos efeitos visuais através de sprites em vez de objetos tridimensionais complexos.
+57Speed Blur: aumentar a desfocagem em situações de grande velocidade.
+58Contraste cinematográfico: combinar zonas muito escuras com zonas de luz intensa, criando imagens marcantes sem necessitar de detalhe uniforme em todo o cenário.
+59Silhuetas fortes: privilegiar a forma geral dos personagens, veículos e edifícios para os tornar reconhecíveis mesmo com poucos píxeis.
+60Atmospheric Perspective: reduzir contraste, saturação e definição dos elementos distantes para simular a forma como os vemos através da atmosfera.
+61Large-Scale Texture Details: privilegiar detalhes grandes e reconhecíveis em vez de padrões excessivamente pequenos.
+62Strong Color Separation: distinguir edifícios, personagens e objetos através de cores claramente diferenciadas.
+63Controlled Visual Complexity: reduzir a quantidade de informação visual nas zonas secundárias.
+64Double Buffering: utilizar buffers alternados para a renderização e apresentação dos fotogramas.
+65Texture Streaming: carregar texturas conforme são necessárias, sem manter todas simultaneamente na memória gráfica.
+66Geometry Streaming: carregar geometria por partes durante a exploração.
+67Geometry Compression: comprimir informação de vértices para reduzir memória e transferências.
+68Triangle Strips: organizar polígonos de modo a reduzir a quantidade de dados enviados para processamento.
+69Backface Culling: descartar as faces dos polígonos que estão orientadas no sentido oposto à câmara.
+70Multipass Rendering: desenhar a mesma geometria em várias passagens para produzir efeitos de iluminação mais complexos.
+71VU Microprograms: utilizar os processadores vetoriais da PS2 para otimizar transformações geométricas e outros cálculos.
+72Texture Cache Optimization: organizar o acesso às texturas para evitar transferências e leituras desnecessárias.
+73Adaptive Effect Quality: reduzir a complexidade de determinados efeitos ou objetos quando estes estão distantes.
+74Precomputed Data: calcular antecipadamente informações como iluminação, animações e visibilidade para poupar processamento durante o jogo.
+
+**Objetivo visual:** alcançar a estética da PS2, sobretudo GTA III, com modelos relativamente low-poly, texturas urbanas detalhadas para a época, iluminação atmosférica e nevoeiro. Evitar aparência quadrada como Roblox e Minecraft, voxel ou edifícios compostos visualmente por cubos.
+
+---
+
+## 2. Estrutura geográfica do mundo
+
+### 2.1. Formato do mapa
+
+O mundo será uma **península**, delimitada naturalmente por:
+
+- **Limite terrestre:** uma zona de montanhas ou terreno elevado com prédios, inacessível ao jogador. Funciona como barreira natural do mundo aberto.
+- **Limite marítimo:** oceano que rodeia a zona costeira da península. O jogador não tem capacidade para nadar.
+- **Área jogável:** cidade contínua, com estradas, praças, ruas, passeios, edifícios e diferentes bairros interligados.
+
+Não utilizar paredes invisíveis como principal solução para limitar o mapa. Dar preferência a barreiras geográficas e ambientais coerentes com o cenário.
+
+### 2.2. Bairros principais
+
+O mapa terá inicialmente três zonas inspiradas em áreas reais de Lisboa.
+
+**Zona A — Saldanha**
+- Praças e avenidas largas.
+- Trânsito relativamente intenso.
+- Restaurantes, cafés, comércio e escritórios.
+- Passeios amplos e espaços urbanos abertos.
+- Área principal para testar veículos e NPCs.
+
+**Zona B — Bairro Alto**
+- Ruas estreitas e sinuosas.
+- Edifícios próximos uns dos outros.
+- Subidas e descidas.
+- Bares, pequenos cafés e restaurantes.
+- Maior densidade de peões e menor facilidade de circulação automóvel.
+
+**Zona C — Pink Street / Cais do Sodré**
+- Zona de entretenimento e vida noturna.
+- Bares, restaurantes e estabelecimentos comerciais.
+- Movimento de peões e veículos nas ruas adjacentes.
+- Proximidade da área costeira.
+
+### 2.3. Ligação entre bairros
+
+As 3 areas do mapa são juntas no mapa final, para ter uma ideia de uma zona ampla com carros e outra zona mais fechadaa com pessoas.
+Os mapas são criados separadamente, mas devem funcionar como um único mundo aberto.
+
+Requisitos:
+- O jogador pode conduzir e caminhar entre todas as zonas.
+- Não existem ecrãs de carregamento durante as deslocações.
+- Estradas e passeios devem ligar-se naturalmente.
+- Os estilos urbanos mudam gradualmente entre bairros.
+- O trânsito pode atravessar diferentes zonas.
+- Os NPCs podem deslocar-se entre setores, dentro dos limites definidos para a sua IA.
+- O carregamento dos setores é dinâmico e depende da posição do jogador.
+
+Escala real, e porporcionalment ao npcs e players.
+---
+
+## 3. Referências e recursos
+
+Utilizar projetos de código aberto como referências técnicas para:
+- Física e condução automóvel, bicicleta, mota e trotinete.
+- Vários comportamentos dos NPCs, terem várias personalidades diferentes e agirem perante a personalidade.
+- Movimentação e animação de personagens organico e natural, dependedo da personalidade.
+- Sistemas policiais e perseguições, haver uma persigição ao nps ou players que atropelam e que entrem em conclito com algum personagem (combater com outro personagem).
+- Organização de mundos abertos.
+- Importação de modelos e dados geográficos.
+
+Referências iniciais:
+- SanAndreasUnity
+- GTA Reversed
+- OpenRW
+- Godot Easy Vehicle Physics
+- Godot 4 Vehicle Framework
+- Pedestrian AI System Godot
+- DragonFF
+- Gta3
+- Gta Liberticity story
+
+Verificar as licenças antes de reutilizar código ou recursos. Os modelos, texturas, personagens e veículos originais da Rockstar não devem ser considerados automaticamente livres para reutilização ou distribuição.
+
+---
+
+## 4. Personagem principal
+
+Implementar:
+- Movimento na terceira pessoa.
+- Caminhar e correr.
+- Saltar.
+- Colisões com o ambiente.
+- Câmara controlável pelo jogador.
+- Entrada e saída de veículos.
+- Animações de movimento, combate e interação.
+- Sistema de vida e dano.
+
+A movimentação deve transmitir a sensação dos GTA clássicos, com controlos responsivos.
+
+---
+
+## 5. Sistema de veículos
+
+Desenvolver um sistema modular para diferentes tipos de veículos.
+
+**Funcionalidades principais:**
+- Aceleração e travagem.
+- Marcha-atrás.
+- Direção e suspensão.
+- Derrapagens e travão de mão.
+- Colisões e danos.
+- Entrada e saída de veículos.
+- Possibilidade de retirar um NPC de um veículo.
+- Faróis e luzes traseiras.
+- Veículos conduzidos por NPCs.
+- Parâmetros específicos por modelo.
+
+Utilizar a física arcade dos GTA clássicos como referência, evitando simulação excessivamente realista.
+
+Permitir posteriormente a integração de modelos de carros com estética GTA III, Vice City e San Andreas.
+
+---
+
+## 6. Inteligência dos NPCs
+
+### Movimentação básica, dependendo da personalidade
+- Caminhar pelos passeios.
+- Escolher destinos.
+- Parar e esperar.
+- Conversar com outros NPCs.
+- Atravessar ruas.
+- Evitar obstáculos.
+- Seguir rotinas.
+
+### Reações e comportamentos, dependedo da personalidade.
+- Reagir à aproximação do jogador.
+- Reagir a empurrões e agressões.
+- Fugir perante ameaças.
+- Defender-se ou contra-atacar.
+- Reagir a acidentes.
+- Observar acontecimentos.
+- Pedir ajuda ou alertar autoridades.
+- Entrar e sair de veículos.
+
+Criar diferentes categorias de NPCs, incluindo civis, condutores, grupos de betos, alternos, indies, metal, normais, chungas e agentes policiais, com inspirações portuguesas
+
+Implementar comportamentos através de máquinas de estados ou arquitetura equivalente, com prioridades claras e possibilidade de expansão.
+
+---
+
+## 7. Trânsito
+
+Criar circulação automóvel autónoma.
+
+Requisitos:
+- Veículos seguem as estradas, dependendo da personalidade.
+- Condutores respeitam cruzamentos e semáforos, dependendo da personalidade.
+- Veículos evitam obstáculos, dependendo da personalidade.
+- Trânsito mantém continuidade entre bairros, dependendo da personalidade.
+- Carros podem parar, estacionar e arrancar, dependendo da personalidade.
+- Os NPCs podem conduzir e abandonar veículos, dependendo da personalidade.
+
+A densidade de trânsito deve variar consoante a zona da cidade.
+
+---
+
+## 8. Sistema policial
+
+Criar cinco níveis progressivos de procura.
+
+O comportamento da polícia deve variar conforme a gravidade das ações do jogador.
+
+Implementar progressivamente:
+- Deteção de infrações e crimes.
+- Aumento e diminuição do nível de procura.
+- Agentes que perseguem o jogador.
+- Veículos policiais.
+- Reações a fugas e confrontos.
+- Diferentes respostas policiais consoante o nível de procura.
+
+Ter referencia o gta, com visual de lisboa, como os carros da policia e da policia monicipal.
+
+### Indicador visual de procura
+
+Substituir as estrelas tradicionais por **um único cassetete policial horizontal dividido em cinco partes iguais e contíguas**.
+
+Cada parte representa um nível de procura.
+
+Não acrescentar quadrados, estrelas ou barras independentes ao lado do cassetete.
+
+---
+
+## 9. HUD e interface
+
+Criar uma interface inspirada nos GTA clássicos.
+
+Elementos:
+- Ícone de soco ou arma equipada.
+- Indicador de vida.
+- Quantia de dinheiro.
+- Cassetete horizontal com cinco níveis policiais.
+- Minimap.
+- Marcadores de missão e objetivos.
+
+Manter a interface visualmente simples e compatível com a estética GTA San Andreas.
+
+---
+
+## 10. Sistema de combate
+
+Implementar:
+- Combate corpo a corpo.
+- Socos e ataques básicos.
+- Deteção de impactos.
+- Dano e perda de vida.
+- Reações e animações dos NPCs.
+- Sistema de armas posteriormente.
+- Interação entre combate e nível de procura.
+
+---
+
+## 11. Sistema de missões
+
+Criar inicialmente 3 missões jogáveis.
+
+Desenvolver uma estrutura que permita manter duas missões disponíveis para o jogador iniciar através de pontos de interação.
+
+Objetivo posterior: um total de dez missões.
+
+Cada missão deve permitir:
+- Iniciar através de um ponto no mundo.
+- Apresentar objetivos.
+- Acompanhar o progresso.
+- Detetar sucesso ou falha.
+- Atribuir recompensas quando aplicável.
+- Guardar o estado de conclusão.
+
+As primeiras missões devem aproveitar funcionalidades já implementadas, evitando depender de sistemas ainda incompletos.
+
+---
+
+## 12. Direção artística e ambiente
+
+Estética inspirada sobretudo em GTA III.
+
+Características:
+- Geometria low-poly com silhuetas urbanas reconhecíveis.
+- Texturas de baixa ou média resolução coerentes com a estética PS2.
+- Fachadas e pavimentos texturizados, sem aparência voxel.
+- Iluminação noturna com candeeiros alaranjados.
+- Nevoeiro atmosférico e distância de visão controlada.
+- Céu noturno e variação de iluminação.
+- Identidade visual dos bairros de Lisboa.
+- Calçada portuguesa, sinalização e mobiliário urbano.
+
+Implementar posteriormente:
+- Ciclo noite diferentes.
+- Chuva e outras condições meteorológicas.
+- Sons ambientais.
+- Música e efeitos sonoros com licenças adequadas.
+
+---
+
+## 13. Mundo aberto e otimização
+
+O mundo deve funcionar como um ambiente contínuo.
+
+Requisitos:
+- Divisão da cidade em setores.
+- Carregamento dinâmico de modelos e objetos.
+- Gestão da densidade de NPCs e veículos.
+- Otimização de colisões.
+- Redução de detalhe à distância.
+- Compatibilidade com computadores de desempenho moderado.
+- Sistema de coordenadas consistente entre os mapas.
+
+Preservar a continuidade das estradas e a estabilidade da navegação quando o jogador atravessa diferentes setores.
+
+---
+
+## 14. Editor integrado no jogo
+
+Criar posteriormente um modo de desenvolvimento destinado ao programador.
+
+Funcionalidades pretendidas:
+- Selecionar objetos no cenário.
+- Posicionar e ajustar modelos.
+- Adicionar veículos e NPCs.
+- Configurar pontos de aparecimento.
+- Ajustar parâmetros de comportamento.
+- Criar e modificar pontos de missão.
+- Guardar alterações de forma persistente.
+
+O editor deve funcionar como ferramenta de desenvolvimento, não como elemento obrigatório da experiência do jogador.
+
+---
+
+## 15. Ordem de desenvolvimento definida
+
+Manter, sempre que tecnicamente possível, a seguinte sequência:
+
+1. Organizar o projeto Godot, GitHub e Codex.
+2. Importar o Saldanha.
+3. Desenvolver física de veículos e entrada/saída.
+4. Adicionar Pink Street e Bairro Alto e preparar as ligações.
+5. Consolidar movimentação da personagem.
+6. Importar modelos 3D de veículos.
+7. Investigar e integrar referências de código aberto.
+8. Criar sistema policial e cinco níveis de procura.
+9. Desenvolver movimentação básica de NPCs.
+10. Desenvolver reações e interações dos NPCs.
+11. Criar trânsito e condutores autónomos.
+12. Aperfeiçoar a estética GTA III.
+13. Desenvolver três missões iniciais e preparar dez.
+14. Implementar HUD personalizado.
+15. Desenvolver combate.
+16. Integrar animações das personagens.
+17. Adicionar áudio e música.
+18. Otimizar, testar e expandir a cidade.
+19. Criar editor integrado no jogo.
+
+Sistemas auxiliares a contemplar:
+- Gestão de população.
+- Danos nos veículos.
+- Interação com objetos e edifícios.
+- Sistema de guardar/carregar progresso.
+- Ciclo noite e meteorologia.
+- Minimap e marcadores.
+- Gestão de modelos e referências.
+- Testes e controlo de versões.
+
+---
+
+## 16. Regras obrigatórias para o Codex
+
+1. Trabalhar sempre no projeto Godot existente.
+2. Não criar outro projeto sem autorização.
+3. Não eliminar funcionalidades que já funcionam.
+4. Verificar as dependências antes de implementar alterações.
+5. Trabalhar numa tarefa pequena de cada vez.
+6. Respeitar a ordem de desenvolvimento estabelecida.
+7. Propor soluções alternativas quando existirem dependências técnicas.
+8. Evitar bibliotecas desnecessárias.
+9. Priorizar desempenho e modularidade.
+10. Verificar licenças de código, modelos, músicas e texturas.
+11. Documentar os ficheiros modificados.
+12. Executar testes quando o ambiente o permitir.
+13. Não afirmar que algo funciona sem testar.
+14. Não implementar funcionalidades adicionais sem autorização.
+15. Utilizar o menor contexto e número de operações necessários para concluir cada tarefa.
+16. Preservar versões funcionais através do GitHub.
+
+## 17. Primeira tarefa do Codex
+
+Antes de iniciar novas implementações:
+
+1. Analisar a estrutura atual do repositório.
+2. Identificar cenas, scripts, recursos e funcionalidades existentes.
+3. Determinar quais das 19 etapas já estão parcial ou totalmente implementadas.
+4. Identificar erros, dependências e incompatibilidades.
+5. Apresentar um plano técnico para integrar o mapa contínuo da península.
+
+**Não modificar código nesta primeira tarefa.**
+
+Apresentar primeiro um relatório do estado atual do projeto e aguardar instruções.
