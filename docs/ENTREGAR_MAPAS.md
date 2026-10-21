@@ -1,31 +1,52 @@
-# Mapas do criador — entrega e recorte
+# Mapas recebidos e integrados
 
-O criador indicou uma pasta `Maps` no seu computador Windows. Este ambiente na nuvem não tem acesso ao disco desse computador. Até os ficheiros serem anexados ou disponibilizados por uma ligação acessível, não é possível medir, recortar ou importar esses mapas. Nenhum deles foi substituído por uma alegada importação OSM nesta atualização.
+Recebido **Maps.rar**, enviado pelo criador nesta conversa. Continha dois ficheiros **OpenStreetMap XML**, sem modelos GLB/Blender, fotografias, texturas, interiores ou modelo de elevação:
 
-## Enviar os ficheiros
+- `Saldenha.osm` — Saldanha, 7 245 724 bytes.
+- `PINK S, BAIRRO ALTO.osm` — Pink Street e Bairro Alto, 13 024 694 bytes.
 
-1. No Explorador do Windows, abre a pasta `Maps` indicada no chat.
-2. Identifica os mapas de **Saldanha**, **Pink Street/Cais do Sodré** e **Bairro Alto**.
-3. Compacta cada mapa num ZIP, incluindo as texturas e outros ficheiros associados. Num glTF, inclui também o `.bin` e a pasta de imagens; num projeto Blender, inclui ou empacota os recursos externos.
-4. Anexa os ZIP nesta conversa, ou coloca os ficheiros no GitHub/num local de descarga e envia a ligação. Um caminho começado por `C:\` não é uma ligação acessível a este ambiente.
-5. Se os ficheiros forem grandes, começa apenas pelo **Saldanha**. Não precisas de recortar os originais antes de enviar; o recorte será feito numa cópia.
+Os originais estão em [assets/maps/source](../assets/maps/source/), com tamanhos e SHA-256 em `provenance.json`. A pasta tem `.gdignore`: o Godot usa os recortes gerados, sem processar os originais ao arrancar. Os dados foram lidos como geometria; metadados dos ficheiros não são instruções para o desenvolvimento.
 
-Não basta enviar um atalho do Windows. Os ficheiros de geometria e os recursos de que dependem têm de acompanhar o mapa. GLB/GLTF, Blender e dados OSM têm preparações diferentes; a primeira inspeção determinará o processo adequado.
+## Recortes entregues
 
-## O que preservar
+| Zona | Área em metros | Contornos de edifícios/partes | Rua principal conservada |
+| --- | --- | ---: | --- |
+| Saldanha | 300 × 360 | 129 | Avenida da República e Praça Duque de Saldanha |
+| Bairro Alto | 250 × 260 | 371 | Rua da Barroca, Atalaia e Diário de Notícias |
+| Pink Street / Cais do Sodré | 290 × 180 | 98 | Rua Nova do Carvalho |
 
-| Mapa | Elementos prioritários |
-| --- | --- |
-| Saldanha | Praça/avenida ampla, faixa de circulação, passeios e fachadas que definem o local |
-| Pink Street / Cais do Sodré | Rua dos bares, entradas/interiores úteis, espaço para pessoas e ligações pedonais |
-| Bairro Alto | Ruas estreitas, subidas/descidas, fachadas e bares, privilegiando circulação de peões |
+Conservam-se proporções métricas locais; as distâncias entre bairros são comprimidas através de ruas de ligação próprias. Não são as distâncias geográficas reais. O bairro inicial, o telhado, a missão e o Lado B permanecem acessíveis, com saída para os recortes pelo lado nascente da praça antiga.
 
-O criador autorizou cortar as áreas em excesso. A decisão concreta deve preservar ruas de ligação, acessos e edifícios reconhecíveis; cortar o resto sem deixar buracos, fachadas abertas para o jogador ou colisões desligadas nas fronteiras.
+**598 contornos**, repartidos por **90 setores de 64 metros**, geram fachadas texturadas, coberturas fechadas, pátios onde existem nos contornos, colisões, ruas e rotas pedonais. O jogo carrega as construções próximas e descarrega as distantes. As lajes simples do chão e as ligações continuam residentes para garantir apoio físico. A construção de setores é síncrona, limitada a dois por atualização; ainda precisa de medição no portátil HP.
 
-## Inspeção e integração previstas
+O Saldanha usa também a posição do monumento existente nos dados, com uma figura original estilizada. Trinta estabelecimentos recebem fachadas/letreiros decorativos aproximados a partir de pontos OSM. **Não são trinta interiores jogáveis**: a atuação de DJ e o clube funcional continuam no Lado B. Cada recorte tem uma zona com uma das faixas instrumentais de teste, com volume progressivo e relógio virtual.
 
-Depois de receber os ficheiros: verificar formato e integridade, dimensões/eixos, texturas, hierarquia, número de polígonos, materiais e dependências; guardar a origem e créditos aplicáveis; recortar numa cópia; preparar colisões e detalhe à distância; e testar primeiro um pequeno recorte do Saldanha com o jogador e os veículos atuais.
+O **Tejo e a Ponte 25 de Abril estilizada** foram criados para esta composição compacta: têm cais, duas rampas e tabuleiro transitável, torres e cabos agrupados por material. Não provêm de um modelo incluído no RAR. Não há natação; cair na água usa o sistema de morte e reaparecimento existente.
 
-O mapa final continua **compacto, com proporções realistas**. Os recortes serão ligados por ruas adaptadas, sem obrigação de reproduzir as distâncias reais de Lisboa. A Ponte 25 de Abril será uma interpretação proporcional junto ao Tejo, cuja posição e escala finais dependem dos limites e cotas dos mapas recebidos. Não foi ainda colocada nem validada.
+## Experimentar e editar
 
-Gaussian splatting é admitido como recurso opcional para planos/fundos específicos. A escolha depende de existir um recurso adequado e de comparar qualidade, custo e integração no renderer Compatibility; não é necessário converter toda a cidade nem substituir geometria de colisão ou personagens por splats.
+1. Descarregar a branch `codex/album-visual-prototipo-02`, extrair e importar `project.godot` no Godot Compatibility; F5 inicia o jogo.
+2. O jogo continua a começar no telhado. A saída nascente da praça antiga dá acesso à rua para o Saldanha; as ligações seguintes conduzem ao Bairro Alto, Pink Street e cais.
+3. Para inspeção rápida: **F10**, acesso local do editor, **Ir para… → Saldanha/Bairro Alto/Pink Street · mapa recebido**. Existe também a vista **Tejo / Ponte 25 de Abril**.
+4. **Testar neste bairro** fecha o editor e coloca a personagem num ponto seguro do bairro dessa vista. Se houver edições por guardar, mantém a confirmação do editor. O botão é uma ferramenta do criador.
+5. Selecionar um prédio, mover/rodar/escalar, mudar materiais, guardar e usar Desfazer/Refazer. O prédio e as colisões são um único alvo. As edições mantêm IDs estáveis quando o setor sai da memória; o regresso recupera o estado guardado. Um prédio deslocado para outro bairro também é carregado perto da posição editada.
+6. **Esc → Mapa** mostra os recortes, ligações, zonas de música, ponte e jogador. Guardar/Carregar aceita as novas coordenadas, mantendo o progresso anterior.
+
+## O que os dados não fornecem
+
+463 dos 598 contornos não têm altura nem número de pisos: receberam alturas provisórias. Os restantes usam altura/pisos disponíveis, limitados para esta versão. O chão é plano; **as inclinações reais de Lisboa ainda não estão reconstruídas**. As fachadas usam quatro texturas originais repetidas, não fotografias dos edifícios reais. Entradas dos pontos OSM são aproximações decorativas, sem garantia da porta exata.
+
+Faltam afinação artística, interiores dos novos bairros, mobiliário mais variado, sinalização completa, trânsito nas vias novas e integração narrativa das faixas finais. Os NPCs reutilizam o catálogo de vinte aparências e um orçamento global de 6/10/16 ativos, sem multiplicar esse orçamento por bairro. A meta de 60 FPS no HP continua por medir.
+
+Não existem splats no arquivo. O uso pontual de gaussian splatting mantém-se uma possibilidade para recursos adequados, com avaliação visual e de custo; não é necessário para abrir estes recortes.
+
+## Regenerar os recortes — apenas desenvolvimento
+
+Os dados gerados estão incluídos; **não é preciso Python nem Internet para jogar**. Para alterar os recortes, instalar `tools/requirements-maps.txt` num ambiente Python, editar `tools/map_crops.json` e executar `python tools/import_lisbon_maps.py`. Shapely só é usado nesta preparação, incluindo triangulação de coberturas côncavas e pátios. `python tests/maps_data_test.py` valida os dados incluídos sem Shapely. As fachadas originais podem ser reconstruídas com `tools/build_map_facades.py` e Pillow.
+
+## Créditos e licença dos dados
+
+**© OpenStreetMap contributors — ODbL 1.0.** Fontes: ficheiros OSM fornecidos pelo criador. A atribuição também está no menu Jogo/Brief e no manifesto. Os dados OSM originais e a base geométrica derivada mantêm esta licença; as texturas e modelos criados no projeto não são recursos dos jogos de referência.
+
+- Atribuição e direitos: <https://www.openstreetmap.org/copyright>
+- Licença da base de dados: <https://opendatacommons.org/licenses/odbl/1-0/>

@@ -4,7 +4,9 @@ Experiência **desktop, offline e em terceira pessoa**, em Godot 4 Compatibility
 
 **Atualização de 21 de outubro:** motion blur da câmara em **Esc → Qualidade**, com intensidade regulável; editor com eixos arrastáveis, grelha, foco, vistas rápidas e prédio-base texturado. F10 avisa quando há alterações por guardar. As melhorias continuam nesta mesma branch para manter o link de descarga atualizado.
 
-Os mapas locais indicados pelo criador ainda precisam de ser enviados para este ambiente. A importação/recorte do Saldanha, Pink Street e Bairro Alto, e a colocação da Ponte 25 de Abril junto ao Tejo, **ainda não foram executadas**. Consulta [como entregar os mapas](docs/ENTREGAR_MAPAS.md).
+**Mapas recebidos e integrados:** o `Maps.rar` continha dois ficheiros OSM. Foram recortados **Saldanha, Bairro Alto e Pink Street**, com 598 contornos de edifícios, ruas, colisões e carregamento de construções próximas. Os bairros ligam-se ao percurso inicial e a um cais com Tejo e Ponte 25 de Abril estilizados. Os dados não trazem interiores, texturas nem relevo; as fachadas e alturas em falta são provisórias. [Âmbito e limitações dos mapas](docs/ENTREGAR_MAPAS.md).
+
+Para experimentar rapidamente: **F10 → Ir para… → bairro · mapa recebido → Testar neste bairro**. O editor conserva as alterações quando os setores são descarregados; o mapa de pausa já mostra os três recortes. [Validação desta atualização](docs/VALIDACAO_MAPAS.md).
 
 ## Descarregar e abrir no Windows
 

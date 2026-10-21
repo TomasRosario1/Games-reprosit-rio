@@ -1,6 +1,6 @@
 # Validação — motion blur e editor visual
 
-Atualização de **21 de outubro de 2026**, no projeto e branch existentes. O criador autorizou avançar após a auditoria das 19 etapas. Esta entrega desenvolve motion blur e ferramentas do editor enquanto aguarda os mapas locais indicados pelo criador. Não implementa os três bairros nem a ponte.
+Atualização de **21 de outubro de 2026**, no projeto e branch existentes. O criador autorizou avançar após a auditoria das 19 etapas. Esta entrega desenvolve motion blur e ferramentas do editor enquanto aguarda os mapas locais indicados pelo criador. Esta nota retrata esse checkpoint anterior. Os mapas foram recebidos depois e a integração dos três bairros/ponte está em [VALIDACAO_MAPAS.md](VALIDACAO_MAPAS.md).
 
 ## Alterações entregues
 

@@ -1,0 +1,16 @@
+{
+  "uploaded_archive": "Maps.rar",
+  "archive_sha256": "082e038feb2092c96539aff70faeb84960772e106822d721c5b081457c4e1cd7",
+  "files": [
+    {
+      "file": "PINK S, BAIRRO ALTO.osm",
+      "bytes": 13024694,
+      "sha256": "be7440ac57a4d9b2d8620741380d85c6ac89f48d670589a24d5f7cc9d9b56063"
+    },
+    {
+      "file": "Saldenha.osm",
+      "bytes": 7245724,
+      "sha256": "825f5d724290b8005129683835ba9569fe066f75215fa3206cccaad8bb8f3f5d"
+    }
+  ]
+}

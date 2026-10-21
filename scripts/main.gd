@@ -296,9 +296,14 @@ func _update_audio(delta: float) -> void:
 		target_db = -19.0 if music.playing else -65.0
 	else:
 		# Bar door / walls determine leakage. Distance is continuous, no sound toggle.
-		var distance: float = player.global_position.distance_to(world.stage_position + Vector3.UP)
-		var indoors: bool = world.is_inside_bar(player.global_position)
-		var radius: float = 32.0
+		var zone: Dictionary = world.get_music_zone(player.global_position)
+		var distance: float = player.global_position.distance_to(zone.position)
+		var indoors: bool = zone.indoors
+		var radius: float = zone.radius
+		if int(zone.song) >= 0 and int(zone.song) != _ambient_song and distance < 38.0:
+			_ambient_song = int(zone.song)
+			if music.playing: music.stop()
+			_play_virtual_loop()
 		var gain: float = pow(clampf(1.0 - distance / radius, 0.0, 1.0), 2.0)
 		if not indoors:
 			gain *= 0.22
@@ -314,7 +319,7 @@ func _update_audio(delta: float) -> void:
 	var energy: float = _spectrum.get_magnitude_for_frequency_range(40.0, 160.0).length() if _spectrum else 0.0
 	_light_pulse = lerpf(_light_pulse, clampf(energy * 6.0, 0.0, 1.0), 1.0 - exp(-10.0 * delta))
 	world.set_pulse(_light_pulse)
-	var offset: Vector3 = world.stage_position - player.global_position
+	var offset: Vector3 = world.get_music_zone(player.global_position).position - player.global_position
 	var camera_right: Vector3 = player.get_camera().global_basis.x
 	_panner.pan = clampf(offset.dot(camera_right) / 14.0, -0.65, 0.65) if state == "explore" else 0.0
 	ambience.volume_db = lerpf(ambience.volume_db, (-17.0 if state == "performance" else -4.0) + linear_to_db(maxf(_audio_levels.ambient, 0.0001)), minf(delta * 2.0, 1.0))
@@ -615,6 +620,7 @@ func _on_player_died() -> void:
 
 
 func _revive() -> void:
+	world.ensure_position(_safe_transform.origin)
 	player.respawn_at(_safe_transform)
 	_resume_explore()
 	_notify("De volta à noite. Os objetos da bolsa foram preservados.")
@@ -1043,7 +1049,9 @@ func _setup_extended_systems() -> void:
 	root_control.add_child(_editor)
 	_editor.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_editor.configure(world, player, _vehicles)
-	_editor.closed.connect(_resume_explore)
+	_editor.closed.connect(func():
+		_safe_transform = player.global_transform
+		_resume_explore())
 	_editor.application_exit_requested.connect(func(): _confirmed_quit(true))
 	_editor.hide()
 	_game_menu.hide()
@@ -1051,7 +1059,7 @@ func _setup_extended_systems() -> void:
 
 
 func _menu_context() -> Dictionary:
-	return {"player_position": player.global_position, "money": store.money, "health": player.health, "bar_unlocked": store.bar_unlocked, "mission": _mission.text}
+	return {"player_position": player.global_position, "money": store.money, "health": player.health, "bar_unlocked": store.bar_unlocked, "mission": _mission.text,"map_overlay":world.get_map_overlay()}
 
 
 func _set_world_paused(paused: bool) -> void:
@@ -1129,9 +1137,11 @@ func _manual_load() -> void:
 		var data: Variant = JSON.parse_string(FileAccess.get_file_as_string("user://manual_position.json"))
 		if data is Dictionary and data.get("position") is Array and data.position.size() == 3:
 			var candidate := Vector3(float(data.position[0]), float(data.position[1]), float(data.position[2]))
-			if candidate.is_finite() and absf(candidate.x) < 100 and absf(candidate.z) < 100 and candidate.y > -5 and candidate.y < 60:
+			if world.is_valid_save_position(candidate):
 				at = candidate + Vector3.UP * 0.1
 				health = clampf(float(data.get("health", 100)), 1, 100)
+	world.ensure_position(at)
+	_safe_transform = Transform3D(Basis.IDENTITY,at)
 	player.respawn_at(Transform3D(Basis.IDENTITY, at))
 	player.health = health
 	_wanted.clear()

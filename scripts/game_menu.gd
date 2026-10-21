@@ -373,13 +373,14 @@ func _select_tab(tab: String) -> void:
 			_label(_content, "A NOITE CONTINUA", 23)
 			_label(_content, str(_context.get("mission", "Explora a praça, encontra uma entrada para o Lado B e faz-te ouvir.")).to_upper(), 17, Color("a8afb2"))
 			_label(_content, "SALDO   €%09d\nVIDA   %03d" % [maxi(0, int(_context.get("money", 0))), clampi(roundi(float(_context.get("health", 100))), 0, 100)], 21)
+			_label(_content, "MAPAS: © OPENSTREETMAP CONTRIBUTORS · ODbL 1.0\nopenstreetmap.org/copyright · opendatacommons.org/licenses/odbl/1-0/", 12, Color("8e999d"))
 			_button(_content, "VOLTAR À NOITE", _resume)
 		"map":
 			_map = NeighborhoodMap.new()
 			_map.set("context", _context)
 			_map.custom_minimum_size = Vector2(520, 360)
 			_content.add_child(_map)
-			_label(_content, "ESQUEMA DA PRAÇA   ·   VERDE: JOGADOR   ·   AZUL: LADO B", 13, Color("8e999d"))
+			_label(_content, "LISBOA COMPACTA   ·   VERDE: JOGADOR   ·   AZUL: MÚSICA", 13, Color("8e999d"))
 		"quality":
 			_option("QUALIDADE GRÁFICA", ["BAIXA / LEVE", "MÉDIA / EQUILIBRADA", "ALTA"], int(settings.quality), _change_quality)
 			_option("POPULAÇÃO PRÓXIMA", ["6 PESSOAS", "10 PESSOAS", "16 PESSOAS"], [6, 10, 16].find(int(settings.population)), _change_population)
@@ -628,6 +629,9 @@ class NeighborhoodMap extends Control:
 	func _draw() -> void:
 		var bounds := Rect2(Vector2(4, 4), Vector2(size.x - 8, 350))
 		draw_style_box(_background_style(), bounds)
+		if not context.get("map_overlay",{}).is_empty():
+			_draw_city(bounds)
+			return
 		var center := bounds.get_center()
 		var scale_factor := minf(bounds.size.x, bounds.size.y) / 90.0
 		for side in [-1.0, 1.0]:
@@ -643,6 +647,33 @@ class NeighborhoodMap extends Control:
 		marker.y = clampf(marker.y, bounds.position.y + 10, bounds.end.y - 10)
 		draw_circle(marker, 6.0, Color("85c29d"))
 		draw_circle(center + Vector2(-16, -17) * scale_factor, 5.0, Color("8caec5"))
+	func _draw_city(bounds: Rect2) -> void:
+		var data: Dictionary = context.map_overlay
+		var factor := minf((bounds.size.x-70)/470.0,(bounds.size.y-20)/1320.0)
+		var offset := Vector2(bounds.get_center().x-170*factor,bounds.position.y+10+100*factor)
+		var font: Font = load("res://assets/fonts/Interface.ttf")
+		for district in data.districts:
+			var b: Array = district.bounds
+			draw_rect(Rect2(offset+Vector2(b[0],b[1])*factor,Vector2(b[2]-b[0],b[3]-b[1])*factor),Color("334348"))
+			for road in district.major_roads:
+				var points := PackedVector2Array()
+				for point in road.points: points.append(offset+Vector2(point[0],point[1])*factor)
+				if points.size()>1: draw_polyline(points,Color("919489"),2.0)
+			var at := offset+Vector2(district.spawn[0],district.spawn[1])*factor
+			draw_circle(at,3.5,Color("8caec5"))
+			draw_string(font,Vector2(offset.x+400*factor,at.y+4),district.label, HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d9d4c6"))
+		for link in data.links:
+			var points := PackedVector2Array()
+			for point in link.points: points.append(offset+Vector2(point[0],point[1])*factor)
+			draw_polyline(points,Color("8d9694"),2.5)
+		draw_rect(Rect2(offset+Vector2(90,1020)*factor,Vector2(310,160)*factor),Color("203c48"))
+		draw_line(offset+Vector2(240,1020)*factor,offset+Vector2(240,1170)*factor,Color("ad6950"),3)
+		draw_string(font,offset+Vector2(400,1090)*factor,"Tejo / Ponte",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d9d4c6"))
+		draw_rect(Rect2(offset+Vector2(-36,-49)*factor,Vector2(96,98)*factor),Color("4b5149"))
+		draw_circle(offset+Vector2(-16,-17)*factor,3.5,Color("8caec5"))
+		draw_string(font,offset+Vector2(90,-20)*factor,"Telhado / Lado B",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d9d4c6"))
+		var at: Vector3 = context.get("player_position",Vector3.ZERO)
+		draw_circle(offset+Vector2(at.x,at.z)*factor,5.0,Color("85c29d"))
 	func _background_style() -> StyleBoxFlat:
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color("131d22")

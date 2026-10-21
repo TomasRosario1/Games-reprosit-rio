@@ -20,9 +20,10 @@ run_godot() {
     esac
   done < "$test_root/godot.log"
 }
+python3 tests/maps_data_test.py
 run_godot --headless --editor --import --quit
-for suite in rhythm save character player world npc club wanted vehicle menu editor music_flow integration features presentation; do
-  if [[ "$suite" == "world" || "$suite" == "npc" || "$suite" == "club" || "$suite" == "wanted" || "$suite" == "vehicle" ]]; then
+for suite in rhythm save character player world npc club wanted vehicle menu editor music_flow integration features presentation maps; do
+  if [[ "$suite" == "world" || "$suite" == "npc" || "$suite" == "club" || "$suite" == "wanted" || "$suite" == "vehicle" || "$suite" == "maps" ]]; then
     run_godot --headless --fixed-fps 60 --script "tests/${suite}_test.gd"
   else
     run_godot --headless --script "tests/${suite}_test.gd"

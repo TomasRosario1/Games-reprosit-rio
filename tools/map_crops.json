@@ -1,0 +1,8 @@
+{
+  "sector_size": 64,
+  "districts": [
+    {"id":"saldanha","label":"Saldanha","source":"Saldenha.osm","geo_origin":[38.73435,-9.14505],"crop":[-150,-230,150,130],"world_origin":[240,130],"focus_street":"Avenida da República","song":0},
+    {"id":"bairro_alto","label":"Bairro Alto","source":"PINK S, BAIRRO ALTO.osm","geo_origin":[38.7123,-9.1445],"crop":[-125,-130,125,130],"world_origin":[230,510],"focus_street":"Rua da Barroca","song":1},
+    {"id":"pink_street","label":"Pink Street / Cais do Sodré","source":"PINK S, BAIRRO ALTO.osm","geo_origin":[38.7072,-9.1436],"crop":[-145,-90,145,90],"world_origin":[240,870],"focus_street":"Rua Nova do Carvalho","song":2}
+  ]
+}

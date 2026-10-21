@@ -2,6 +2,8 @@
 
 Executado em **20 de outubro de 2026**, com **Godot 4.6.3 stable**, em Linux na nuvem. A revisão foi verificada por testes de regras, física e integração da cena principal, e por execução com janela nativa. Estes resultados não são medições de desempenho dos portáteis do criador.
 
+**Atualizações posteriores:** [motion blur e editor](VALIDACAO_EDITOR.md) e [integração dos mapas enviados](VALIDACAO_MAPAS.md). As contagens abaixo pertencem à revisão original.
+
 ## Testes automatizados
 
 O conjunto de suites de `./tools/run_checks.sh` passou **824 verificações, sem falhas**. A execução completa inicial passou 820; as suites alteradas na revisão final foram repetidas e acrescentaram quatro verificações. No modo headless, duas leituras de transformações MultiMesh foram omitidas porque o renderer dummy não as disponibiliza; ambas foram verificadas depois com renderização nativa.

@@ -1,7 +1,7 @@
 class_name AlbumWorld
 extends Node3D
-## Lisbon night study: the original lane opens onto a Saldanha-inspired square.
-## Original geometry, local material batching, depth fog and distance-limited detail.
+## Persistent first playable route, connected to streamed crops of the supplied maps.
+## Original Lisbon props/materials plus OSM footprints; Compatibility renderer.
 
 var rooftop_spawn := Transform3D(Basis(), Vector3(-16, 9.7, 15))
 var street_safe := Transform3D(Basis(), Vector3(-4, 0.5, 3))
@@ -37,6 +37,7 @@ var _cars: Array[Node3D] = []
 var _time := 0.0
 var _crowd_count := 6
 var _unlocked := false
+var imported_city: Node3D
 
 func _ready() -> void:
 	name = "BairroDaMadrugada"
@@ -54,6 +55,10 @@ func _ready() -> void:
 	set_bar_unlocked(false)
 	set_audience(75.0)
 	_batch_static_geometry()
+	imported_city = load("res://scripts/imported_city.gd").new()
+	add_child(imported_city)
+	for district in imported_city.manifest.districts:
+		_population.append_region_routes(district.id,district.routes)
 
 func _material(key: String, tint := Color.WHITE, glow := Color.BLACK, emission_power := 0.0) -> StandardMaterial3D:
 	var aliases := {"stucco":"city_plaster", "ochre":"city_ochre", "pink":"city_pink", "blue":"city_blue", "calcada":"city_calcada", "asphalt":"city_asphalt", "roof":"city_roof"}
@@ -201,7 +206,8 @@ func _build_streets() -> void:
 			for z in [-21.8,21.8]: _box(Vector3(x,0.014,z),Vector3(0.65,0.018,2.0),_material("marking",Color(0.83,0.82,0.76)))
 	# Architectural edges rather than invisible blockers define the study's boundary.
 	_box(Vector3(-36,1.15,0),Vector3(0.6,2.3,98),_material("city_stone"),true)
-	_box(Vector3(60,1.15,0),Vector3(0.6,2.3,98),_material("city_stone"),true)
+	for z in [-28.0,28.0]: _box(Vector3(60,1.15,z),Vector3(0.6,2.3,42),_material("city_stone"),true)
+	_label("SALDANHA →",Vector3(58,2.8,-5),34,Color("dfc797"),-PI*0.5)
 	for z in [-49.0,49.0]: _box(Vector3(12,1.15,z),Vector3(96,2.3,0.6),_material("city_stone"),true)
 	for pos in [Vector3(5.8,0,-14),Vector3(5.8,0,16),Vector3(-5.9,0,-22),Vector3(-5.9,0,29),Vector3(8,0,-20),Vector3(39,0,-20),Vector3(8,0,20),Vector3(39,0,20),Vector3(47,0,4)]:
 		_streetlamp(pos)
@@ -531,7 +537,7 @@ func _build_background() -> void:
 			block.visibility_range_end = 112.0
 	for z in [-38.0,-18.0,2.0,23.0,43.0]:
 		_box(Vector3(-44,12,z),Vector3(12,24,17),_material("city_plaster",Color(0.56,0.59,0.61)))
-		_box(Vector3(68,13,z),Vector3(13,26,17),_material("city_stone",Color(0.57,0.59,0.59)))
+		if z != 2: _box(Vector3(68,13,z),Vector3(13,26,17),_material("city_stone",Color(0.57,0.59,0.59)))
 
 func set_bar_unlocked(value: bool) -> void:
 	_unlocked = value
@@ -559,6 +565,7 @@ func set_audience(amount: float) -> void:
 		_club.set_audience(amount)
 
 func set_pulse(value: float) -> void:
+	if is_instance_valid(imported_city): imported_city.set_pulse(value)
 	var level := clampf(value,0.0,1.0)
 	for light in _reactive_lights:
 		light.light_energy = 1.0 + level*2.2
@@ -629,7 +636,7 @@ func _build_square() -> void:
 		for z in [-1.45,1.45]:
 			_cylinder(Vector3(x,4.15,z),0.12,4.9,_material("city_stone"))
 	_label("SALDANHA",Vector3(24,3.15,1.32),37,Color("b5a88c"))
-	_label("SALDANHA",Vector3(22.68,3.15,0),37,Color("b5a88c"),-PI*0.5)
+	_label("MADRUGADA",Vector3(22.68,3.15,0),37,Color("b5a88c"),-PI*0.5)
 	_monument_figure(Vector3(24,7.48,0))
 	_light(Vector3(20.5,0.6,2.5),Color("e7c18a"),1.2,10.5)
 	_light(Vector3(27.5,0.6,-2.5),Color("dfc695"),1.0,10.5)
@@ -791,6 +798,7 @@ func _build_population() -> void:
 
 func set_player(player: Node3D) -> void:
 	_player = player
+	if is_instance_valid(imported_city): imported_city.viewer = player
 	if is_instance_valid(_population): _population.set_player(player)
 	if is_instance_valid(_guard): _guard.set_player(player)
 	if is_instance_valid(_club): _club.set_player(player)
@@ -818,11 +826,14 @@ func get_environment() -> Environment:
 	return _environment
 
 func get_editor_bookmarks() -> Array:
-	return [
-		{"label":"Saldanha","position":Vector3(10,7,19),"target":Vector3(24,4,0)},
+	var views: Array = [
+		{"label":"Praça inicial","position":Vector3(10,7,19),"target":Vector3(24,4,0)},
 		{"label":"Telhado","position":rooftop_spawn.origin+Vector3(4,3,5),"target":rooftop_spawn.origin},
 		{"label":"Lado B","position":stage_position+Vector3(6,3,-4),"target":stage_position+Vector3(0,1,3)}
 	]
+
+	if is_instance_valid(imported_city): views.append_array(imported_city.get_bookmarks())
+	return views
 
 func get_city_metrics() -> Dictionary:
 	var batches := 0
@@ -852,3 +863,37 @@ func set_quality_level(level: int) -> void:
 	for spot in _club_spots:
 		spot.shadow_enabled = index == 2
 	_environment.fog_depth_end = [86.0, 108.0, 130.0][index]
+
+func ensure_position(at: Vector3) -> void:
+	if is_instance_valid(imported_city): imported_city.ensure_position(at)
+
+func is_valid_save_position(at: Vector3) -> bool:
+	if not at.is_finite() or at.y < -0.2 or at.y > 70: return false
+	if at.x > -36 and at.x < 60 and absf(at.z) < 49: return true
+	return is_instance_valid(imported_city) and imported_city.is_valid_position(at)
+
+func get_map_overlay() -> Dictionary:
+	return imported_city.manifest if is_instance_valid(imported_city) else {}
+
+func get_music_zone(at: Vector3) -> Dictionary:
+	var result := {"position":stage_position+Vector3.UP,"song":-1,"indoors":is_inside_bar(at),"radius":32.0,"id":"lado_b"}
+	var distance := at.distance_to(result.position)
+	if is_instance_valid(imported_city):
+		for district in imported_city.manifest.districts:
+			var source := Vector3(district.music.position[0],1,district.music.position[1])
+			var other := at.distance_to(source)
+			if other < distance:
+				distance = other
+				result = {"position":source,"song":int(district.music.song),"indoors":true,"radius":35.0,"id":district.music.id}
+	return result
+
+func get_test_spawn(at: Vector3) -> Vector3:
+	var best := street_safe.origin
+	var distance := at.distance_to(best)
+	for district in imported_city.manifest.districts:
+		var point := Vector3(district.spawn[0],0.15,district.spawn[1])
+		if at.distance_to(point) < distance:
+			best = point
+			distance = at.distance_to(point)
+	var quay := Vector3(240,0.15,990)
+	return quay if at.distance_to(quay) < distance else best

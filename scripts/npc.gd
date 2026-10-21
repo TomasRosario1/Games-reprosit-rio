@@ -106,6 +106,7 @@ func set_player(body: Node3D) -> void:
 
 func set_simulation_enabled(enabled: bool) -> void:
 	simulation_enabled = enabled
+	if is_instance_valid(visual): visual.process_mode = Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
 	visible = enabled
 	set_physics_process(enabled and health > 0.0)
 	collision_layer = 2 if enabled and health > 0.0 else 0

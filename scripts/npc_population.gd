@@ -139,3 +139,26 @@ func _relay_message(text: String) -> void:
 	if _message_timer <= 0.0:
 		_message_timer = 2.5
 		message.emit(text)
+
+func append_region_routes(region: String, source_routes: Array) -> void:
+	# Inactive bodies keep identity; one global budget applies to every district.
+	if source_routes.is_empty(): return
+	var local_routes: Array[PackedVector3Array] = []
+	for points in source_routes:
+		var route := PackedVector3Array()
+		for point in points: route.append(Vector3(point[0],0.05,point[1]))
+		if route.size() > 1: local_routes.append(route)
+	if local_routes.is_empty(): return
+	for index in CATALOGUE_SIZE:
+		var ped: CharacterBody3D = NPC_SCRIPT.new()
+		ped.visual_enabled = visuals_enabled
+		ped.configure(index,PERSONALITY_ORDER[posmod(index+_seed,PERSONALITY_ORDER.size())],local_routes[index%local_routes.size()])
+		ped.simulation_enabled = false
+		ped.set_meta("region",region)
+		ped.set_meta("editor_stable_id","base/ped/"+region+"/"+str(index))
+		add_child(ped)
+		ped.place_on_route(0.12+0.035*index)
+		ped.set_player(player)
+		ped.message.connect(_relay_message)
+		peds.append(ped)
+	_refresh_membership()

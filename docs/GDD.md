@@ -6,7 +6,7 @@ Este documento regista as decisões do criador e distingue a visão final do pro
 
 Atualização posterior no mesmo dia: o criador autorizou avançar no código, confirmou **motion blur** como escolha artística e admitiu Gaussian splatting em planos/fundos específicos, quando justificado pela imagem e compatível com o orçamento. Pediu uma **Ponte 25 de Abril proporcional ao mapa, junto ao Tejo**, e melhorias no editor. Indicou mapas próprios no computador Windows para recortar e integrar: Saldanha/avenida, Pink Street/bares e Bairro Alto/ruas pedonais. Os ficheiros ainda não estão acessíveis no ambiente da nuvem; a expansão geográfica depende da sua entrega. O motion blur e as ferramentas do editor foram desenvolvidos entretanto; consultar [validação desta atualização](VALIDACAO_EDITOR.md).
 
-Atualização de 21 de outubro de 2026: o criador confirmou que a referência «GTA LISBOA», em [Ter como referencia](<../Ter como referencia>), expande este Álbum Visual. Música e exploração continuam no centro. O mapa será compacto, com proporções realistas de edifícios e pessoas, sem reproduzir as distâncias reais entre bairros. A [auditoria das 19 etapas](ESTADO_19_ETAPAS.md) separa o que existe do que falta e o [plano do mapa contínuo](PLANO_MAPA_CONTINUO.md) descreve a migração proposta; esta revisão não implementa os bairros novos.
+Atualização de 21 de outubro de 2026: o criador confirmou que a referência «GTA LISBOA», em [Ter como referencia](<../Ter como referencia>), expande este Álbum Visual. Música e exploração continuam no centro. O mapa será compacto, com proporções realistas de edifícios e pessoas, sem reproduzir as distâncias reais entre bairros. A [auditoria das 19 etapas](ESTADO_19_ETAPAS.md) separa o que existe do que falta e o [plano do mapa contínuo](PLANO_MAPA_CONTINUO.md) descreve a migração proposta; a integração posterior dos mapas enviados está descrita em [Mapas recebidos](ENTREGAR_MAPAS.md), com três recortes OSM e uma ponte estilizada, ainda sem interiores novos nem relevo real.
 
 Aplicação desktop nativa, single-player e utilizável offline, desenvolvida em Godot 4. A história do álbum e a exploração são o centro da experiência. Combate, veículos, atividades musicais e personalidades dos habitantes dão vida à cidade e condicionam o acesso a alguns locais.
 
@@ -16,7 +16,7 @@ Não há um fim obrigatório: começa-se num telhado e explora-se a cidade, desc
 
 ## Âmbito implementado no protótipo 02
 
-- Praça noturna inspirada no Saldanha, ligada ao telhado inicial e ao Lado B; detalhe e distâncias de desenho ajustáveis, com nevoeiro simples.
+- Praça inicial ligada ao telhado e ao Lado B, mais três recortes dos mapas OSM enviados: Saldanha, Bairro Alto e Pink Street. Construções próximas carregam/descarregam em setores; ruas adaptadas ligam os bairros ao Tejo e a uma Ponte 25 de Abril estilizada. As alturas em falta, fachadas e terreno plano são provisórios.
 - Catálogo original de vinte adultos, dez homens e dez mulheres, com malhas humanas, esqueleto, texturas e guarda-roupa variado. Animações de estudo articulam pernas, braços e tronco; não são captura de movimento nem animações definitivas.
 - Peões com passeio, olhar, desvio e respostas distintas a encontrões. A população próxima é ajustável entre seis, dez e dezasseis peões de rua; o catálogo completo não exige vinte simulações completas em permanência.
 - Clube com público que caminha entre porta e pista, dança e pode sair ou regressar conforme a atuação.
@@ -127,7 +127,7 @@ A morte apresenta a última música de cuja zona o jogador se aproximou, com dis
 
 A especificação atual usa HUD persistente de estado: dinheiro em euros formatado com nove algarismos, vida, indicador de punhos/objeto equipado e pressão policial. A pressão tem um preenchimento contínuo suavizado de zero a cem, dividido visualmente em cinco partes, sem substituir a regra contínua por cinco saltos discretos. O ícone de arma é uma indicação de estado; o protótipo só entrega combate desarmado. O nome flutua sobre a personagem, sem fundo.
 
-A bolsa de oito espaços abre a pedido; interação, texto de missão e interface de atuação aparecem no respetivo contexto. Os menus usam texto legível e símbolos. A pausa tem nove separadores: Jogo/Brief, Mapa, Qualidade, HUD, Controlos, Áudio, Guardar/Carregar, Editor e Sair. Inclui redefinição de teclas/botões, três perfis de qualidade, população separada da qualidade, volumes por canal, brilho, legendas e confirmação de saída. O mapa é esquemático; não representa ainda um mapa detalhado de toda a cidade.
+A bolsa de oito espaços abre a pedido; interação, texto de missão e interface de atuação aparecem no respetivo contexto. Os menus usam texto legível e símbolos. A pausa tem nove separadores: Jogo/Brief, Mapa, Qualidade, HUD, Controlos, Áudio, Guardar/Carregar, Editor e Sair. Inclui redefinição de teclas/botões, três perfis de qualidade, população separada da qualidade, volumes por canal, brilho, legendas e confirmação de saída. O mapa é esquemático e usa os limites/avenidas/ligações dos recortes, com jogador, zonas de música e ponte; não é ainda um minimapa detalhado de navegação.
 
 Definições do menu, progresso do jogador e mundo editado são dados locais separados. A narrativa permanece predominantemente visual, mantendo as instruções necessárias para compreender a interação.
 

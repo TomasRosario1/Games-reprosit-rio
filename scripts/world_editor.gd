@@ -82,6 +82,7 @@ var _inspection_light: OmniLight3D
 var _exit_application := false
 var _leave_without_save: Button
 var _bookmarks: OptionButton
+var _test_spawn := Vector3(INF,INF,INF)
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -122,11 +123,16 @@ func configure(map: Node3D, actor: Node3D, vehicles: Node3D = null) -> void:
 	_index_base(world)
 	_gizmo = load("res://scripts/editor_gizmo.gd").new()
 	world.add_child(_gizmo)
+	if is_instance_valid(world.get("imported_city")):
+		world.imported_city.editor = self
+		world.imported_city.sector_loaded.connect(register_sector)
+		world.imported_city.sector_unloading.connect(unregister_sector)
 	_refresh_list()
 	if FileAccess.file_exists(save_path) or FileAccess.file_exists(save_path + ".bak"):
 		load_world()
 
 func enter_editor() -> void:
+	_test_spawn = Vector3(INF,INF,INF)
 	if not is_instance_valid(world) or not is_instance_valid(camera): return
 	_previous_camera = get_viewport().get_camera_3d()
 	if _previous_camera != camera and is_instance_valid(_previous_camera):
@@ -152,6 +158,10 @@ func exit_editor() -> void:
 	end_transform(false)
 	cancel_ai_preview()
 	active = false
+	if _test_spawn.is_finite() and is_instance_valid(player) and player.has_method("respawn_at"):
+		player.respawn_at(Transform3D(Basis.IDENTITY,_test_spawn))
+	_test_spawn = Vector3(INF,INF,INF)
+	if world.has_method("ensure_position") and is_instance_valid(player): world.ensure_position(player.global_position)
 	if is_instance_valid(world): world.process_mode = _previous_world_process_mode
 	_looking = false
 	hide()
@@ -204,6 +214,10 @@ func _process(delta: float) -> void:
 		var direction := camera.global_basis*Vector3(input_axis.x,vertical,input_axis.y)
 		var speed := 16.0 if Input.is_physical_key_pressed(KEY_SHIFT) else 6.0
 		camera.global_position += direction.limit_length(1.0)*delta*speed
+	if is_instance_valid(world.get("imported_city")):
+		var pinned := ""
+		if targets.has(selected_id) and is_instance_valid(targets[selected_id].node): pinned = str(targets[selected_id].node.get_meta("map_sector",""))
+		world.imported_city.update_streaming(camera.global_position,false,pinned)
 	_update_selection_box()
 	_update_gizmo()
 
@@ -336,7 +350,10 @@ func focus_selected() -> bool:
 
 func _index_base(parent: Node) -> void:
 	for child in parent.get_children():
-		if child == camera or child == _spawn_root or child == _override_root or child == _selection_box: continue
+		if child == camera or child == _spawn_root or child == _override_root or child == _selection_box or child.get_meta("editor_locked",false): continue
+		if child.get_meta("map_feature",false):
+			_register_base(child,"object")
+			continue
 		if child is CharacterBody3D:
 			_register_base(child,"actor")
 			continue
@@ -364,17 +381,18 @@ func _register_base(node: Node3D, kind: String, instance: int = -1) -> void:
 		mesh = node.mesh
 	var dimensions := mesh.get_aabb().size if mesh else Vector3.ZERO
 	var texture := ""
-	var material := _vehicle_paint_material(node) if node.has_method("get_seat_position") else _base_material(node,kind)
+	var material := _editable_material(node) if kind == "object" else _vehicle_paint_material(node) if node.has_method("get_seat_position") else _base_material(node,kind)
 	if material is StandardMaterial3D and material.albedo_texture:
 		texture = material.albedo_texture.resource_path
 	var signature := "%s|%s|%s|%s|%s" % [kind,_rounded(at.origin),_rounded(dimensions),_rounded(at.basis.get_scale()),texture]
-	var id := "base/"+signature.sha256_text().substr(0,22)
+	var id := str(node.get_meta("editor_stable_id","base/"+signature.sha256_text().substr(0,22)))
 	var suffix := 0
 	while targets.has(id):
 		suffix += 1
 		id = "base/"+signature.sha256_text().substr(0,22)+"_"+str(suffix)
 	targets[id] = {"node":node,"kind":kind,"instance":instance,"material":material,"original_transform":at,"name":_target_name(node,kind,at.origin)}
-	_original[id] = get_target_state(id)
+	if not _original.has(id): _original[id] = get_target_state(id)
+	if _base_edits.has(id): _apply_state(id,_base_edits[id])
 
 func _rounded(value: Vector3) -> String:
 	return "%.3f,%.3f,%.3f" % [value.x,value.y,value.z]
@@ -394,7 +412,7 @@ func _base_material(node: Node3D, kind: String) -> Material:
 	return null
 
 func get_target_state(id: String) -> Dictionary:
-	if not targets.has(id): return {}
+	if not targets.has(id): return _base_edits.get(id,{}).duplicate(true)
 	var item: Dictionary = targets[id]
 	var node: Node3D = item.node
 	if not is_instance_valid(node): return {}
@@ -432,7 +450,9 @@ func edit_target(id: String, changes: Dictionary) -> bool:
 	return true
 
 func _apply_state(id: String, state: Dictionary) -> void:
-	if not targets.has(id): return
+	if not targets.has(id):
+		if id.begins_with("base/"): _base_edits[id] = state.duplicate(true)
+		return
 	var item: Dictionary = targets[id]
 	var node: Node3D = item.node
 	if not is_instance_valid(node): return
@@ -669,7 +689,7 @@ func _set_collision_visibility(node: Node, enabled: bool) -> void:
 
 func _set_object_material(node: Node, mat: Material) -> void:
 	if node.get_meta("editor_keep_material",false): return
-	if node is MeshInstance3D:
+	if node is MeshInstance3D or node is MultiMeshInstance3D:
 		node.material_override = mat
 		return
 	for child in node.get_children(): _set_object_material(child,mat)
@@ -703,6 +723,7 @@ func _set_vehicle_paint(node: Node, original: Material, replacement: Material) -
 	for child in node.get_children(): _set_vehicle_paint(child,original,replacement)
 
 func _first_material(node: Node) -> Material:
+	if node is MultiMeshInstance3D: return _base_material(node,"batch")
 	if node is MeshInstance3D: return _base_material(node,"mesh")
 	for child in node.get_children():
 		var found := _first_material(child)
@@ -747,7 +768,7 @@ func _valid_changes(changes: Dictionary) -> bool:
 			if not value is Array or value.size() != 3: return false
 			for number in value:
 				if not (number is float or number is int) or not is_finite(float(number)): return false
-				if absf(float(number)) > 1000.0: return false
+				if absf(float(number)) > (4096.0 if key == "position" else 4096.0): return false
 				if key == "scale" and (float(number) < 0.05 or float(number) > 15.0): return false
 		elif key == "color":
 			if not value is String or not Color.html_is_valid(value): return false
@@ -849,7 +870,7 @@ func load_world() -> bool:
 	_added.clear()
 	_base_edits.clear()
 	for id in data.base:
-		if targets.has(id): _apply_state(id,data.base[id])
+		_apply_state(id,data.base[id])
 	_counter = 0
 	for saved_id in data.added:
 		var entry: Dictionary = data.added[saved_id]
@@ -1058,8 +1079,8 @@ func _build_ui() -> void:
 		_spins[key] = []
 		for axis in 3:
 			var spin := SpinBox.new()
-			spin.min_value = 0.05 if key == "scale" else -1000.0
-			spin.max_value = 15.0 if key == "scale" else 1000.0
+			spin.min_value = 0.05 if key == "scale" else -4096.0
+			spin.max_value = 15.0 if key == "scale" else 4096.0
 			spin.step = 0.05 if key == "scale" else 0.25 if key == "position" else 5.0
 			spin.custom_minimum_size.x = 85
 			spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -1168,6 +1189,7 @@ func _build_ui() -> void:
 	_exit_dialog.ok_button_text = "Guardar e voltar"
 	_exit_dialog.cancel_button_text = "Continuar a editar"
 	_leave_without_save = _exit_dialog.add_button("Voltar sem guardar",false,"leave")
+	_exit_dialog.canceled.connect(func(): _test_spawn = Vector3(INF,INF,INF))
 	_exit_dialog.confirmed.connect(_save_and_exit)
 	_exit_dialog.custom_action.connect(func(action: StringName):
 		if action == &"leave":
@@ -1182,7 +1204,7 @@ func _build_transform_toolbar() -> void:
 	panel.offset_left = 278
 	panel.offset_right = -330
 	panel.offset_top = 12
-	panel.offset_bottom = 100
+	panel.offset_bottom = 132
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.025,0.045,0.05,0.94)
 	style.content_margin_left = 10
@@ -1218,7 +1240,12 @@ func _build_transform_toolbar() -> void:
 	step.custom_minimum_size.x = 80
 	step.value_changed.connect(func(value: float): snap_step = value)
 	second.add_child(step)
+	var views_row := HBoxContainer.new()
+	box.add_child(views_row)
 	var bookmarks := OptionButton.new()
+	bookmarks.fit_to_longest_item = false
+	bookmarks.custom_minimum_size.x = 190
+	bookmarks.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_bookmarks = bookmarks
 	bookmarks.add_item("Ir para…")
 	var views: Array = world.get_editor_bookmarks() if is_instance_valid(world) and world.has_method("get_editor_bookmarks") else []
@@ -1235,7 +1262,8 @@ func _build_transform_toolbar() -> void:
 			var angles := camera.global_basis.get_euler()
 			_yaw = angles.y
 			_pitch = angles.x)
-	second.add_child(bookmarks)
+	views_row.add_child(bookmarks)
+	_button(views_row,"Testar neste bairro",request_test_district)
 
 func _panel(at: Vector2, dimensions: Vector2, from_right: bool) -> VBoxContainer:
 	var panel := PanelContainer.new()
@@ -1376,3 +1404,20 @@ func cancel_ai_preview() -> void:
 	_preview_after.clear()
 	if _apply_ai: _apply_ai.disabled = true
 	if _cancel_ai: _cancel_ai.disabled = true
+
+func register_sector(sector: Node3D) -> void:
+	_index_base(sector)
+	if active: _refresh_list()
+
+func unregister_sector(sector: Node3D) -> void:
+	for id in targets.keys():
+		var node: Node3D = targets[id].node
+		if is_instance_valid(node) and sector.is_ancestor_of(node):
+			targets.erase(id)
+			if selected_id == id: selected_id = ""
+	if active: _refresh_list()
+
+func request_test_district() -> void:
+	if not active or not world.has_method("get_test_spawn"): return
+	_test_spawn = world.get_test_spawn(camera.global_position)
+	request_exit()
