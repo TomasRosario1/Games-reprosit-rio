@@ -105,6 +105,9 @@ Ainda faltam músicas e personagens definitivas da banda, animações de entrada
 
 ## Desenvolvimento e validação
 
+- [Referência acrescentada pelo criador](<Ter como referencia>)
+- [Auditoria das 19 etapas — 21 de outubro](docs/ESTADO_19_ETAPAS.md)
+- [Plano técnico do mapa contínuo](docs/PLANO_MAPA_CONTINUO.md)
 - [Design e decisões](docs/GDD.md)
 - [Próximas etapas](docs/ROADMAP.md)
 - [Resultados dos testes e capturas reais](docs/VALIDACAO.md)

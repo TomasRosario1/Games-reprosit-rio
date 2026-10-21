@@ -2,6 +2,8 @@
 
 Este plano distingue a base implementada, a revisão do protótipo 02 e o trabalho seguinte. «Implementado» significa que existe código e uma experiência de teste; não significa recurso artístico definitivo, exportação Windows validada ou desempenho garantido no HP. O README e o registo de validação acompanham a versão entregue.
 
+Em 21 de outubro de 2026, o criador acrescentou [Ter como referencia](<../Ter como referencia>) com uma sequência de 19 etapas. A [auditoria dessa sequência](ESTADO_19_ETAPAS.md) preserva a ordem e identifica sistemas existentes; o [plano do mapa contínuo](PLANO_MAPA_CONTINUO.md) descreve dependências antes da expansão. As próximas tarefas devem seguir essa referência, mantendo o Álbum Visual como prioridade e um mapa compacto. Não remover editor, áudio ou funcionalidades existentes apenas por surgirem mais tarde na sequência nova.
+
 ## 1. Base da primeira experiência — implementada
 
 **Percurso:** telhado → rua → pulseira → segurança → Lado B → escolha de faixa → atuação.

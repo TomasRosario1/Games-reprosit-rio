@@ -6,5 +6,7 @@
 - Comunicar a branch e o link exatos da versão entregue. Um push para uma branch de trabalho não significa merge em `main`.
 - Preservar os dados locais do jogador e as edições do mundo. Não versionar `.godot/`, exportações ou backups do Blender.
 - Abrir `README.md`, `docs/GDD.md` e `docs/VALIDACAO.md` para contexto. Testar com Godot 4 Compatibility, usando verificações apropriadas à alteração; `tools/run_checks.sh` executa o conjunto completo com dados isolados.
+- Consultar também `Ter como referencia`, `docs/ESTADO_19_ETAPAS.md` e `docs/PLANO_MAPA_CONTINUO.md`. A auditoria inicial pedida na secção 17 foi documentada em 21 de outubro de 2026, sem alterar código. Novas implementações dependem da tarefa seguinte do criador; não executar automaticamente as 19 etapas de uma vez.
+- Decisões confirmadas: a expansão mantém o Álbum Visual centrado em música e exploração; a cidade será compacta, com edifícios e personagens proporcionais, sem distâncias geográficas de Lisboa à escala 1:1. Preservar editor, áudio e sistemas existentes.
 - Em Linux com pasta pessoal só de leitura, usar diretórios XDG graváveis. Verificações MultiMesh dependentes do renderer exigem janela nativa; não converter omissões headless em resultados passados.
 - Distinguir protótipos de funcionalidades finais, referências de recursos incluídos, e testes da nuvem de desempenho no portátil HP. A IA local é opcional e não deve ser requisito para jogar.

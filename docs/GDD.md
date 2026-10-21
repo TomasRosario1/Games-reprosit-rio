@@ -4,6 +4,8 @@ Este documento regista as decisões do criador e distingue a visão final do pro
 
 ## Visão e prioridades
 
+Atualização de 21 de outubro de 2026: o criador confirmou que a referência «GTA LISBOA», em [Ter como referencia](<../Ter como referencia>), expande este Álbum Visual. Música e exploração continuam no centro. O mapa será compacto, com proporções realistas de edifícios e pessoas, sem reproduzir as distâncias reais entre bairros. A [auditoria das 19 etapas](ESTADO_19_ETAPAS.md) separa o que existe do que falta e o [plano do mapa contínuo](PLANO_MAPA_CONTINUO.md) descreve a migração proposta; esta revisão não implementa os bairros novos.
+
 Aplicação desktop nativa, single-player e utilizável offline, desenvolvida em Godot 4. A história do álbum e a exploração são o centro da experiência. Combate, veículos, atividades musicais e personalidades dos habitantes dão vida à cidade e condicionam o acesso a alguns locais.
 
 O universo aborda vida noturna, mulheres, dinheiro, drogas e álcool. Os protagonistas são inspirados nos autores da banda **«Odio puro no meu peito»**. O criador indica ter autorização da banda para usar as músicas; os ficheiros e recursos definitivos ainda têm de ser fornecidos e integrados.
