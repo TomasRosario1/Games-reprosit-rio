@@ -2,7 +2,7 @@
 
 Análise de 21 de outubro de 2026, a partir de [Ter como referencia](<../Ter como referencia>) e do protótipo 02. Este documento propõe a migração; **nenhum sistema de streaming, mapa OSM ou bairro novo foi implementado nesta revisão documental**.
 
-**Atualização posterior:** o criador enviou `Maps.rar`, contendo dois ficheiros OSM. A primeira integração dos três recortes, setores, ligações e ponte estilizada já está no código. Consultar [mapas recebidos e limitações](ENTREGAR_MAPAS.md) e [validação](VALIDACAO_MAPAS.md). O restante texto conserva o diagnóstico e plano inicial; não é uma afirmação de que todas as etapas tenham sido concluídas.
+**Atualização posterior:** o criador enviou `Maps.rar` e autorizou a implementação. A [revisão de 22 de outubro](REVISAO_LISBOA.md) entrega a península contínua, os três bairros, ruas alternativas e interiores. Consultar esse relatório e a [validação](VALIDACAO_MAPAS.md) para o estado atual. O restante texto conserva o diagnóstico e plano inicial.
 
 ## Decisões confirmadas pelo criador
 

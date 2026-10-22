@@ -2,3 +2,4 @@
 exports/
 *.tmp
 *.blend[0-9]
+__pycache__/

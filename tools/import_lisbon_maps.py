@@ -157,7 +157,7 @@ def main():
                 stats['road_segments']+=1
         # Portals are actual road/crop intersections, with outer connectors adapted for the compact map.
         portals={}
-        for side,index,value in [('west',0,bounds.bounds[0]),('north',1,bounds.bounds[1]),('south',1,bounds.bounds[3])]:
+        for side,index,value in [('west',0,bounds.bounds[0]),('north',1,bounds.bounds[1]),('south',1,bounds.bounds[3]),('east',0,bounds.bounds[2])]:
             candidates=[]
             for road in road_items:
                 for point in [road['points'][0],road['points'][-1]]:
@@ -223,7 +223,15 @@ def main():
     manifest['links'].append({'id':'lado_b_saldanha','points':[[60,0],[75,0],districts[0]['portals']['west']]})
     for a,b in zip(districts,districts[1:]):
         start=a['portals']['south'];end=b['portals']['north'];z=(start[1]+end[1])*0.5
-        manifest['links'].append({'id':a['id']+'_'+b['id'],'points':[start,[start[0],z],[end[0],z],end]})
+        # The authored Saldanha nightlife block occupies x231..309,z283..306.
+        # Carry this road around its west side and along its front, so the
+        # production route never drives through the Tasca's solid rear wall.
+        points=[start,[220,272],[220,z],[end[0],z],end] if a['id']=='saldanha' else [start,[start[0],z],[end[0],z],end]
+        manifest['links'].append({'id':a['id']+'_'+b['id'],'points':points})
+    from city_layout import compose
+    compose(manifest,all_sectors,size)
+    # Resident silhouettes preserve the skyline while fine architecture streams.
+    manifest['skyline']=[{'id':sector['id'],'district':sector['district'],'buildings':sector['buildings']} for sector in all_sectors.values() if sector['buildings']]
     for key,sector in sorted(all_sectors.items()):
         # Expand streaming bounds for buildings assigned by centroid that extend across a tile edge.
         a,b,c,d=sector['bounds'];stream=[a,b,c,d]
@@ -235,6 +243,10 @@ def main():
         filename=key+'.json';save(OUT/filename,sector)
         manifest['sectors'].append({'id':key,'district':sector['district'],'bounds':sector['bounds'],'stream_bounds':stream,'path':'res://assets/maps/generated/'+filename,'features':['base/'+f['id'] for f in sector['buildings']]+['base/'+v['id'] for v in sector['venues']]+[f'base/osm/lamp/{round(x*1000)}/{round(z*1000)}' for x,z in compact(sector['lamps'])]+(['base/osm/saldanha/monumento'] if sector['monuments'] else [])})
     save(OUT/'manifest.json',manifest)
+    # Recomposition can remove authored blocks/sectors. Ship exactly the data
+    # referenced by the manifest instead of retaining stale generated files.
+    for path in OUT.glob('*.json'):
+        if path.name!='manifest.json' and path.stem not in all_sectors:path.unlink()
     print('SECTORS',len(all_sectors),'BUILDINGS',sum(len(s['buildings']) for s in all_sectors.values()))
 
 if __name__=='__main__':main()

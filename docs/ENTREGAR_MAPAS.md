@@ -1,5 +1,7 @@
 # Mapas recebidos e integrados
 
+Este documento regista a importação inicial de 21 de outubro. A [revisão de 22 de outubro](REVISAO_LISBOA.md) já acrescenta a península contínua, relevo, ruas alternativas e interiores; consultar esse relatório para o estado atual.
+
 Recebido **Maps.rar**, enviado pelo criador nesta conversa. Continha dois ficheiros **OpenStreetMap XML**, sem modelos GLB/Blender, fotografias, texturas, interiores ou modelo de elevação:
 
 - `Saldenha.osm` — Saldanha, 7 245 724 bytes.

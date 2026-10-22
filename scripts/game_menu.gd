@@ -649,29 +649,39 @@ class NeighborhoodMap extends Control:
 		draw_circle(center + Vector2(-16, -17) * scale_factor, 5.0, Color("8caec5"))
 	func _draw_city(bounds: Rect2) -> void:
 		var data: Dictionary = context.map_overlay
-		var factor := minf((bounds.size.x-70)/470.0,(bounds.size.y-20)/1320.0)
-		var offset := Vector2(bounds.get_center().x-170*factor,bounds.position.y+10+100*factor)
+		var extent := Rect2(Vector2(-120,-200),Vector2(780,1480))
+		var factor := minf((bounds.size.x-110)/extent.size.x,(bounds.size.y-16)/extent.size.y)
+		var offset := bounds.get_center()-extent.get_center()*factor
 		var font: Font = load("res://assets/fonts/Interface.ttf")
+		draw_rect(bounds,Color("18313b"))
+		var peninsula: Variant = data.get("peninsula",{})
+		var coast: Array = peninsula.get("coastline",peninsula.get("polygon",[])) if peninsula is Dictionary else peninsula if peninsula is Array else []
+		if coast.size()>2:
+			var polygon := PackedVector2Array()
+			for point in coast: polygon.append(offset+Vector2(point[0],point[1])*factor)
+			draw_colored_polygon(polygon,Color("394748"))
+			polygon.append(polygon[0])
+			draw_polyline(polygon,Color("b6a587"),1.5,true)
 		for district in data.districts:
 			var b: Array = district.bounds
-			draw_rect(Rect2(offset+Vector2(b[0],b[1])*factor,Vector2(b[2]-b[0],b[3]-b[1])*factor),Color("334348"))
+			draw_rect(Rect2(offset+Vector2(b[0],b[1])*factor,Vector2(b[2]-b[0],b[3]-b[1])*factor),Color(0.28,0.35,0.35,0.6))
 			for road in district.major_roads:
 				var points := PackedVector2Array()
 				for point in road.points: points.append(offset+Vector2(point[0],point[1])*factor)
-				if points.size()>1: draw_polyline(points,Color("919489"),2.0)
+				if points.size()>1: draw_polyline(points,Color("b0a58d"),1.5,true)
 			var at := offset+Vector2(district.spawn[0],district.spawn[1])*factor
 			draw_circle(at,3.5,Color("8caec5"))
-			draw_string(font,Vector2(offset.x+400*factor,at.y+4),district.label, HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d9d4c6"))
-		for link in data.links:
+			draw_string(font,Vector2(offset.x+480*factor,at.y+4),district.label,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("e3d8bd"))
+		for link in data.get("roads",data.links):
 			var points := PackedVector2Array()
 			for point in link.points: points.append(offset+Vector2(point[0],point[1])*factor)
-			draw_polyline(points,Color("8d9694"),2.5)
-		draw_rect(Rect2(offset+Vector2(90,1020)*factor,Vector2(310,160)*factor),Color("203c48"))
-		draw_line(offset+Vector2(240,1020)*factor,offset+Vector2(240,1170)*factor,Color("ad6950"),3)
-		draw_string(font,offset+Vector2(400,1090)*factor,"Tejo / Ponte",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d9d4c6"))
-		draw_rect(Rect2(offset+Vector2(-36,-49)*factor,Vector2(96,98)*factor),Color("4b5149"))
+			if points.size()>1: draw_polyline(points,Color("aaa38c"),2.0,true)
+		for place in data.get("places",[]):
+			var point: Array = place.get("position",[])
+			if point.size()>=2: draw_circle(offset+Vector2(point[0],point[-1])*factor,1.8,Color("d2a766"))
+		draw_line(offset+Vector2(240,1020)*factor,offset+Vector2(240,1170)*factor,Color("c87951"),3)
+		draw_string(font,offset+Vector2(460,1090)*factor,"Tejo / Ponte",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d9d4c6"))
 		draw_circle(offset+Vector2(-16,-17)*factor,3.5,Color("8caec5"))
-		draw_string(font,offset+Vector2(90,-20)*factor,"Telhado / Lado B",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d9d4c6"))
 		var at: Vector3 = context.get("player_position",Vector3.ZERO)
 		draw_circle(offset+Vector2(at.x,at.z)*factor,5.0,Color("85c29d"))
 	func _background_style() -> StyleBoxFlat:

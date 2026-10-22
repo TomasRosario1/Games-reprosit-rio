@@ -28,20 +28,21 @@ func _run() -> void:
 	city = game.world.imported_city
 	city.set_process(false)
 	game._editor.save_path = "user://maps_edits.json"
-	check(city.manifest.districts.size()==3 and city.manifest.sectors.size()==90,"three uploaded districts split into 90 sectors")
-	check(game.world._population.peds.size()==80,"persistent pools reuse twenty appearances across four regions")
-	check(game.world.get_editor_bookmarks().size()==7,"editor exposes new district and river bookmarks, preserving three old views")
+	check(city.manifest.districts.size()==3 and city.manifest.sectors.size()>90,"three uploaded districts and connecting urban blocks have streaming sectors")
+	check(game.world._population.peds.size()>=80,"persistent pools include source districts and entered venues")
+	check(game.world.get_editor_bookmarks().size()>=7,"editor exposes districts, interiors, rooftops and river while preserving old views")
 	var old_id := ""
 	var old_sector := ""
 	var changed_position: Array = []
 	for district in city.manifest.districts:
-		var at := Vector3(district.spawn[0],0.1,district.spawn[1])
+		var floor_y: float = city.ground_height(district.spawn[0],district.spawn[1])
+		var at := Vector3(district.spawn[0],floor_y+0.1,district.spawn[1])
 		game.world.ensure_position(at)
 		await physics_frame
-		check(city.loaded.size()>0 and city.loaded.size()<60,"nearby sectors load without loading all districts")
+		check(city.loaded.size()>0 and city.loaded.size()<city.manifest.sectors.size(),"nearby sectors load without loading all districts")
 		check(game.world.is_valid_save_position(at),"save validator accepts "+str(district.id))
 		var hit := root.world_3d.direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(at+Vector3.UP*2,at-Vector3.UP*2,1))
-		check(not hit.is_empty() and absf(hit.position.y)<0.1,"focus street has walkable ground: "+str(district.id))
+		check(not hit.is_empty() and absf(hit.position.y-floor_y)<0.1,"focus street has walkable ground: "+str(district.id))
 		var roof_checked := false
 		for sector_spec in city.manifest.sectors:
 			if not city.loaded.has(sector_spec.id) or sector_spec.district!=district.id: continue
@@ -50,6 +51,7 @@ func _run() -> void:
 			var building: Dictionary = sector_data.buildings[0]
 			var roof: Array = building.roof
 			var center := Vector3(building.position[0]+(roof[0][0]+roof[1][0]+roof[2][0])/3,building.height,building.position[1]+(roof[0][1]+roof[1][1]+roof[2][1])/3)
+			center.y += city.ground_height(building.position[0],building.position[1])
 			var roof_hit := root.world_3d.direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(center+Vector3.UP,center-Vector3.UP*0.5,1))
 			check(not roof_hit.is_empty(),"roof front face collides from above: "+str(district.id))
 			roof_checked = true
@@ -140,9 +142,9 @@ func _run() -> void:
 	body.add_child(collision); root.add_child(body)
 	for link in city.manifest.links:
 		var first: Array = link.points[0]
-		body.global_position = Vector3(first[0],0.1,first[1])
+		body.global_position = Vector3(first[0],city.ground_height(first[0],first[1])+0.1,first[1])
 		for point in link.points:
-			var at := Vector3(point[0],0,point[1])
+			var at := Vector3(point[0],city.ground_height(point[0],point[1]),point[1])
 			game.world.ensure_position(at)
 			await _walk_to(at)
 	# Both ramps and the full bridge deck support the avatar.

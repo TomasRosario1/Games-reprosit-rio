@@ -1,6 +1,6 @@
 class_name AlbumWorld
 extends Node3D
-## Persistent first playable route, connected to streamed crops of the supplied maps.
+## Continuous Lisbon peninsula, keeping the original playable route and saved edits.
 ## Original Lisbon props/materials plus OSM footprints; Compatibility renderer.
 
 var rooftop_spawn := Transform3D(Basis(), Vector3(-16, 9.7, 15))
@@ -38,6 +38,10 @@ var _time := 0.0
 var _crowd_count := 6
 var _unlocked := false
 var imported_city: Node3D
+var city_traffic: Node3D
+var _venue_clubs: Dictionary = {}
+var _performance_id := "lado_b"
+var _club_visibility_timer := 0.0
 
 func _ready() -> void:
 	name = "BairroDaMadrugada"
@@ -58,7 +62,25 @@ func _ready() -> void:
 	imported_city = load("res://scripts/imported_city.gd").new()
 	add_child(imported_city)
 	for district in imported_city.manifest.districts:
-		_population.append_region_routes(district.id,district.routes)
+		_population.append_region_routes(district.id,district.routes,Callable(imported_city,"ground_height") if imported_city.has_method("ground_height") else Callable())
+	if imported_city.has_method("get_venue_routes"):
+		var routes: Array = imported_city.get_venue_routes()
+		if not routes.is_empty(): _population.append_region_routes("nightlife",routes,Callable(imported_city,"ground_height"))
+	if imported_city.has_method("get_traffic_routes"):
+		city_traffic = load("res://scripts/city_traffic.gd").new()
+		add_child(city_traffic)
+		var traffic_routes: Array = imported_city.get_traffic_routes()
+		if FileAccess.file_exists("res://assets/maps/traffic_routes.json"):
+			var road_data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/maps/traffic_routes.json"))
+			traffic_routes = road_data.routes+traffic_routes
+		city_traffic.configure(traffic_routes)
+	for venue in imported_city.get_performance_venues():
+		var crowd: Node3D = load("res://scripts/club_crowd.gd").new()
+		crowd.configure_layout(venue)
+		add_child(crowd)
+		crowd.set_door_open(true)
+		crowd.set_audience(75.0)
+		_venue_clubs[str(venue.id)] = crowd
 
 func _material(key: String, tint := Color.WHITE, glow := Color.BLACK, emission_power := 0.0) -> StandardMaterial3D:
 	var aliases := {"stucco":"city_plaster", "ochre":"city_ochre", "pink":"city_pink", "blue":"city_blue", "calcada":"city_calcada", "asphalt":"city_asphalt", "roof":"city_roof"}
@@ -83,6 +105,7 @@ func _material(key: String, tint := Color.WHITE, glow := Color.BLACK, emission_p
 		mat.emission_enabled = true
 		mat.emission = glow
 		mat.emission_texture = mat.albedo_texture
+		mat.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
 		mat.emission_energy_multiplier = emission_power
 	_materials[cache_key] = mat
 	return mat
@@ -155,18 +178,18 @@ func _build_environment() -> void:
 	var environment := WorldEnvironment.new()
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color("252a2c")
+	env.background_color = Color("191a20")
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("a5a69b")
-	env.ambient_light_energy = 0.32
+	env.ambient_light_color = Color("b1a28c")
+	env.ambient_light_energy = 0.29
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	env.fog_enabled = true
 	env.fog_mode = Environment.FOG_MODE_DEPTH
-	env.fog_light_color = Color("252a2c")
-	env.fog_light_energy = 0.75
-	env.fog_depth_begin = 25.0
-	env.fog_depth_end = 96.0
-	env.fog_depth_curve = 0.82
+	env.fog_light_color = Color("36312e")
+	env.fog_light_energy = 0.52
+	env.fog_depth_begin = 45.0
+	env.fog_depth_end = 150.0
+	env.fog_depth_curve = 1.45
 	env.fog_sky_affect = 1.0
 	env.volumetric_fog_enabled = false
 	_environment = env
@@ -561,8 +584,8 @@ func set_nearby_highlights(viewer: Vector3) -> void:
 
 func set_audience(amount: float) -> void:
 	_crowd_count = clampi(int(ceil(amount / 100.0 * 8.0)),0,8)
-	if is_instance_valid(_club):
-		_club.set_audience(amount)
+	var crowd := _get_performance_crowd()
+	if is_instance_valid(crowd): crowd.set_audience(amount)
 
 func set_pulse(value: float) -> void:
 	if is_instance_valid(imported_city): imported_city.set_pulse(value)
@@ -574,6 +597,15 @@ func set_pulse(value: float) -> void:
 
 func _process(delta: float) -> void:
 	_time += delta
+	_club_visibility_timer -= delta
+	if _club_visibility_timer <= 0.0 and is_instance_valid(_player):
+		_club_visibility_timer = 0.5
+		for venue in imported_city.get_performance_venues():
+			var crowd: Node3D = _venue_clubs.get(str(venue.id))
+			if not is_instance_valid(crowd): continue
+			var nearby: bool = _player.global_position.distance_to(venue.stage_position) < 150.0
+			crowd.visible = nearby
+			crowd.process_mode = Node.PROCESS_MODE_INHERIT if nearby else Node.PROCESS_MODE_DISABLED
 	if is_instance_valid(_wristband):
 		_wristband.rotation.y += delta * 0.7
 		_wristband.position.y = wristband_position.y + sin(_time*2.4)*0.07
@@ -798,10 +830,12 @@ func _build_population() -> void:
 
 func set_player(player: Node3D) -> void:
 	_player = player
+	if is_instance_valid(city_traffic): city_traffic.set_viewer(player)
 	if is_instance_valid(imported_city): imported_city.viewer = player
 	if is_instance_valid(_population): _population.set_player(player)
 	if is_instance_valid(_guard): _guard.set_player(player)
 	if is_instance_valid(_club): _club.set_player(player)
+	for crowd in _venue_clubs.values(): crowd.set_player(player)
 
 func set_population_budget(count: int) -> void:
 	_population_budget = clampi(count,0,20)
@@ -814,7 +848,29 @@ func set_npcs_enabled(value: bool) -> void:
 func set_performance(active: bool, bpm: float = 100.0) -> void:
 	_club_performing = active
 	_performance_bpm = bpm
-	if is_instance_valid(_club): _club.set_performance(active,bpm)
+	var crowd := _get_performance_crowd()
+	if is_instance_valid(crowd): crowd.set_performance(active,bpm)
+
+func set_performance_venue(id: String) -> void:
+	if id == _performance_id: return
+	set_performance(false)
+	_performance_id = id if _venue_clubs.has(id) else "lado_b"
+
+func _get_performance_crowd() -> Node3D:
+	return _venue_clubs.get(_performance_id,_club)
+
+func get_nearby_performance(at: Vector3, include_lado_b: bool = true) -> Dictionary:
+	var best: Dictionary = {}
+	var distance := 2.8
+	if include_lado_b and at.distance_to(stage_position) < distance:
+		best = {"id":"lado_b","stage_position":stage_position,"facing":Vector3(0,0,1),"camera_position":stage_position+Vector3(7.5,3.2,-4.8),"camera_target":stage_position+Vector3(0,1.1,2.7)}
+		distance = at.distance_to(stage_position)
+	for venue in imported_city.get_performance_venues():
+		var other: float = at.distance_to(venue.stage_position)
+		if other < distance:
+			best = venue
+			distance = other
+	return best
 
 func get_population_count() -> int:
 	return _population.get_active_count() if is_instance_valid(_population) else 0
@@ -850,7 +906,7 @@ func set_quality(low: bool) -> void:
 		if child is MultiMeshInstance3D: child.visibility_range_end = 82.0 if low else 108.0
 		if child is MeshInstance3D and child.visibility_range_end > 70.0:
 			child.visibility_range_end = 82.0 if low else 108.0
-	_environment.fog_depth_end = 86.0 if low else 102.0
+	_environment.fog_depth_end = 150.0 if low else 200.0
 
 
 func set_quality_level(level: int) -> void:
@@ -862,7 +918,10 @@ func set_quality_level(level: int) -> void:
 			child.visibility_range_end = [82.0, 106.0, 130.0][index]
 	for spot in _club_spots:
 		spot.shadow_enabled = index == 2
-	_environment.fog_depth_end = [86.0, 108.0, 130.0][index]
+	_environment.fog_depth_begin = [45.0,65.0,85.0][index]
+	_environment.fog_depth_end = [150.0,200.0,250.0][index]
+	if is_instance_valid(imported_city) and imported_city.has_method("set_quality_level"): imported_city.set_quality_level(index)
+	if is_instance_valid(city_traffic): city_traffic.set_quality_level(index)
 
 func ensure_position(at: Vector3) -> void:
 	if is_instance_valid(imported_city): imported_city.ensure_position(at)
@@ -879,8 +938,14 @@ func get_music_zone(at: Vector3) -> Dictionary:
 	var result := {"position":stage_position+Vector3.UP,"song":-1,"indoors":is_inside_bar(at),"radius":32.0,"id":"lado_b"}
 	var distance := at.distance_to(result.position)
 	if is_instance_valid(imported_city):
+		for venue in imported_city.get_performance_venues():
+			var source: Vector3 = venue.stage_position+Vector3.UP
+			var other := at.distance_to(source)
+			if other < distance:
+				distance = other
+				result = {"position":source,"song":2,"indoors":other<19.0,"radius":32.0,"id":venue.id}
 		for district in imported_city.manifest.districts:
-			var source := Vector3(district.music.position[0],1,district.music.position[1])
+			var source := Vector3(district.music.position[0],ground_height(district.music.position[0],district.music.position[1])+1,district.music.position[1])
 			var other := at.distance_to(source)
 			if other < distance:
 				distance = other
@@ -891,9 +956,18 @@ func get_test_spawn(at: Vector3) -> Vector3:
 	var best := street_safe.origin
 	var distance := at.distance_to(best)
 	for district in imported_city.manifest.districts:
-		var point := Vector3(district.spawn[0],0.15,district.spawn[1])
+		var point := Vector3(district.spawn[0],ground_height(district.spawn[0],district.spawn[1])+0.15,district.spawn[1])
 		if at.distance_to(point) < distance:
 			best = point
 			distance = at.distance_to(point)
 	var quay := Vector3(240,0.15,990)
 	return quay if at.distance_to(quay) < distance else best
+
+func ground_height(x: float, z: float) -> float:
+	return imported_city.ground_height(x,z) if is_instance_valid(imported_city) and imported_city.has_method("ground_height") else 0.0
+
+func get_initial_spawn() -> Transform3D:
+	return imported_city.get_start_transform() if is_instance_valid(imported_city) and imported_city.has_method("get_start_transform") else rooftop_spawn
+
+func get_initial_safe() -> Transform3D:
+	return imported_city.get_start_street() if is_instance_valid(imported_city) and imported_city.has_method("get_start_street") else street_safe

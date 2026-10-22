@@ -22,10 +22,42 @@ var _visit_index := 0
 var _player: Node3D
 var _visual_probe_time := 0.0
 var _visual_script: Script
+var _layout: Dictionary = {}
+var _entry_inside := ENTRY_INSIDE
+var _entry_outside := ENTRY_OUTSIDE
+var _entry_door := Vector3(-13.0, 0.15, -6.0)
+var _street_corner := STREET_CORNER
+var _exit_normal := Vector3.BACK
+var _dance_yaw := PI
+
+
+func configure_layout(data: Dictionary) -> void:
+	# Venue markers are world positions. Configure before adding the crowd to the
+	# tree; all physics destinations are converted into this crowd's local space.
+	if not patrons.is_empty():
+		return
+	_layout = data.duplicate()
 
 
 func _ready() -> void:
-	name = "PublicoDoLadoB"
+	name = "PublicoDoLadoB" if _layout.is_empty() else "Publico_" + String(_layout.get("id", "discoteca")).validate_node_name()
+	if not _layout.is_empty():
+		for key in ["entry_inside", "entry_outside", "entry_door", "street_corner", "dance_origin", "bar_position", "stage_position"]:
+			if _layout.get(key) is Vector3:
+				_layout[key] = to_local(_layout[key])
+		var homes := PackedVector3Array()
+		for point in _layout.get("dance_homes", PackedVector3Array()):
+			homes.append(to_local(point))
+		_layout["dance_homes"] = homes
+		_entry_inside = _layout.get("entry_inside", ENTRY_INSIDE)
+		_entry_outside = _layout.get("entry_outside", ENTRY_OUTSIDE)
+		_entry_door = _layout.get("entry_door", (_entry_inside + _entry_outside) * 0.5)
+		_street_corner = _layout.get("street_corner", STREET_CORNER)
+		_exit_normal = (_entry_outside - _entry_inside).normalized()
+		_exit_normal.y = 0.0
+		var toward_stage: Vector3 = _layout.get("stage_position", _entry_inside) - _layout.get("dance_origin", _entry_outside)
+		_dance_yaw = atan2(-toward_stage.x, -toward_stage.z)
+		_door_open = true
 	_build_patrons()
 	set_audience(float(_target_count) / PATRON_COUNT * 100.0)
 
@@ -49,19 +81,25 @@ func _build_patrons() -> void:
 		collider.position.y = 0.89
 		body.add_child(collider)
 		var home := Vector3(-18.2 + float(index % 4) * 1.35, 0.16, -15.6 + float(index / 4) * 2.0)
+		var outside := Vector3(-27.0 - float(index % 2) * 0.8, 0.1, -7.0 + float(index / 2) * 0.95)
+		if not _layout.is_empty():
+			var homes: PackedVector3Array = _layout.get("dance_homes", PackedVector3Array())
+			if index < homes.size(): home = homes[index]
+			var sidewalk := Vector3(_exit_normal.z, 0.0, -_exit_normal.x)
+			outside = _street_corner + sidewalk * (float(index % 4) * 0.8) + _exit_normal * (float(index / 4) * 1.05)
 		body.position = home
-		body.rotation.y = PI
+		body.rotation.y = _dance_yaw
 		body.add_to_group("club_patrons")
 		add_child(body)
 		patrons.append(body)
 		var entry := {
 			"body": body, "visual": null, "id": index, "state": "dancing",
 			"desired_inside": true, "home": home,
-			"outside": Vector3(-27.0 - float(index % 2) * 0.8, 0.1, -7.0 + float(index / 2) * 0.95),
+			"outside": outside,
 			"path": PackedVector3Array(), "waypoint": 0, "delay": 0.0,
 			"speed": 1.08 + float(index % 4) * 0.065, "last_speed": 0.0,
 			"wait": 0.0, "has_exited": false, "has_returned": false,
-			"phase": float(index) * 0.71, "waiting_route_state": ""
+			"phase": float(index) * 0.71, "was_dancing": false, "waiting_route_state": ""
 		}
 		_entries.append(entry)
 	_try_attach_visuals()
@@ -97,7 +135,7 @@ func set_audience(amount: float) -> void:
 		entry.delay = 0.65 + float(int(entry.id) % 4) * 0.48
 		if desired and entry.state == "waiting_exit":
 			entry.state = "dancing"
-		elif desired and entry.state == "waiting_door" and entry.body.position.z < -6.1:
+		elif desired and entry.state == "waiting_door" and _inside_door(entry.body.position):
 			_start_home_route(entry)
 		elif not desired and entry.state == "dancing":
 			entry.state = "waiting_exit"
@@ -162,7 +200,18 @@ func _schedule_bar_visit() -> void:
 			continue
 		_visit_index = (index + 3) % PATRON_COUNT
 		var service := Vector3(-21.1, 0.15, -12.3 - float(index % 3) * 1.2)
-		_set_route(entry, PackedVector3Array([Vector3(-19.8, 0.15, -11.25), service]), "visiting_bar")
+		if _layout.is_empty():
+			_set_route(entry, PackedVector3Array([Vector3(-19.8, 0.15, -11.25), service]), "visiting_bar")
+		else:
+			# The bar marker is in the counter. Stop on its public side, leaving
+			# the solid counter intact, and use the same clear dance-floor aisle.
+			var bar: Vector3 = _layout.get("bar_position", _entry_inside)
+			var origin: Vector3 = _layout.get("dance_origin", _entry_inside)
+			var approach := origin - bar
+			approach.y = 0.0
+			service = bar + approach.normalized() * 1.3
+			service.y = origin.y
+			_set_route(entry, PackedVector3Array([origin, service]), "visiting_bar")
 		break
 
 
@@ -186,7 +235,7 @@ func _step_patron(entry: Dictionary, delta: float) -> void:
 				# Loitering remains visible and belongs to the same persistent actor.
 				body.rotation.y = lerp_angle(body.rotation.y, PI * 0.5 + sin(_time * 0.23 + entry.phase) * 0.4, minf(delta, 1.0))
 		"waiting_door":
-			if entry.desired_inside and body.position.z < -6.1:
+			if entry.desired_inside and _inside_door(body.position):
 				_start_home_route(entry)
 			elif _door_open:
 				if entry.waiting_route_state == "entering" and entry.desired_inside:
@@ -208,6 +257,12 @@ func _step_patron(entry: Dictionary, delta: float) -> void:
 
 
 func _start_departure(entry: Dictionary) -> void:
+	if not _layout.is_empty():
+		# Clear the awning posts and terrace planters before turning along the
+		# pavement. Cutting diagonally across a furnished terrace can trap a queue.
+		var pavement := _entry_outside + _exit_normal * 3.0
+		_set_route(entry, PackedVector3Array([_entry_inside, _entry_door, _entry_outside, pavement, _street_corner, entry.outside]), "leaving")
+		return
 	var body: CharacterBody3D = entry.body
 	var corridor := Vector3(-13.0 + float(int(entry.id) % 2) * 0.22, 0.15, -9.15)
 	var front := Vector3(body.position.x, 0.15, -11.0)
@@ -215,11 +270,22 @@ func _start_departure(entry: Dictionary) -> void:
 
 
 func _start_arrival(entry: Dictionary) -> void:
-	_set_route(entry, PackedVector3Array([STREET_CORNER, ENTRY_OUTSIDE, ENTRY_INSIDE, Vector3(-13, 0.15, -10.4), entry.home]), "entering")
+	if _layout.is_empty():
+		_set_route(entry, PackedVector3Array([STREET_CORNER, ENTRY_OUTSIDE, ENTRY_INSIDE, Vector3(-13, 0.15, -10.4), entry.home]), "entering")
+	else:
+		var pavement := _entry_outside + _exit_normal * 3.0
+		_set_route(entry, PackedVector3Array([_street_corner, pavement, _entry_outside, _entry_door, _entry_inside, entry.home]), "entering")
 
 
 func _start_home_route(entry: Dictionary) -> void:
-	_set_route(entry, PackedVector3Array([Vector3(-19.4 if entry.body.position.x < -19 else -13.0, 0.15, -10.8), entry.home]), "returning_dance")
+	if _layout.is_empty():
+		_set_route(entry, PackedVector3Array([Vector3(-19.4 if entry.body.position.x < -19 else -13.0, 0.15, -10.8), entry.home]), "returning_dance")
+	else:
+		_set_route(entry, PackedVector3Array([_layout.get("dance_origin", _entry_inside), entry.home]), "returning_dance")
+
+
+func _inside_door(point: Vector3) -> bool:
+	return (point - _entry_door).dot(_exit_normal) < -0.1
 
 
 func _set_route(entry: Dictionary, route: PackedVector3Array, state_name: String) -> void:
@@ -247,7 +313,9 @@ func _walk_route(entry: Dictionary, delta: float) -> void:
 		return
 	# Stop on the correct side of an actually closed door, never phase through it.
 	if not _door_open and entry.state in ["leaving", "entering"]:
-		var crossing: bool = (body.position.z < -6.1 and target.z > -6.0) or (body.position.z > -5.9 and target.z < -6.0)
+		var before_door := (body.position - _entry_door).dot(_exit_normal)
+		var after_door := (target - _entry_door).dot(_exit_normal)
+		var crossing: bool = (before_door < -0.1 and after_door > 0.0) or (before_door > 0.1 and after_door < 0.0)
 		if crossing:
 			entry.waiting_route_state = entry.state
 			entry.state = "waiting_door"
@@ -267,12 +335,42 @@ func _walk_route(entry: Dictionary, delta: float) -> void:
 	body.velocity.z = move_toward(body.velocity.z, desired.z, 5.0 * delta)
 	_apply_gravity(body, delta)
 	var before := body.position
+	_step_over_threshold(body, Vector3(body.velocity.x, 0.0, body.velocity.z) * delta)
 	body.move_and_slide()
 	var moved := body.position - before
 	moved.y = 0.0
 	entry.last_speed = moved.length() / maxf(delta, 0.001)
 	if moved.length_squared() > 0.00001:
 		body.rotation.y = lerp_angle(body.rotation.y, atan2(-moved.x, -moved.z), minf(6.0 * delta, 1.0))
+
+
+func _step_over_threshold(body: CharacterBody3D, motion: Vector3) -> void:
+	# Door sills are real geometry. Give walking patrons a small, collision-checked
+	# step instead of making them phase through the sill or stall at the entrance.
+	if not body.is_on_floor() or motion.length_squared() < 0.000001:
+		return
+	var hit := KinematicCollision3D.new()
+	if not body.test_move(body.global_transform, motion, hit):
+		return
+	# Compare with this body's actual floor limit. The rounded capsule contacts
+	# a 7.5cm sill with normal.y≈0.665: just too steep for its 48° floor limit.
+	if not hit.get_collider() is StaticBody3D or hit.get_normal().y >= cos(body.floor_max_angle):
+		return
+	const SILL_HEIGHT := 0.10
+	if body.test_move(body.global_transform, Vector3.UP * SILL_HEIGHT):
+		return
+	var raised := body.global_transform
+	raised.origin.y += SILL_HEIGHT
+	var probe := motion.normalized() * maxf(motion.length(), 0.28)
+	if body.test_move(raised, probe):
+		return
+	raised.origin += probe
+	var landing := KinematicCollision3D.new()
+	if not body.test_move(raised, Vector3.DOWN * (SILL_HEIGHT + 0.04), landing) or landing.get_normal().y < 0.7:
+		return
+	var rise := SILL_HEIGHT + landing.get_travel().y
+	if rise >= 0.012 and rise <= SILL_HEIGHT:
+		body.global_position.y += rise
 
 
 func _idle_body(entry: Dictionary, delta: float) -> void:
@@ -286,7 +384,7 @@ func _idle_body(entry: Dictionary, delta: float) -> void:
 	moved.y = 0.0
 	entry.last_speed = moved.length() / maxf(delta, 0.001)
 	if entry.state in ["dancing", "waiting_exit"]:
-		body.rotation.y = lerp_angle(body.rotation.y, PI + sin(_time * 0.7 + entry.phase) * 0.12, minf(delta * 3.0, 1.0))
+		body.rotation.y = lerp_angle(body.rotation.y, _dance_yaw + sin(_time * 0.7 + entry.phase) * 0.12, minf(delta * 3.0, 1.0))
 
 
 func _apply_gravity(body: CharacterBody3D, delta: float) -> void:
@@ -314,4 +412,14 @@ func _animate(entry: Dictionary, delta: float) -> void:
 	if not is_instance_valid(entry.visual):
 		return
 	if entry.visual.has_method("animate"):
-		entry.visual.call("animate", delta, float(entry.last_speed), false, false, entry.state in ["dancing", "waiting_exit"], _bpm)
+		var dancing: bool = entry.state in ["dancing", "waiting_exit"]
+		entry.visual.call("animate", delta, float(entry.last_speed), false, false, dancing, _bpm)
+		if dancing and not bool(entry.get("was_dancing", false)):
+			var animation: AnimationPlayer = entry.visual.get("animation_player")
+			if animation and animation.current_animation_length > 0.0:
+				# Seed once on entering dance, then let the shared musical tempo
+				# advance normally. People keep the beat without copying one pose.
+				animation.seek(fposmod(float(entry.phase) / TAU, 1.0) * animation.current_animation_length, true)
+				entry.was_dancing = true
+		elif not dancing:
+			entry.was_dancing = false

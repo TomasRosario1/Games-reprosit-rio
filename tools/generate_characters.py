@@ -257,88 +257,148 @@ def build_rig():
 
 
 def make_animations(rig):
+    """Bake anatomical joint positions, expressed in armature/world axes.
+
+    Blender pose-bone local Y follows a bone, so a root.location.z is not world
+    up. Older clips accidentally translated crouch along the street and an IK
+    pole flipped the feet backwards. Every frame now solves a forward-knee
+    two-link chain and independently preserves the toe's +Y forward direction.
+    The exporter converts this shared +Y forward / +Z up convention to Godot
+    -Z forward / +Y up. No runtime IK or external animation assets are needed.
+    """
+    from mathutils import Matrix, Quaternion
     scene=bpy.context.scene;scene.render.fps=30
-    # Genuine two-link leg IK is baked into portable bone keyframes. No runtime IK dependency.
-    ctrls={};poles={}
-    for s,side in [(-1,'L'),(1,'R')]:
-        ctrl=bpy.data.objects.new('FootTarget.'+side,None);bpy.context.collection.objects.link(ctrl);ctrl.location=(s*.1,0,.12);ctrls[side]=ctrl
-        pole=bpy.data.objects.new('KneePole.'+side,None);bpy.context.collection.objects.link(pole);pole.location=(s*.10,1,.6);poles[side]=pole
-        ik=rig.pose.bones['shin.'+side].constraints.new('IK');ik.target=ctrl;ik.pole_target=pole;ik.chain_count=2
-        # Bone roll around a downward leg: pole angle -90deg makes the knee bend forward.
-        ik.pole_angle=-PI/2
-    clips=[('idle',48),('walk',30),('run',24),('crouch',36),('talk',48),('flinch',18),('dance',40)]
+    rests={bone.name:bone.matrix_local.copy() for bone in rig.data.bones}
+    lengths={bone.name:bone.length for bone in rig.data.bones}
+    order=[bone.name for bone in rig.data.bones]
+    clips=[('idle',54),('walk',27),('run',21),('crouch',36),('crouch_idle',54),('jump',18),('fall',24),('land',12),('talk',48),('flinch',18),('dance',40)]
     result=[]
+    def refresh():bpy.context.view_layer.update()
+    def set_matrix(name,matrix):
+        rig.pose.bones[name].matrix=matrix
+        refresh()
+    def parent_rest_pose(name):
+        pb=rig.pose.bones[name]
+        return pb.parent.matrix @ rests[pb.parent.name].inverted() @ rests[name] if pb.parent else rests[name].copy()
+    def rotate(name,axis,angle):
+        base=parent_rest_pose(name);head=base.translation.copy()
+        rot=Quaternion(Vector(axis),angle).to_matrix().to_4x4()
+        set_matrix(name,Matrix.Translation(head) @ rot @ Matrix.Translation(-head) @ base)
+    def align(name,head,tail):
+        old=rests[name].to_3x3().col[1].normalized()
+        delta=old.rotation_difference((tail-head).normalized()).to_matrix().to_4x4()
+        matrix=delta @ rests[name];matrix.translation=head
+        set_matrix(name,matrix)
+    def leg(side,ankle,foot_pitch=0):
+        thigh='thigh.'+side;shin='shin.'+side;foot='foot.'+side
+        hip=parent_rest_pose(thigh).translation
+        offset=ankle-hip;distance=offset.length
+        l1=lengths[thigh];l2=lengths[shin]
+        distance=max(.03,min(distance,l1+l2-.001))
+        direction=offset.normalized();ankle=hip+direction*distance
+        along=(l1*l1-l2*l2+distance*distance)/(2*distance)
+        pole=Vector((0,1,0));pole=(pole-direction*pole.dot(direction)).normalized()
+        knee=hip+direction*along+pole*math.sqrt(max(0,l1*l1-along*along))
+        align(thigh,hip,knee);align(shin,knee,ankle)
+        orientation=Quaternion(Vector((1,0,0)),foot_pitch).to_matrix().to_4x4() @ rests[foot]
+        orientation.translation=ankle
+        set_matrix(foot,orientation)
+    def arm(side,hand,elbow_hint):
+        upper='upper_arm.'+side;fore='forearm.'+side;handbone='hand.'+side
+        shoulder=parent_rest_pose(upper).translation
+        offset=hand-shoulder;distance=min(offset.length,lengths[upper]+lengths[fore]-.004)
+        direction=offset.normalized();hand=shoulder+direction*distance
+        l1=lengths[upper];l2=lengths[fore];along=(l1*l1-l2*l2+distance*distance)/(2*distance)
+        pole=(elbow_hint-direction*elbow_hint.dot(direction)).normalized()
+        elbow=shoulder+direction*along+pole*math.sqrt(max(0,l1*l1-along*along))
+        align(upper,shoulder,elbow);align(fore,elbow,hand)
+        palm=parent_rest_pose(handbone);palm.translation=hand;set_matrix(handbone,palm)
     for clip,length in clips:
         rig.animation_data_clear()
-        for c in ctrls.values():c.animation_data_clear()
-        original=bpy.data.actions.new('source_'+clip);rig.animation_data_create();rig.animation_data.action=original
-        for pb in rig.pose.bones:pb.rotation_mode='XYZ'
+        action=bpy.data.actions.new(clip);rig.animation_data_create();rig.animation_data.action=action
+        for pb in rig.pose.bones:pb.rotation_mode='QUATERNION'
         for f in range(length+1):
             phase=2*PI*f/length
-            for pb in rig.pose.bones:pb.location=(0,0,0);pb.rotation_euler=(0,0,0)
-            rig.pose.bones['root'].location.z=.003*math.sin(phase)
-            rig.pose.bones['chest'].rotation_euler.x=.012*math.sin(phase)
-            rig.pose.bones['head'].rotation_euler.z=.035*math.sin(phase*.5)
-            for s,side in [(-1,'L'),(1,'R')]:
-                legphase=(f/length+(.5 if side=='R' else 0))%1.0
-                ctrl=ctrls[side];ctrl.location=(s*.1,0,.12)
-                upper=rig.pose.bones['upper_arm.'+side];fore=rig.pose.bones['forearm.'+side]
-                if clip in ['walk','run','crouch']:
-                    stride={'walk':.50,'run':.78,'crouch':.30}[clip];stance=.62 if clip!='run' else .47
-                    if legphase<stance:
-                        t=legphase/stance;y=stride*(.5-t);lift=0
-                    else:
-                        t=(legphase-stance)/(1-stance);y=stride*(-.5+t);lift=math.sin(t*PI)*(.19 if clip=='run' else .105)
-                    ctrl.location=(s*.1,y,.12+lift)
-                    bounce=.019 if clip=='walk' else .042
-                    rig.pose.bones['root'].location.z=(-.19 if clip=='crouch' else 0)+bounce*math.cos(phase*2)
-                    rig.pose.bones['pelvis'].rotation_euler.z=.055*math.sin(phase)
-                    rig.pose.bones['spine'].rotation_euler.z=-.07*math.sin(phase)
-                    rig.pose.bones['chest'].rotation_euler.x=.10 if clip=='run' else .025
-                    rig.pose.bones['chest'].rotation_euler.y=.035*math.sin(phase)
-                    upper.rotation_euler.x=-s*.42*math.sin(phase)
-                    upper.rotation_euler.z=s*.045
-                    fore.rotation_euler.x=.36 if clip=='run' else .10+.07*max(0,s*math.sin(phase))
-                    rig.pose.bones['foot.'+side].rotation_euler.x=.11*math.sin(phase+(PI if side=='R' else 0))
-                elif clip=='dance':
-                    rig.pose.bones['root'].location.z=.023*abs(math.sin(phase*2))
-                    rig.pose.bones['pelvis'].rotation_euler.y=.025*math.sin(phase)
-                    rig.pose.bones['chest'].rotation_euler.z=.07*math.sin(phase)
-                    if side=='R':upper.rotation_euler.x=1.45+.07*math.sin(phase*2);fore.rotation_euler.x=.6
-                    else:upper.rotation_euler.x=.22+.27*math.sin(phase);upper.rotation_euler.z=-.10;fore.rotation_euler.x=.35
-                    ctrl.location=(s*.1,.035*math.sin(phase+s),.12)
-                elif clip=='talk':
-                    upper.rotation_euler.x=.12+.14*math.sin(phase+s);fore.rotation_euler.x=.22+.12*math.sin(phase)
-                    rig.pose.bones['head'].rotation_euler.x=.04*math.sin(phase*2)
-                elif clip=='flinch':
-                    hit=math.sin(PI*f/length)
-                    rig.pose.bones['spine'].rotation_euler.x=-.22*hit
-                    upper.rotation_euler.x=.65*hit;fore.rotation_euler.x=.55*hit
-                    rig.pose.bones['root'].location.z=-.035*hit
-                else:
-                    upper.rotation_euler.z=s*.025
-                    fore.rotation_euler.x=.06
-                ctrl.keyframe_insert('location',frame=f)
             for pb in rig.pose.bones:
-                pb.keyframe_insert('location',frame=f);pb.keyframe_insert('rotation_euler',frame=f)
-        # Bake the evaluated constraint result. Afterwards the rig works in any glTF runtime.
-        bpy.ops.object.select_all(action='DESELECT');rig.select_set(True);bpy.context.view_layer.objects.active=rig
-        bpy.ops.nla.bake(frame_start=0,frame_end=length,step=1,only_selected=False,visual_keying=True,clear_constraints=False,use_current_action=False,bake_types={'POSE'})
-        action=rig.animation_data.action;action.name=clip;action.use_fake_user=True
-        result.append(action)
-        if original.users==0:bpy.data.actions.remove(original)
-        for c in ctrls.values():
-            old=c.animation_data.action if c.animation_data else None;c.animation_data_clear()
-            if old and old.users==0:bpy.data.actions.remove(old)
-    for pb in rig.pose.bones:
-        for constraint in list(pb.constraints):pb.constraints.remove(constraint)
-    for obj in list(ctrls.values())+list(poles.values()):bpy.data.objects.remove(obj,do_unlink=True)
+                pb.location=(0,0,0);pb.rotation_quaternion=(1,0,0,0);pb.scale=(1,1,1)
+            refresh()
+            feet={};pitches={};crouched=clip in ['crouch','crouch_idle']
+            moving=clip in ['walk','run','crouch']
+            if moving:
+                span={'walk':.82,'run':1.12,'crouch':.38}[clip]
+                stance=.60 if clip!='run' else .42
+                for side,shift in [('L',0),('R',.5)]:
+                    t=(f/length+shift)%1
+                    if t<stance:
+                        portion=t/stance;y=span*(.5-portion);lift=0
+                        pitch=(.10*(1-portion*4) if portion<.25 else -.15*((portion-.75)*4) if portion>.75 else 0)
+                    else:
+                        portion=(t-stance)/(1-stance);y=span*(-.5+portion)
+                        lift=math.sin(portion*PI)*(.23 if clip=='run' else .09 if clip=='walk' else .055)
+                        pitch=-.08*math.sin(portion*PI)
+                    feet[side]=Vector((-.10 if side=='L' else .10,y,.12+lift));pitches[side]=pitch
+            else:
+                feet={side:Vector((s*.10,0,.12)) for s,side in [(-1,'L'),(1,'R')]};pitches={'L':0,'R':0}
+            if crouched:
+                root_offset=Vector((.006*math.sin(phase),-.14,-.555+.006*math.cos(phase*2)))
+            elif moving:
+                reach=max(abs(feet[side].y) for side in feet)
+                max_height=.12+math.sqrt(max(.05,(lengths['thigh.L']+lengths['shin.L']-.006)**2-reach**2))
+                hip_height=min(.94,max_height-.014)
+                root_offset=Vector((.009*math.sin(phase),0,hip_height-.96))
+            else:root_offset=Vector((0,0,.002*math.sin(phase)))
+            if clip=='jump':
+                feet['L']=Vector((-.1,.10,.36));feet['R']=Vector((.1,-.18,.31));root_offset.z=-.04
+            elif clip=='fall':
+                feet['L']=Vector((-.1,.03,.16));feet['R']=Vector((.1,-.06,.20));root_offset.z=-.025
+            elif clip=='land':root_offset=Vector((0,-.025,-.16*math.sin(PI*f/length)))
+            elif clip=='dance':root_offset.z=.018*math.sin(phase*2)-.025
+            elif clip=='flinch':root_offset.z=-.035*math.sin(PI*f/length)
+            set_matrix('root',Matrix.Translation(root_offset) @ rests['root'])
+            rotate('pelvis',(0,0,1),(.035 if moving else .012)*math.sin(phase))
+            rotate('spine',(1,0,0),-.36 if crouched else -.08 if clip=='run' else -.015)
+            rotate('chest',(1,0,0),-.19 if crouched else -.08 if clip=='run' else .008*math.sin(phase))
+            if clip in ['walk','run','dance']:
+                base=rig.pose.bones['chest'].matrix.copy();pivot=base.translation.copy()
+                twist=Quaternion(Vector((0,0,1)),-.055*math.sin(phase)).to_matrix().to_4x4()
+                set_matrix('chest',Matrix.Translation(pivot) @ twist @ Matrix.Translation(-pivot) @ base)
+            rotate('neck',(1,0,0),.20 if crouched else 0)
+            rotate('head',(1,0,0),.18 if crouched else .012*math.sin(phase))
+            for s,side in [(-1,'L'),(1,'R')]:
+                arm_phase=phase+(PI if side=='R' else 0)
+                shoulder=parent_rest_pose('upper_arm.'+side).translation
+                if crouched:
+                    hand=Vector((s*.29,.32-feet[side].y*.25 if moving else .32,.70))
+                    hint=Vector((s*.3,-.25,-1))
+                elif clip=='run':
+                    hand=shoulder+Vector((s*.10,-.08-feet[side].y*.45,-.28))
+                    hint=Vector((s*.45,-.7,-1))
+                elif clip=='walk':
+                    hand=shoulder+Vector((s*.09,-feet[side].y*.54,-.48))
+                    hint=Vector((s*.35,-.6,-1))
+                elif clip=='dance' and side=='R':
+                    hand=Vector((s*.24,.25,1.55+.035*math.sin(phase*2)));hint=Vector((s*.9,-1,0))
+                elif clip=='talk':
+                    hand=shoulder+Vector((s*.10,.17+.045*math.sin(phase+s),-.30));hint=Vector((s*.5,-.6,-1))
+                elif clip in ['jump','fall']:
+                    hand=shoulder+Vector((s*.22,.06,-.25));hint=Vector((s*.7,-.4,-1))
+                elif clip=='flinch':
+                    hit=math.sin(PI*f/length);hand=shoulder+Vector((s*.10,.20*hit,-.45+.15*hit));hint=Vector((s*.6,-.5,-1))
+                else:
+                    hand=shoulder+Vector((s*.11,.018,-.51));hint=Vector((s*.5,-.5,-1))
+                arm(side,hand,hint)
+                leg(side,feet[side],pitches[side])
+            for pb in rig.pose.bones:
+                pb.keyframe_insert('location',frame=f)
+                pb.keyframe_insert('rotation_quaternion',frame=f)
+                pb.keyframe_insert('scale',frame=f)
+        action.use_fake_user=True;result.append(action)
+        for curve in action.fcurves:
+            for point in curve.keyframe_points:point.interpolation='LINEAR'
     rig.animation_data_clear()
-    # Explicit NLA tracks retain all clips while avoiding cross-clip accidental blending.
     for action in result:
         track=rig.animation_data_create().nla_tracks.new();track.name=action.name
-        strip=track.strips.new(action.name,0,action);strip.action_frame_start=0;strip.action_frame_end=action.frame_range[1]
-        track.mute=True
+        strip=track.strips.new(action.name,0,action);strip.action_frame_start=0;strip.action_frame_end=action.frame_range[1];track.mute=True
     return result
 
 
@@ -356,14 +416,14 @@ def main():
         # Export actions separately, with sampling so baked deformation is portable.
         bpy.ops.export_scene.gltf(filepath=str(path),export_format='GLB',use_selection=True,export_animations=True,export_animation_mode='ACTIONS',export_force_sampling=True,export_frame_range=False,export_skins=True,export_yup=True,export_materials='EXPORT',export_image_format='AUTO')
         triangles=sum(len(p.vertices)-2 for p in mesh.data.polygons)
-        catalog.append({'id':index,'gender':entry[0],'style':entry[1],'name':entry[2],'outfit':entry[3]+' / '+entry[4],'height':entry[6],'scene':'res://assets/characters/'+path.name,'triangles':triangles,'animations':[a.name for a in actions]})
+        catalog.append({'id':index,'gender':entry[0],'style':entry[1],'name':entry[2],'outfit':entry[3]+' / '+entry[4],'height':entry[6],'scene':'res://assets/characters/'+path.name,'triangles':triangles,'animations':[a.name for a in actions],'pose_revision':2,'forward_axis':'-Z','locomotion_reference_speed':{'walk':1.52,'run':3.81,'crouch':.53}})
         print('CHARACTER',index,'triangles',triangles,flush=True)
         if index==0:
             bpy.ops.file.pack_all()
             bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE/'human_source.blend'))
         bpy.data.objects.remove(mesh,do_unlink=True)
     (OUT/'catalog.json').write_text(json.dumps(catalog,ensure_ascii=False,indent=2)+'\n')
-    (OUT/'README.md').write_text('# Personagens originais\n\n20 adultos low-poly (10 homens e 10 mulheres) criados proceduralmente para este projeto. Não usam modelos ou animações GTA. Malhas trianguladas no GLB, texturas urbanas originais e rig humano de 18 ossos com IK das pernas cozida nos clips.\n\nRegenerar: `blender -b --python tools/generate_characters.py`. `source/human_source.blend` contém o primeiro corpo e rig para edição no Blender; os restantes GLB também podem ser importados. As identidades são estudos de guarda-roupa e não determinam a personalidade dos NPCs.\n\nOs clips são estudos de locomoção e não captura de movimento. Precisam de afinação artística no equipamento do criador.\n')
+    (OUT/'README.md').write_text('# Personagens originais\n\n20 adultos low-poly (10 homens e 10 mulheres) criados proceduralmente para este projeto. Não usam modelos ou animações GTA. Malhas trianguladas no GLB, texturas urbanas originais e rig humano de 18 ossos com movimentos anatómicos cozidos nos clips. Os joelhos são resolvidos para a frente, os pés mantêm a orientação do rosto e o agachar baixa a bacia no eixo vertical. Há clips próprios de agachar parado, salto, queda e aterragem.\n\nRegenerar: `blender -b --python tools/generate_characters.py`. `source/human_source.blend` contém o primeiro corpo e rig para edição no Blender; os restantes GLB também podem ser importados. As identidades são estudos de guarda-roupa e não determinam a personalidade dos NPCs.\n\nOs clips são animação original por articulações, sem captura de movimento nem dados dos jogos de referência. O controlador conserva a fase da passada ao mudar de velocidade e sobe degraus baixos com folga para a cabeça.\n')
     print('DONE 20 originals',flush=True)
 
 if __name__=='__main__':main()

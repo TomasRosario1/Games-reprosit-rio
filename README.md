@@ -1,12 +1,12 @@
-# Álbum Visual — Lisboa Noturna · Protótipo 02
+# Álbum Visual — Lisboa Noturna
 
-Experiência **desktop, offline e em terceira pessoa**, em Godot 4 Compatibility, para o álbum de «Odio puro no meu peito». Esta revisão acrescenta uma praça inspirada no Saldanha, personagens articuladas, habitantes com reações, veículos conduzíveis, menus e um editor dentro do jogo. Continua a ser um protótipo com recursos provisórios.
+Jogo **desktop, offline e em terceira pessoa**, em Godot 4 Compatibility, para o álbum de «Odio puro no meu peito». Exploração e música continuam no centro, numa Lisboa noturna compacta.
 
-**Atualização de 21 de outubro:** motion blur da câmara em **Esc → Qualidade**, com intensidade regulável; editor com eixos arrastáveis, grelha, foco, vistas rápidas e prédio-base texturado. F10 avisa quando há alterações por guardar. As melhorias continuam nesta mesma branch para manter o link de descarga atualizado.
+**Revisão de 22 de outubro:** mapa contínuo em forma de península, com **Saldanha, Bairro Alto e Pink Street**, ruas alternativas, margem do rio e Ponte 25 de Abril estilizada. A sessão começa no telhado de um prédio do Saldanha com escadas interiores de madeira. Há **18 estabelecimentos com interiores**, três prédios com pisos e terraços acessíveis, e uma atuação de DJ na discoteca da Pink Street. [Alterações e capturas desta revisão](docs/REVISAO_LISBOA.md).
 
-**Mapas recebidos e integrados:** o `Maps.rar` continha dois ficheiros OSM. Foram recortados **Saldanha, Bairro Alto e Pink Street**, com 598 contornos de edifícios, ruas, colisões e carregamento de construções próximas. Os bairros ligam-se ao percurso inicial e a um cais com Tejo e Ponte 25 de Abril estilizados. Os dados não trazem interiores, texturas nem relevo; as fachadas e alturas em falta são provisórias. [Âmbito e limitações dos mapas](docs/ENTREGAR_MAPAS.md).
+O `Maps.rar` enviado pelo criador fornece os **598 contornos OSM** dos três bairros. A composição acrescenta **290 edifícios próprios**, terreno com desníveis, arquitetura, texturas e interiores produzidos para o jogo. A península ocupa cerca de **0,77 km²**, repartida em **191 setores de construções**; os setores próximos carregam à medida que o jogador se desloca. As distâncias, a costa e o relevo são adaptações de desenho, não uma reprodução geográfica de Lisboa à escala 1:1. [Origem dos dados e validação](docs/VALIDACAO_MAPAS.md).
 
-Para experimentar rapidamente: **F10 → Ir para… → bairro · mapa recebido → Testar neste bairro**. O editor conserva as alterações quando os setores são descarregados; o mapa de pausa já mostra os três recortes. [Validação desta atualização](docs/VALIDACAO_MAPAS.md).
+O editor continua disponível em **F10 → Ir para… → bairro → Testar neste bairro**. Conserva as alterações ao descarregar setores; o mapa da pausa mostra a península, ruas, bairros, ponte e posição do jogador. Esta versão está na branch **codex/album-visual-prototipo-02**; atualizar essa branch não faz merge em `main`.
 
 ## Descarregar e abrir no Windows
 
@@ -15,7 +15,7 @@ Para experimentar rapidamente: **F10 → Ir para… → bairro · mapa recebido 
 3. Na pasta Transferências, clica no ZIP com o botão direito → **Extrair tudo → Extrair**.
 4. Abre o Godot → **Importar** → procura a pasta extraída → seleciona **project.godot → Importar e editar**.
 5. Mantém o renderizador **Compatibility**. Aguarda a importação e carrega em **F5**.
-6. Escolhe **Artista 01**, **02** ou **03** para começar no telhado.
+6. Escolhe **Artista 01**, **02** ou **03** para começar no telhado do Saldanha.
 
 Podes experimentar com o Godot 4.7.2 que tens; a versão validada neste ambiente foi **4.6.3, em Linux**. Se houver erro, o texto do erro permite identificar a incompatibilidade. Esta entrega é o projeto para abrir no Godot; ainda não inclui um executável Windows exportado.
 
@@ -23,15 +23,17 @@ Não precisas de Python, Blender, conta, Internet ou IA para jogar. Os GLB, text
 
 ## Primeiro percurso
 
-**Telhado → escadas → pulseira → segurança → bar Lado B → atuação.**
+**Telhado do Saldanha → escadas de madeira → rua → explorar os três bairros → discoteca da Pink Street.**
 
-- No telhado, segue a indicação **↓ RUA** até às escadas exteriores.
-- Na rua, procura a pulseira vermelha perto do cruzamento. Aproxima-te e carrega em **E**.
-- Leva-a ao segurança do Lado B e interage. A porta abre e o acesso fica guardado.
-- Entra e aproxima-te da mesa de som. **E** abre a lista de músicas em papel, com pré-escuta e dificuldade.
+- Desce pelo vão de escadas do prédio inicial até à entrada alta para a rua.
+- Experimenta o carro, a mota, a bicicleta ou a trotinete estacionados junto da frente do quarteirão. **E** permite entrar e sair depois de abrandar.
+- Usa as ruas do mapa para chegar ao Bairro Alto e à Pink Street. Os bares e restaurantes têm portas e interiores; três prédios permitem subir até ao terraço.
+- Na discoteca da Pink Street, aproxima-te da mesa do DJ e carrega em **E** para abrir as músicas em papel, com pré-escuta e dificuldade. Esta atuação não exige desbloquear o Lado B.
 - Durante a atuação, acerta **D F J K** na linha inferior. Acertos recuperam público; erros levam pessoas a caminhar até à saída.
 
-As três faixas são **ensaios instrumentais sintetizados para testes**, não músicas da banda. Os nomes e modelos dos três protagonistas também são provisórios.
+O percurso anterior **pulseira → segurança → Lado B** permanece acessível na praça da Madrugada, a poente do Saldanha. A pulseira vermelha abre esse bar e o acesso fica guardado.
+
+As três faixas incluídas são **ensaios instrumentais sintetizados**, não as músicas da banda. Os vinte modelos de habitantes são originais; os três protagonistas ainda precisam das identidades e recursos finais dos músicos.
 
 ## Controlos iniciais
 
@@ -56,17 +58,17 @@ Em **Esc → Controlos**, podes redefinir teclas, botões do rato e botões do c
 
 ## O que mudou nesta revisão
 
-- **Cidade:** praça, monumento, fachadas e mobiliário inspirados no Saldanha; calçada e materiais urbanos texturados, luz quente, nevoeiro e limites reais de desenho. O percurso anterior continua acessível.
-- **Pessoas:** catálogo original de **10 homens e 10 mulheres**, em GLB, com pele deformável, esqueleto, roupa de silhuetas diferentes e animações de locomoção, dança e reação. A passada acompanha a velocidade. Os modelos continuam a precisar de direção artística e afinação.
+- **Cidade:** terreno contínuo, costa, rio, desníveis, rotunda e ruas dos três bairros. Fachadas com janelas, molduras, varandas apoiadas, telhas, portas e letreiros; restaurantes portugueses, franceses e italianos, kebabs, conveniências, fado, bares e discoteca, com esplanadas. O percurso anterior continua acessível.
+- **Pessoas:** catálogo original de **10 homens e 10 mulheres**, em GLB, com pele deformável, esqueleto e roupa de silhuetas diferentes. Esta revisão corrige os pés virados para trás e o agachar: a bacia baixa, os joelhos dobram na direção certa e a cápsula acompanha a postura. A personagem sobe degraus baixos sem ter de saltar; a passada acompanha a velocidade real.
 - **NPCs:** cinco perfis independentes da roupa; observação, desvio, encontrão, recuo/irritação e regresso ao percurso. O menu ajusta o orçamento de peões próximos para 6, 10 ou 16; clientes do bar, segurança e polícia são grupos adicionais.
-- **Discoteca:** oito clientes persistentes circulam, dançam e atravessam a porta para sair/regressar. A recuperação do público reutiliza as mesmas pessoas. Luzes e néons respondem ao som.
-- **Veículos:** carro, mota, bicicleta e trotinete estacionados junto da praça podem ser conduzidos. A mesma personagem aproxima-se, entra, assume uma pose articulada e sai; a bicicleta tem pedalada. A saída exige pouca velocidade e espaço livre. Impactos frontais fortes podem projetar o condutor da mota/bicicleta.
+- **Discoteca:** o DJ funciona na Pink Street e no Lado B. Cada pista tem oito clientes persistentes que dançam, visitam o balcão e atravessam a porta para sair/regressar. Recuperar público traz de volta as mesmas pessoas, caminhando. Luzes e néons respondem ao som.
+- **Veículos:** carro, mota, bicicleta e trotinete disponíveis junto do prédio inicial, com entrada/saída, poses articuladas e pedalada. Rodas acompanham inclinações e ressaltos baixos; impactos fortes deformam a carroçaria e danificam elementos visuais. A saída exige pouca velocidade e espaço livre. O trânsito usa os mesmos veículos físicos, com condutores e orçamento próximo por qualidade.
 - **Polícia e combate secundário:** soco simples, dano, patrulha/perseguição por visão e pressão policial. Encontrões não aumentam a pressão. Agressões a civis observadas pela polícia e agressões à polícia podem aumentá-la. Ainda não há combos nem combate final.
 - **HUD:** sempre visível durante exploração, com objeto/punho, barra de vida, dinheiro em **€000000000** e indicador policial contínuo de cinco partes que se preenche gradualmente e desaparece sem pressão.
 - **Pausa:** menu escuro com brief, mapa esquemático, qualidade baixa/média/alta, população, legendas de diálogo, brilho, controlos, quatro volumes, guardar/carregar, editor e saída confirmada.
 - **Editor:** câmara de voo, seleção, transformações, materiais/luzes, catálogo de peças, NPCs, missões simples e veículos, desfazer/refazer e ficheiro de mundo separado. Inclui cliente para IA local com proposta e pré-visualização; o modelo não está incluído.
 
-Os veículos desta entrega são **modelos originais provisórios**. O SanAndreasUnity inclui sistemas de veículos, mas carrega os recursos visuais de uma instalação externa de GTA. Esses modelos não estão incluídos no repositório de referência nem neste projeto. A análise dos ficheiros consultados está em [Referências](docs/REFERENCIAS_NPCS.md).
+Os veículos e personagens desta entrega são **modelos originais do projeto**. O SanAndreasUnity foi estudado como referência de sistemas; os modelos GTA que ele carrega dependem de uma instalação externa do jogo e não fazem parte desta entrega. [Ficheiros e versões consultados](docs/REFERENCIAS_NPCS.md).
 
 ## Editor e IA local
 
@@ -103,9 +105,9 @@ No Windows, os dados ficam normalmente em:
 | `menu_settings.cfg` | Qualidade, áudio, brilho e controlos |
 | `editor_access.cfg` | Verificação da palavra-passe local |
 
-Antes de limpar dados, fecha o jogo e copia os ficheiros para outra pasta. As edições do mundo são locais; não modificam automaticamente o código no GitHub.
+Antes de limpar dados, fecha o jogo e copia os ficheiros para outra pasta. As edições do mundo são locais; não modificam automaticamente o código no GitHub. A revisão conserva os IDs dos edifícios importados e migra a altura das edições antigas do Bairro Alto para acompanhar o novo patamar.
 
-Ainda faltam músicas e personagens definitivas da banda, animações de entrada/saída trabalhadas à mão, física/combate completos, combos, vocalizações, mais missões e interiores, efeitos de objetos e escalada completa. O editor altera propriedades e cria situações simples; não substitui o Godot ou o Blender. A cidade e a atmosfera ainda são estudos em desenvolvimento.
+Ainda faltam músicas e personagens definitivas da banda, animações de interação trabalhadas à mão, combos, vocalizações, expansão das missões, efeitos dos consumíveis e escalada completa. Os 18 interiores entregues não tornam todos os edifícios visitáveis, e o trânsito não é ainda uma simulação completa de semáforos e cruzamentos. O editor altera propriedades e cria situações simples; não substitui o Godot ou o Blender. A avaliação artística continua a depender do criador.
 
 **60 FPS no HP EliteBook é um objetivo por medir no equipamento real.** Gaussian splatting não foi adicionado: nesta fase usamos geometria texturada, limites de desenho, nevoeiro e simulação por distância.
 
@@ -120,6 +122,7 @@ Ainda faltam músicas e personagens definitivas da banda, animações de entrada
 - [Editor e instalação opcional da IA](docs/EDITOR.md)
 - [Validação da atualização do editor e motion blur](docs/VALIDACAO_EDITOR.md)
 - [Entrega e recorte dos mapas do criador](docs/ENTREGAR_MAPAS.md)
+- [Revisão da península, interiores e movimento](docs/REVISAO_LISBOA.md)
 - [Referências técnicas](docs/REFERENCIAS_NPCS.md)
 - [Créditos dos recursos](assets/CREDITOS.md)
 

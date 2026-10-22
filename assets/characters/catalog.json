@@ -13,10 +13,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 1,
@@ -32,10 +43,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 2,
@@ -51,10 +73,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 3,
@@ -70,10 +103,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 4,
@@ -89,10 +133,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 5,
@@ -108,10 +163,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 6,
@@ -127,10 +193,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 7,
@@ -146,10 +223,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 8,
@@ -165,10 +253,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 9,
@@ -184,10 +283,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 10,
@@ -203,10 +313,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 11,
@@ -222,10 +343,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 12,
@@ -241,10 +373,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 13,
@@ -260,10 +403,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 14,
@@ -279,10 +433,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 15,
@@ -298,10 +463,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 16,
@@ -317,10 +493,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 17,
@@ -336,10 +523,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 18,
@@ -355,10 +553,21 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   },
   {
     "id": 19,
@@ -374,9 +583,20 @@
       "walk",
       "run",
       "crouch",
+      "crouch_idle",
+      "jump",
+      "fall",
+      "land",
       "talk",
       "flinch",
       "dance"
-    ]
+    ],
+    "pose_revision": 2,
+    "forward_axis": "-Z",
+    "locomotion_reference_speed": {
+      "walk": 1.52,
+      "run": 3.81,
+      "crouch": 0.53
+    }
   }
 ]

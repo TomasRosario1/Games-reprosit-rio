@@ -110,7 +110,7 @@ func configure(map: Node3D, actor: Node3D, vehicles: Node3D = null) -> void:
 	camera.name = "CreatorCamera"
 	camera.fov = 65.0
 	camera.near = 0.08
-	camera.far = 130.0
+	camera.far = 300.0
 	world.add_child(camera)
 	_inspection_light = OmniLight3D.new()
 	_inspection_light.light_color = Color("dedfd2")
@@ -486,6 +486,7 @@ func _apply_state(id: String, state: Dictionary) -> void:
 			node.route = points
 		node.global_transform = at
 		node.visible = state.get("visible",true)
+		if node is CharacterBody3D: node.set_meta("editor_hidden",not node.visible)
 		_set_collision_visibility(node,node.visible)
 		if node is CollisionObject3D:
 			if not node.has_meta("editor_collision_layer"): node.set_meta("editor_collision_layer",node.collision_layer)
@@ -802,7 +803,7 @@ func save_world() -> bool:
 	if not _preview_before.is_empty():
 		_set_status("Aplica ou cancela a pré-visualização antes de guardar.")
 		return false
-	var data := {"version":SAVE_VERSION,"base":_base_edits,"added":_added,"counter":_counter}
+	var data := {"version":SAVE_VERSION,"map_revision":2,"base":_base_edits,"added":_added,"counter":_counter}
 	var temporary := save_path+".tmp"
 	var file := FileAccess.open(temporary,FileAccess.WRITE)
 	if file == null:
@@ -863,6 +864,7 @@ func load_world() -> bool:
 	if data.is_empty():
 		_set_status("A gravação está ausente ou inválida. O cenário atual foi preservado.")
 		return false
+	_migrate_city_heights(data)
 	for id in _original: _apply_state(id,_original[id])
 	for id in _added:
 		if targets.has(id) and is_instance_valid(targets[id].node): targets[id].node.queue_free()
@@ -891,6 +893,22 @@ func load_world() -> bool:
 	select_target("")
 	_set_status("Mundo carregado. As alterações do jogador permanecem separadas.")
 	return true
+
+func _migrate_city_heights(data: Dictionary) -> void:
+	# Older edits used a flat Bairro Alto. Lift those objects with its new plateau,
+	# including edits of source features whose sectors are not currently loaded.
+	# Keep the save schema readable by the existing recovery/backup machinery.
+	if int(data.get("map_revision",1)) >= 2 or not is_instance_valid(world) or not world.has_method("ground_height"): return
+	for id in data.base:
+		var state: Dictionary = data.base[id]
+		var position: Array = state.position
+		if str(id).begins_with("base/osm/bairro_alto/"):
+			position[1] = float(position[1])+world.ground_height(float(position[0]),float(position[2]))
+	for id in data.added:
+		var position: Array = data.added[id].state.position
+		if float(position[0]) >= 105 and float(position[0]) <= 355 and float(position[2]) >= 380 and float(position[2]) <= 640:
+			position[1] = float(position[1])+world.ground_height(float(position[0]),float(position[2]))
+	data["map_revision"] = 2
 
 func select_target(id: String) -> void:
 	end_transform(false)

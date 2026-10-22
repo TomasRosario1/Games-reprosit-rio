@@ -51,7 +51,7 @@ func _run() -> void:
 	await _capture("map")
 	game._game_menu._change_quality(2)
 	game._game_menu._change_population(0)
-	check(game._quality_index == 2 and game.player.get_camera().far == 140.0, "quality signal changes real camera draw distance")
+	check(game._quality_index == 2 and game.player.get_camera().far == 270.0, "quality signal changes real camera draw distance")
 	check(game._npc_budget == 6 and game.world._population.budget == 6, "population slider changes actual local pool budget")
 	game._game_menu._change_audio(0.73,"master")
 	game._game_menu._change_audio(0.34,"music")
@@ -182,8 +182,11 @@ func _exercise_vehicle(vehicle: Node3D) -> void:
 		vehicle.forward_speed = 4.0
 		game._vehicles._physics_process(0.1)
 		var before := skeleton.get_bone_pose_rotation(thigh)
+		# Manager-only ticks must not invent pedalling while the actual pedals
+		# are stationary. Advance the vehicle and then mount the same physical phase.
+		vehicle._physics_process(0.3)
 		game._vehicles._physics_process(0.3)
-		check(not skeleton.get_bone_pose_rotation(thigh).is_equal_approx(before), "real bicycle rider pedals with movement speed")
+		check(not skeleton.get_bone_pose_rotation(thigh).is_equal_approx(before), "real bicycle rider follows the physically rotating pedals")
 	vehicle.forward_speed = 0.0
 	await physics_frame
 	await physics_frame

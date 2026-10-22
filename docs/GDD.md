@@ -1,12 +1,12 @@
 # Projeto Álbum Visual — documento de design
 
-Este documento regista as decisões do criador e distingue a visão final do protótipo 02. A revisão implementa a praça inspirada no Saldanha, o catálogo de personagens, a vida do bar, veículos de teste, polícia, menus e uma primeira versão do editor integrado. Continua a ser uma experiência de desenvolvimento com recursos provisórios; o README e o registo de validação indicam como a executar e o que foi testado.
+Este documento regista as decisões do criador e o âmbito implementado. A revisão de 22 de outubro de 2026 desenvolve o mapa contínuo dos três bairros, interiores visitáveis, movimento das personagens, veículos e DJ na Pink Street. Os resultados concretos e a evidência visual estão em [Revisão de Lisboa](REVISAO_LISBOA.md); a visão completa do jogo continua mais ampla do que esta entrega.
 
 ## Visão e prioridades
 
-Atualização posterior no mesmo dia: o criador autorizou avançar no código, confirmou **motion blur** como escolha artística e admitiu Gaussian splatting em planos/fundos específicos, quando justificado pela imagem e compatível com o orçamento. Pediu uma **Ponte 25 de Abril proporcional ao mapa, junto ao Tejo**, e melhorias no editor. Indicou mapas próprios no computador Windows para recortar e integrar: Saldanha/avenida, Pink Street/bares e Bairro Alto/ruas pedonais. Os ficheiros ainda não estão acessíveis no ambiente da nuvem; a expansão geográfica depende da sua entrega. O motion blur e as ferramentas do editor foram desenvolvidos entretanto; consultar [validação desta atualização](VALIDACAO_EDITOR.md).
+O criador autorizou avançar no código, confirmou **motion blur** como escolha artística e admitiu Gaussian splatting em planos específicos quando houver dados e vantagem demonstrada. Os mapas foram depois enviados em `Maps.rar`: os dois OSM originais estão preservados no projeto e deram origem aos recortes de Saldanha, Bairro Alto e Pink Street. O motion blur é regulável e o editor dispõe de eixos arrastáveis, grelha e vistas rápidas; consultar [a validação dessas ferramentas](VALIDACAO_EDITOR.md).
 
-Atualização de 21 de outubro de 2026: o criador confirmou que a referência «GTA LISBOA», em [Ter como referencia](<../Ter como referencia>), expande este Álbum Visual. Música e exploração continuam no centro. O mapa será compacto, com proporções realistas de edifícios e pessoas, sem reproduzir as distâncias reais entre bairros. A [auditoria das 19 etapas](ESTADO_19_ETAPAS.md) separa o que existe do que falta e o [plano do mapa contínuo](PLANO_MAPA_CONTINUO.md) descreve a migração proposta; a integração posterior dos mapas enviados está descrita em [Mapas recebidos](ENTREGAR_MAPAS.md), com três recortes OSM e uma ponte estilizada, ainda sem interiores novos nem relevo real.
+A referência «GTA LISBOA», em [Ter como referencia](<../Ter como referencia>), expande o Álbum Visual: música e exploração continuam no centro. O mapa é compacto, com edifícios e pessoas proporcionais, sem reproduzir as distâncias reais entre bairros. A península, a sua costa e os desníveis são uma composição própria inspirada em Lisboa; os recortes OSM conservam o desenho e os IDs de origem. A [auditoria das 19 etapas](ESTADO_19_ETAPAS.md) e o [plano do mapa contínuo](PLANO_MAPA_CONTINUO.md) registam o estado anterior à implementação, não o estado atual.
 
 Aplicação desktop nativa, single-player e utilizável offline, desenvolvida em Godot 4. A história do álbum e a exploração são o centro da experiência. Combate, veículos, atividades musicais e personalidades dos habitantes dão vida à cidade e condicionam o acesso a alguns locais.
 
@@ -14,13 +14,15 @@ O universo aborda vida noturna, mulheres, dinheiro, drogas e álcool. Os protago
 
 Não há um fim obrigatório: começa-se num telhado e explora-se a cidade, descobrindo áreas, músicas e acontecimentos. A história é contada sobretudo por imagens, ambientes, comportamentos e música. Menus e missões podem ter texto; legendas são opcionais quando aplicáveis.
 
-## Âmbito implementado no protótipo 02
+## Âmbito implementado na revisão atual
 
-- Praça inicial ligada ao telhado e ao Lado B, mais três recortes dos mapas OSM enviados: Saldanha, Bairro Alto e Pink Street. Construções próximas carregam/descarregam em setores; ruas adaptadas ligam os bairros ao Tejo e a uma Ponte 25 de Abril estilizada. As alturas em falta, fachadas e terreno plano são provisórios.
-- Catálogo original de vinte adultos, dez homens e dez mulheres, com malhas humanas, esqueleto, texturas e guarda-roupa variado. Animações de estudo articulam pernas, braços e tronco; não são captura de movimento nem animações definitivas.
+- Península contínua de cerca de 0,77 km² com Saldanha, Bairro Alto e Pink Street, ruas alternativas, terreno com desníveis, cais, rio e Ponte 25 de Abril estilizada. Os 598 contornos OSM conservados juntam-se a 290 edifícios próprios, distribuídos por 191 setores de construções. Alturas em falta são inferidas; a costa e o relevo são autorais.
+- Dezoito estabelecimentos com interiores e portas físicas, incluindo restaurantes, conveniências, bares, fado, kebabs e discoteca. Três prédios têm três pisos, escadas de madeira e terraços acessíveis. Cada estabelecimento tem nome, configuração e mobiliário próprios; isto não implica já um sistema de compras ou missões diferente em cada loja.
+- A sessão começa no telhado do prédio do Saldanha e permite descer pelo interior até à rua. A praça da Madrugada e o Lado B anteriores continuam acessíveis.
+- Catálogo original de vinte adultos, dez homens e dez mulheres, com malhas humanas, esqueleto, texturas e guarda-roupa variado. A revisão corrige orientação dos pés, flexão dos joelhos e abaixamento da bacia ao agachar; a cápsula segue a postura. Passada ligada à velocidade real, subida de degraus baixos e câmara suavizada.
 - Peões com passeio, olhar, desvio e respostas distintas a encontrões. A população próxima é ajustável entre seis, dez e dezasseis peões de rua; o catálogo completo não exige vinte simulações completas em permanência.
-- Clube com público que caminha entre porta e pista, dança e pode sair ou regressar conforme a atuação.
-- Quatro veículos de teste conduzíveis: carro, mota, bicicleta e trotinete. Há aproximação, entrada/saída, poses do avatar, travagem, buzina e resposta a impactos; condução e animações são aproximações arcade, ainda por afinar.
+- Atuação disponível no Lado B e na discoteca da Pink Street. Os oito clientes de cada pista persistem, dançam, visitam o balcão e percorrem a porta real para sair ou regressar conforme a atuação.
+- Carro, mota, bicicleta e trotinete conduzíveis, disponíveis perto do prédio inicial. Há aproximação, entrada/saída, poses articuladas, travagem, buzina, contacto com inclinações e superação de ressaltos baixos. Os acidentes fortes provocam dano visual; o trânsito usa os mesmos veículos físicos e condutores, com um orçamento próximo separado dos peões.
 - Ataque simples desarmado e polícia local com perceção, perseguição, aviso e bastão. A pressão policial sobe pelos crimes configurados e desce gradualmente quando o jogador deixa de ser visto; um encontrão normal não aumenta a pressão.
 - HUD persistente com dinheiro em euros a nove algarismos, vida, indicador de punhos/objeto equipado e pressão numa barra contínua dividida em cinco partes. O nome permanece sobre a personagem.
 - Menu de pausa com nove separadores, opções de qualidade/população, mapa esquemático, controlos, áudio, brilho, legendas, guardar/carregar, editor e saída com confirmação.
@@ -30,14 +32,14 @@ Não há um fim obrigatório: começa-se num telhado e explora-se a cidade, desc
 ## Mundo e direção artística
 
 - Lisboa atual, noturna e movimentada, com telhados, ruas, escadas, interiores e bares.
-- Locais reais reinterpretados em low-poly; futuras áreas incluem Pink Street e o «Galito», associado ao after, comida e descontração.
-- Primeira zona revista: uma praça e ruas inspiradas no Saldanha, com acesso ao telhado, às escadas e ao bar do percurso anterior. Manter a experiência compacta, com uma primeira exploração de aproximadamente dez minutos, e conservar o acesso à missão e à atuação.
+- Locais reais reinterpretados em low-poly; Saldanha, Bairro Alto e Pink Street integram o mapa atual. O «Galito», associado ao after, comida e descontração, continua uma área narrativa por desenvolver.
+- Exploração contínua entre praça, ruas, telhados, interiores e rio, com saídas alternativas em cada bairro. Os três recortes não devem funcionar como ruas isoladas, e os edifícios e estabelecimentos próprios completam a ligação. A primeira exploração deve ser legível sem obrigar a usar o editor para encontrar os locais.
 - A fotografia fornecida pelo criador orienta a revisão: fachadas urbanas de Lisboa, proporções humanas, noite escura, janelas iluminadas e candeeiros de luz quente. GTA III é a referência principal de leitura low-poly desta fase; Matrix, Max Payne e Resident Evil 4 continuam como referências complementares.
 - Proporções adultas realistas, com volume anatómico em ombros, peito, bacia, braços e pernas. Evitar o aspeto de blocos, prismas ou membros retangulares apenas unidos para formar uma pessoa. A presença de action figure não significa anatomia de brinquedo em blocos.
 - Personagens com malhas articuladas por esqueleto e pele deformável, silhuetas legíveis e vestuário com movimento secundário, incluindo o casaco. O tratamento permanece low-poly e texturado.
 - Roupa varia a silhueta além da cor: saias de comprimentos e cortes diferentes, calças estreitas/largas, camisolas, sweats, casacos e outras peças adequadas à noite lisboeta. Cor, tecido, cabelo, rosto, altura e constituição completam a variedade.
 - Todos os ativos 3D usam materiais texturados, com desgaste, humidade e sujidade. Evitar superfícies de cor lisa; usar PBR de custo adequado ao equipamento alvo.
-- Modelos em GLB/GLTF, criados ou preparados no Blender. Recursos provisórios do protótipo devem ser identificados como tal.
+- Personagens em GLB/GLTF, criadas no Blender; edifícios e veículos próprios usam também geometria gerada pelo jogo. Distinguir estes recursos incluídos de músicas e identidades finais da banda ainda por integrar.
 - Iluminação de noite, néons e pontos de luz locais. Priorizar iluminação estática pré-calculada e limitar sombras dinâmicas.
 
 ## Personagens, movimento e veículos
@@ -48,7 +50,7 @@ A animação deve acompanhar o deslocamento: passada proporcional à velocidade,
 
 Controlos pretendidos: WASD para andar, Shift para correr, Ctrl para agachar, salto e transposição de muros. Câmara em terceira pessoa, órbita pelo rato ou comando, colisão com o cenário e recentramento suave atrás da personagem depois de esta parar e não haver movimento da câmara durante algum tempo. Suporte a teclado/rato e comando.
 
-O protótipo 02 disponibiliza carro, mota, trotinete e bicicleta conduzíveis. A interação aproxima o avatar do acesso e utiliza poses/transições para entrar, conduzir e sair; não é ainda o conjunto final de animações de GTA. Os controlos arcade e as consequências dos impactos permitem testar o sistema. A visão final mantém atropelamentos e projeção após impactos frontais fortes nos veículos de duas rodas, com animações, física e afinação próprias de cada tipo.
+A revisão disponibiliza carro, mota, trotinete e bicicleta conduzíveis. A interação aproxima o avatar do acesso e usa poses e transições para entrar, conduzir e sair. O movimento é arcade, com rodas a acompanhar inclinações, limites de subida próprios de cada veículo e dano visível após impactos fortes. A bicicleta relaciona a pedalada com os pedais do veículo. As animações de interação ainda precisam de acabamento artístico; não são extraídas de GTA. Atropelamentos e projeção após impactos frontais fortes nos veículos de duas rodas continuam a exigir afinação própria de cada tipo.
 
 ## Cidade, NPCs e combate secundário
 
@@ -137,7 +139,7 @@ O editor já está dentro da aplicação, exclusivo do criador. Abre com **F10**
 
 A câmara de voo é independente da personagem. Permite selecionar objetos na cena ou na lista, alterar posição, rotação, escala, cor e materiais predefinidos, ajustar propriedades das luzes e escolher aparência/personalidade dos NPCs. O catálogo inclui peças, paredes, portas, luzes, NPCs, marcadores de missão e os quatro tipos de veículo. Modelos GLB/GLTF já integrados no projeto podem ser instanciados. Há duplicação, remoção, Desfazer e Refazer.
 
-As alterações são guardadas em `world_edits.json`, separadas do progresso do jogador. A gravação usa um ficheiro temporário e backup; o carregamento valida os dados e pode recorrer ao backup. Os marcadores de missão guardam a conclusão e evitam repetir a recompensa. A construção de cadeias narrativas, condições complexas e edição geral de comportamentos continua futura.
+As alterações são guardadas em `world_edits.json`, separadas do progresso do jogador. A gravação usa um ficheiro temporário e backup; o carregamento valida os dados e pode recorrer ao backup. Os IDs dos edifícios importados são estáveis e as edições de setores descarregados são conservadas. A revisão 2 do mapa adapta as edições antigas do Bairro Alto ao novo patamar de oito metros, sem repetir o ajuste no carregamento seguinte. Os marcadores de missão guardam a conclusão e evitam repetir a recompensa. Cadeias narrativas, condições complexas e edição geral de comportamentos continuam futuras.
 
 O painel de assistência envia texto e um Scene Graph com IDs e propriedades ao **Ollama em `127.0.0.1:11434`**. O criador precisa de instalar e iniciar o Ollama e descarregar previamente um modelo adequado; não há um modelo incluído. A ligação pode operar sem Internet depois dessa preparação. A inferência com um modelo real não foi validada neste ambiente, pelo que não se declara o assistente local integralmente pronto.
 
@@ -163,7 +165,7 @@ Controlar luzes, sombras, efeitos transparentes e sobreposição de áudio. Ruas
 
 ## Revisão atual e fontes
 
-A praça, as malhas humanas, o guarda-roupa, o catálogo e as reações de proximidade integram o protótipo 02, juntamente com circulação no clube, menus, condução de teste, pressão policial e ferramentas do editor. Isto não conclui a visão final. Continuam em falta os recursos finais da banda, afinação artística e de animação, expansão narrativa, IA geral validada e medição no hardware alvo. As regras de música, economia, inventário, morte e gravação preservam os critérios da primeira entrega.
+A península, os três bairros, os 18 interiores, o novo percurso inicial, a atuação na Pink Street e as correções de movimento integram o projeto executável, juntamente com menus, condução, pressão policial e editor. Isto não conclui a visão final. Continuam em falta os recursos finais da banda, acabamento artístico e de animação, expansão narrativa, IA geral validada e medição no hardware alvo. As regras de música, economia, inventário, morte e gravação preservam os critérios da primeira entrega.
 
 As referências pedidas foram analisadas em `REFERENCIAS_NPCS.md`, com commits, licenças e ficheiros concretos. SanAndreasUnity orienta a separação de estados/perceção/população; OpenLiberty orienta distâncias de visibilidade e recursos em cache. A implementação do Álbum Visual é própria, sem código não licenciado ou recursos GTA copiados.
 

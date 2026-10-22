@@ -1,6 +1,6 @@
 class_name AlbumPlayer
 extends CharacterBody3D
-## Character feet sit at the node origin. Assets are a textured procedural stand-in.
+## Camera-relative human controller with a grounded gait, crouch and stair clearance.
 
 signal died
 
@@ -36,6 +36,8 @@ var _footsteps: AudioStreamPlayer3D
 var _lean: float = 0.0
 var _punch_time: float = 0.0
 var _punch_modifier: SkeletonModifier3D
+var _camera_step_offset := 0.0
+const STEP_HEIGHT := 0.28
 
 
 
@@ -95,7 +97,7 @@ func _physics_process(delta: float) -> void:
 	if want_crouch != _crouched:
 		if want_crouch or _can_stand():
 			_crouched = want_crouch
-			_capsule.height = 1.25 if _crouched else 1.82
+			_capsule.height = 1.28 if _crouched else 1.82
 			_collision.position.y = _capsule.height * 0.5
 	var speed: float = walk_speed
 	var running: bool = not movement_locked and Input.is_action_pressed("sprint") and not _crouched
@@ -118,6 +120,8 @@ func _physics_process(delta: float) -> void:
 			velocity.y = 8.8
 			velocity.x += desired.x * 1.7
 			velocity.z += desired.z * 1.7
+	if is_on_floor() and velocity.y<=0 and not movement_locked:
+		_try_step_up(Vector3(velocity.x,0,velocity.z)*delta)
 	var falling_speed: float = -velocity.y
 	var was_grounded: bool = is_on_floor()
 	var approach_speed: float = Vector2(velocity.x, velocity.z).length()
@@ -131,6 +135,8 @@ func _physics_process(delta: float) -> void:
 			if collider is Node and collider.has_method("receive_bump"):
 				collider.receive_bump(global_position, approach_speed)
 	_update_footsteps(delta, Vector2(traveled.x, traveled.z).length(), running)
+	if is_on_floor() and not was_grounded and falling_speed>3.0 and falling_speed<13.5:
+		_visuals.react("land")
 	if is_on_floor() and not was_grounded and falling_speed > 13.5:
 		# A street-level landing from the starting roof is fatal. Ordinary jumps
 		# remain below the damage threshold, including the assisted low vault.
@@ -146,7 +152,8 @@ func _physics_process(delta: float) -> void:
 		return
 	if desired.length_squared() > 0.01:
 		var facing: float = atan2(-desired.x, -desired.z)
-		_visuals.rotation.y = lerp_angle(_visuals.rotation.y, facing, minf(1.0, 12.0 * delta))
+		var turn := wrapf(facing-_visuals.rotation.y,-PI,PI)
+		_visuals.rotation.y += clampf(turn,-8.5*delta,8.5*delta)
 		_camera_idle = 0.0
 	else:
 		_camera_idle += delta
@@ -156,6 +163,7 @@ func _physics_process(delta: float) -> void:
 	_animate(delta, _motion_speed, running)
 	_update_camera(delta)
 	_name_label.text = display_name
+	_name_label.position.y = lerpf(_name_label.position.y,1.47 if _crouched else 2.18,1.0-exp(-10.0*delta))
 
 
 func _read_controller_camera(delta: float) -> void:
@@ -175,7 +183,8 @@ func _read_controller_camera(delta: float) -> void:
 func _update_camera(delta: float) -> void:
 	_camera_pivot.rotation.y = _yaw
 	_spring.rotation.x = _pitch
-	_camera_pivot.position.y = lerpf(_camera_pivot.position.y, 1.07 if _crouched else 1.42, minf(1.0, delta * 8.0))
+	_camera_step_offset = lerpf(_camera_step_offset,0.0,1.0-exp(-10.0*delta))
+	_camera_pivot.position.y = lerpf(_camera_pivot.position.y,(0.99 if _crouched else 1.42)+_camera_step_offset,1.0-exp(-10.0*delta))
 
 
 func _can_stand() -> bool:
@@ -221,6 +230,7 @@ func respawn_at(at: Transform3D) -> void:
 	_collision.position.y = 0.91
 	_yaw = at.basis.get_euler().y
 	_visuals.rotation.y = _yaw
+	_camera_step_offset = 0.0
 	_camera_idle = 0.0
 	movement_locked = false
 	reset_physics_interpolation()
@@ -255,7 +265,7 @@ func get_character_visual() -> Node3D:
 func _animate(delta: float, horizontal_speed: float, running: bool) -> void:
 	if not is_instance_valid(_visuals):
 		return
-	_visuals.animate(delta, horizontal_speed, running, _crouched, _performing, _performance_bpm)
+	_visuals.animate(delta,horizontal_speed,running,_crouched,_performing,_performance_bpm,is_on_floor(),velocity.y)
 	_punch_time = maxf(0.0, _punch_time - delta)
 	if not is_instance_valid(_punch_modifier) and is_instance_valid(_visuals.get("skeleton")):
 		_punch_modifier = load("res://scripts/punch_modifier.gd").new()
@@ -327,3 +337,25 @@ func _update_footsteps(_delta: float, distance: float, running: bool) -> void:
 func perform_attack() -> void:
 	if not movement_locked and not _dead:
 		_punch_time = 0.36
+
+func _try_step_up(motion: Vector3) -> void:
+	# Step only onto static architecture; never climb another person's capsule.
+	if motion.length_squared()<0.000001: return
+	var hit := KinematicCollision3D.new()
+	if not test_move(global_transform,motion,hit): return
+	if not hit.get_collider() is StaticBody3D or hit.get_normal().y>0.65: return
+	if test_move(global_transform,Vector3.UP*STEP_HEIGHT): return
+	var raised := global_transform
+	raised.origin += Vector3.UP*STEP_HEIGHT
+	# Probe beyond the capsule's rounded toe. A one-frame probe lands on the
+	# stair's vertical edge instead of its top and wrongly rejects normal risers.
+	var probe_motion := motion.normalized()*maxf(motion.length(),_capsule.radius+0.06)
+	if test_move(raised,probe_motion): return
+	raised.origin += probe_motion
+	var landing := KinematicCollision3D.new()
+	if not test_move(raised,Vector3.DOWN*(STEP_HEIGHT+0.04),landing): return
+	if landing.get_normal().y<0.7: return
+	var rise := STEP_HEIGHT+landing.get_travel().y
+	if rise<0.012 or rise>STEP_HEIGHT: return
+	global_position.y += rise
+	_camera_step_offset -= rise

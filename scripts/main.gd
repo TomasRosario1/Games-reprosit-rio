@@ -1,5 +1,5 @@
 extends Node3D
-## Native offline vertical slice. Music, people and textures are original stand-ins.
+## Native offline visual album. Original world/character assets and bundled music demos.
 const PLAYER_SCRIPT = preload("res://scripts/player.gd")
 const WORLD_SCRIPT = preload("res://scripts/world.gd")
 const RHYTHM_SCRIPT = preload("res://scripts/rhythm_game.gd")
@@ -68,6 +68,7 @@ var _font: Font
 var _serif: Font
 var _preview: bool = false
 var _performance_camera: Camera3D
+var _performance_context: Dictionary = {}
 var _population_choice: OptionButton
 var _quality_choice: OptionButton
 var _npc_budget: int = 10
@@ -106,7 +107,7 @@ func _ready() -> void:
 	world.set_bar_unlocked(store.bar_unlocked)
 	world.set_wristband_visible(not store.bar_unlocked and not store.bag.has("Pulseira perdida") and store.equipped != "Pulseira perdida")
 	player = PLAYER_SCRIPT.new()
-	player.position = world.rooftop_spawn.origin
+	player.transform = world.get_initial_spawn()
 	player.display_name = ARTISTS[clampi(store.artist_index, 0, 2)]
 	player.appearance_id = [0, 3, 6][clampi(store.artist_index, 0, 2)]
 	add_child(player)
@@ -124,7 +125,7 @@ func _ready() -> void:
 	_performance_camera.look_at(world.stage_position + Vector3(0, 1.1, 2.7))
 	player.get_camera().make_current()
 	_apply_quality()
-	_safe_transform = world.street_safe
+	_safe_transform = world.get_initial_safe()
 	_setup_audio()
 	_build_ui()
 	_setup_extended_systems()
@@ -366,12 +367,14 @@ func _update_interaction() -> void:
 		_hint.text = "E / Y   FALAR COM O SEGURANÇA" if not store.bar_unlocked else "LADO B   •   ENTRADA LIVRE"
 	elif player.global_position.distance_to(world.stage_position) < 2.8 and store.bar_unlocked:
 		_hint.text = "E / Y   ESCOLHER UMA FAIXA"
+	var venue: Dictionary = world.get_nearby_performance(player.global_position,store.bar_unlocked)
+	if not venue.is_empty(): _hint.text = "E / Y   ESCOLHER UMA FAIXA"
 	if store.bar_unlocked:
 		_mission.text = "LADO B\nEntra no bar e aproxima-te da mesa de som."
 	elif store.bag.has("Pulseira perdida") or store.equipped == "Pulseira perdida":
 		_mission.text = "UMA ENTRADA PARA A NOITE\nEntrega a pulseira ao segurança do Lado B."
 	else:
-		_mission.text = "UMA ENTRADA PARA A NOITE\nDesce as escadas. Há uma pulseira vermelha na rua."
+		_mission.text = "UMA ENTRADA PARA A NOITE\nExplora Lisboa: Saldanha, Bairro Alto e Pink Street. O Lado B fica na praça da Madrugada."
 
 
 func _interact() -> void:
@@ -389,6 +392,10 @@ func _interact() -> void:
 	if _vehicles and _vehicles.find_nearest(player.global_position) != null:
 		if _vehicles.interact():
 			return
+	var venue: Dictionary = world.get_nearby_performance(player.global_position,store.bar_unlocked)
+	if not venue.is_empty():
+		_open_songs()
+		return
 	if player.global_position.distance_to(world.wristband_position) < 2.1 and not store.bar_unlocked and not store.bag.has("Pulseira perdida") and store.equipped != "Pulseira perdida":
 		if store.collect("Pulseira perdida"):
 			store.mission_state = "return_wristband"
@@ -468,6 +475,9 @@ func _show_pause() -> void:
 
 
 func _open_songs() -> void:
+	var venue: Dictionary = world.get_nearby_performance(player.global_position,store.bar_unlocked)
+	if not venue.is_empty(): _performance_context = venue
+	world.set_performance_venue(str(_performance_context.get("id","lado_b")))
 	state = "songs"
 	_hide_panels()
 	_hud.hide()
@@ -512,7 +522,9 @@ func _start_performance() -> void:
 	music.play(0.0)
 	performance_elapsed = 0.0
 	player.set_performing(true, SONGS[selected_song].bpm)
-	player.face_direction(Vector3(0, 0, 1))
+	player.face_direction(_performance_context.get("facing",Vector3(0,0,1)))
+	_performance_camera.global_position = _performance_context.get("camera_position",world.stage_position+Vector3(7.5,3.2,-4.8))
+	_performance_camera.look_at(_performance_context.get("camera_target",world.stage_position+Vector3(0,1.1,2.7)))
 	world.set_performance(true, SONGS[selected_song].bpm)
 	_performance_camera.make_current()
 	rhythm.start(music.stream.get_length(), selected_difficulty, SONGS[selected_song].bpm)
@@ -989,7 +1001,7 @@ func _quality_changed(index: int) -> void:
 
 func _apply_quality() -> void:
 	world.set_quality(_quality_low)
-	player.get_camera().far = 95.0 if _quality_low else 125.0
+	player.get_camera().far = [160.0,210.0,270.0][clampi(_quality_index,0,2)]
 	if _performance_camera:
 		_performance_camera.far = player.get_camera().far
 
@@ -1000,9 +1012,22 @@ func _setup_extended_systems() -> void:
 	_vehicles = load("res://scripts/vehicle_manager.gd").new()
 	world.add_child(_vehicles)
 	_vehicles.set_player(player)
+	if is_instance_valid(world.city_traffic):
+		for car in world.city_traffic.cars: _vehicles.register_vehicle(car)
+	# Parking by the Saldanha starting building makes every ride reachable on foot.
+	for parking in [{"type":"car","x":250.0},{"type":"motorbike","x":268.0},{"type":"bicycle","x":284.0},{"type":"scooter","x":299.0}]:
+		var vehicle: Node3D = load("res://scripts/vehicle.gd").new()
+		vehicle.type = parking.type
+		vehicle.position = Vector3(parking.x,0.15,315.0)
+		vehicle.rotation.y = PI*0.5
+		vehicle.set_meta("vehicle_id","saldanha_"+parking.type)
+		_vehicles.add_child(vehicle)
+		_vehicles.register_vehicle(vehicle)
 	if _vehicles.get("_horn") is AudioStreamPlayer3D:
 		_vehicles.get("_horn").bus = "AlbumEffects"
 	_vehicles.rider_crashed.connect(_vehicle_crash)
+	if _vehicles.has_signal("fell_out_of_world"):
+		_vehicles.fell_out_of_world.connect(_vehicle_fell_out_of_world)
 	_vehicles.message.connect(func(text: String): _notify(text))
 	_vehicles.driving_changed.connect(_driving_changed)
 	_vehicles.collided_person.connect(_vehicle_hit_person)
@@ -1076,9 +1101,9 @@ func _menu_quality_changed(index: int) -> void:
 	_apply_quality()
 	world.set_quality_level(_quality_index)
 	if _quality_index == 1:
-		player.get_camera().far = 110.0
+		player.get_camera().far = 210.0
 	elif _quality_index == 2:
-		player.get_camera().far = 140.0
+		player.get_camera().far = 270.0
 
 
 func _menu_population_changed(count: int) -> void:
@@ -1111,7 +1136,7 @@ func _manual_save() -> void:
 		var file := FileAccess.open("user://manual_position.json", FileAccess.WRITE)
 		if file:
 			var save_at: Vector3 = _safe_transform.origin if _vehicles.is_driving() else player.global_position
-			file.store_string(JSON.stringify({"position": [save_at.x, save_at.y, save_at.z], "health": player.health}))
+			file.store_string(JSON.stringify({"position": [save_at.x, save_at.y, save_at.z], "health": player.health,"map_revision":2}))
 		_game_menu.set_context({"status": "Jogo guardado no espaço manual."})
 	else:
 		_game_menu.set_context({"status": "Não foi possível guardar o jogo."})
@@ -1131,12 +1156,14 @@ func _manual_load() -> void:
 	player.set_appearance([0, 3, 6][clampi(store.artist_index, 0, 2)])
 	player.walk_speed = [1.85, 2.0, 1.7][clampi(store.artist_index, 0, 2)]
 	player.run_speed = [4.6, 4.9, 4.3][clampi(store.artist_index, 0, 2)]
-	var at: Vector3 = world.rooftop_spawn.origin
+	var at: Vector3 = world.get_initial_spawn().origin
 	var health: float = 100.0
 	if FileAccess.file_exists("user://manual_position.json"):
 		var data: Variant = JSON.parse_string(FileAccess.get_file_as_string("user://manual_position.json"))
 		if data is Dictionary and data.get("position") is Array and data.position.size() == 3:
 			var candidate := Vector3(float(data.position[0]), float(data.position[1]), float(data.position[2]))
+			if int(data.get("map_revision",1))<2 and candidate.x>=105 and candidate.x<=355 and candidate.z>=380 and candidate.z<=640:
+				candidate.y += world.ground_height(candidate.x,candidate.z)
 			if world.is_valid_save_position(candidate):
 				at = candidate + Vector3.UP * 0.1
 				health = clampf(float(data.get("health", 100)), 1, 100)
@@ -1257,6 +1284,13 @@ func _vehicle_hit_person(person: Node, strength: float) -> void:
 
 func _driving_changed(driving: bool) -> void:
 	if driving and is_instance_valid(_vehicles.active_vehicle):
+		_vehicles.active_vehicle.set_meta("player_owned",true)
 		player.set_meta("vehicle_body", _vehicles.active_vehicle)
 	elif player.has_meta("vehicle_body"):
 		player.remove_meta("vehicle_body")
+
+func _vehicle_fell_out_of_world(safe_position: Vector3) -> void:
+	if world.is_valid_save_position(safe_position):
+		_safe_transform = Transform3D(Basis.IDENTITY,safe_position)
+	player.health = 0.0
+	player._die()

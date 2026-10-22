@@ -5,6 +5,7 @@ signal driving_changed(driving: bool)
 signal rider_crashed(force: float)
 signal message(text: String)
 signal collided_person(person: Node, strength: float)
+signal fell_out_of_world(safe_position: Vector3)
 
 const VEHICLE = preload("res://scripts/vehicle.gd")
 var vehicles: Array[Node3D] = []
@@ -24,6 +25,10 @@ var _exit_position := Vector3.ZERO
 var _orbit_yaw := 0.0
 var _orbit_pitch := -0.20
 var _horn: AudioStreamPlayer3D
+var _safe_exit_position := Vector3.ZERO
+var _safe_exit_timer := 0.0
+var _impact_jolt := 0.0
+var _impact_time := 0.0
 
 func _ready() -> void:
 	name = "VeiculosConduziveis"
@@ -65,6 +70,10 @@ func register_vehicle(vehicle: Node3D) -> void:
 		vehicle.frontal_crash.connect(_on_crash.bind(vehicle))
 	if vehicle.has_signal("hit_person"):
 		vehicle.hit_person.connect(func(person: Node,strength: float): collided_person.emit(person,strength))
+	if vehicle.has_signal("fell_out_of_world"):
+		vehicle.fell_out_of_world.connect(_on_vehicle_void.bind(vehicle))
+	if vehicle.has_signal("impact_occurred"):
+		vehicle.impact_occurred.connect(_on_vehicle_impact.bind(vehicle))
 
 func set_player(body: CharacterBody3D) -> void:
 	if is_driving(): force_exit()
@@ -79,7 +88,7 @@ func find_nearest(position: Vector3, maximum_distance: float = 2.5) -> Node3D:
 	var result: Node3D
 	var distance := maximum_distance
 	for vehicle in vehicles:
-		if not is_instance_valid(vehicle) or vehicle == active_vehicle: continue
+		if not is_instance_valid(vehicle) or vehicle == active_vehicle or not vehicle.is_visible_in_tree() or vehicle.collision_layer==0: continue
 		var current: float = position.distance_to(vehicle.get_entry_position())
 		if current < distance:
 			distance = current
@@ -101,6 +110,7 @@ func interact() -> bool:
 	return _begin_enter(nearest)
 
 func _begin_enter(vehicle: Node3D) -> bool:
+	if not is_instance_valid(vehicle) or not vehicle.is_visible_in_tree() or vehicle.collision_layer==0: return false
 	if absf(vehicle.forward_speed) > 1.0: return false
 	var entry: Vector3 = vehicle.get_entry_position()
 	entry.y = _player.global_position.y
@@ -109,6 +119,9 @@ func _begin_enter(vehicle: Node3D) -> bool:
 		message.emit("Aproxima-te do lado livre do veículo.")
 		return false
 	active_vehicle = vehicle
+	var mounted_visual := _get_visual()
+	if mounted_visual and mounted_visual.has_method("get_body_height") and vehicle.has_method("fit_rider"):
+		vehicle.fit_rider(mounted_visual.get_body_height())
 	_saved_layer = _player.collision_layer
 	_saved_mask = _player.collision_mask
 	_saved_physics = _player.is_physics_processing()
@@ -126,6 +139,8 @@ func _begin_enter(vehicle: Node3D) -> bool:
 		_excluded_rid = vehicle.get_rid()
 		spring.add_excluded_object(_excluded_rid)
 	_start_position = _player.global_position
+	_safe_exit_position = _start_position
+	_safe_exit_timer = 0
 	_door_position = entry
 	_transition_time = 0.0
 	_walk_duration = clampf(_start_position.distance_to(entry)/1.8,0.35,1.4)
@@ -200,6 +215,11 @@ func _physics_process(delta: float) -> void:
 		active_vehicle.controls_enabled = false
 		_update_camera(delta)
 		return
+	_safe_exit_timer -= delta
+	if state=="driving" and _safe_exit_timer<=0 and active_vehicle.is_on_floor():
+		_safe_exit_timer = 0.75
+		var safe: Variant = _find_clear_exit()
+		if safe!=null: _safe_exit_position = safe
 	_transition_time += delta
 	var visual := _get_visual()
 	match state:
@@ -223,6 +243,7 @@ func _physics_process(delta: float) -> void:
 			if visual:
 				visual.rotation.y = active_vehicle.rotation.y
 				visual.rotation.z = active_vehicle.visual.rotation.z
+				visual.rotation.x = active_vehicle.visual.rotation.x
 			_animate_visual(delta,absf(active_vehicle.forward_speed),active_vehicle.type)
 			_read_camera_stick(delta)
 		"exiting":
@@ -247,9 +268,14 @@ func _restore_player(destination: Vector3) -> void:
 		var visual := _get_visual()
 		if visual:
 			visual.rotation.z = 0.0
+			visual.rotation.x = 0.0
 			if visual.has_method("set_vehicle_pose"): visual.set_vehicle_pose("")
 		var spring: Variant = _player.get("_spring")
 		if spring is SpringArm3D and _excluded_rid.is_valid(): spring.remove_excluded_object(_excluded_rid)
+	if is_instance_valid(_player) and _player.has_method("get_camera"):
+		var camera: Camera3D = _player.call("get_camera")
+		camera.h_offset = 0.0; camera.v_offset = 0.0
+	_impact_jolt = 0.0
 	active_vehicle = null
 	_excluded_rid = RID()
 	state = "on_foot"
@@ -273,6 +299,8 @@ func _animate_visual(delta: float, speed: float, pose: String) -> void:
 	var visual := _get_visual()
 	if not visual: return
 	if visual.has_method("set_vehicle_pose"): visual.set_vehicle_pose(pose)
+	if not pose.is_empty() and visual.has_method("set_vehicle_contacts") and is_instance_valid(active_vehicle) and active_vehicle.has_method("get_rider_contacts"):
+		visual.set_vehicle_contacts(active_vehicle.get_rider_contacts())
 	if visual.has_method("animate"): visual.animate(delta,speed,false,false,false,100.0)
 
 func _face_visual(visual: Node3D, direction: Vector3) -> void:
@@ -284,6 +312,12 @@ func _update_camera(delta: float) -> void:
 	_player.set("_yaw",active_vehicle.rotation.y+_orbit_yaw)
 	_player.set("_pitch",_orbit_pitch)
 	if _player.has_method("_update_camera"): _player.call("_update_camera",delta)
+	_impact_time += delta
+	_impact_jolt = lerpf(_impact_jolt,0.0,1.0-exp(-8.0*delta))
+	if _player.has_method("get_camera"):
+		var camera: Camera3D = _player.call("get_camera")
+		camera.h_offset = sin(_impact_time*56.0)*_impact_jolt
+		camera.v_offset = cos(_impact_time*43.0)*_impact_jolt*0.6
 
 func _read_camera_stick(delta: float) -> void:
 	var pads := Input.get_connected_joypads()
@@ -319,3 +353,13 @@ func _build_horn() -> void:
 	_horn.max_distance = 35
 	_horn.volume_db = -6
 	add_child(_horn)
+
+func _on_vehicle_impact(force: float, vehicle: Node3D) -> void:
+	if active_vehicle==vehicle and is_driving(): _impact_jolt = minf(0.13,force*0.009)
+
+func _on_vehicle_void(vehicle: Node3D) -> void:
+	var lost_rider := active_vehicle==vehicle and is_driving()
+	var safe := _safe_exit_position
+	if lost_rider: force_exit()
+	if vehicle.has_method("recover_from_void"): vehicle.recover_from_void()
+	if lost_rider: fell_out_of_world.emit(safe)

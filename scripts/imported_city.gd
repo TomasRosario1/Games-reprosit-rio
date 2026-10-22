@@ -16,6 +16,11 @@ var _timer := 0.0
 var _feature_sectors: Dictionary = {}
 var _facades: Array[StandardMaterial3D] = []
 var _music_lights: Array[OmniLight3D] = []
+var _geography: RefCounted
+var _architecture: RefCounted
+var _nightlife: Dictionary = {}
+var exploration_points: Array[Dictionary] = []
+var _skyline: Array[GeometryInstance3D] = []
 
 func _ready() -> void:
 	name = "LisboaImportada"
@@ -28,12 +33,15 @@ func _ready() -> void:
 	foundation.name = "FundacaoProtegida"
 	foundation.set_meta("editor_locked",true)
 	add_child(foundation)
-	for sector in manifest.sectors:
-		var b: Array = sector.bounds
-		_box(foundation,Vector3((b[0]+b[2])*0.5,-0.2,(b[1]+b[3])*0.5),Vector3(b[2]-b[0],0.4,b[3]-b[1]),world._material("calcada"),true)
-	for link in manifest.links:
-		_build_link(foundation,link.points)
+	_geography = load("res://scripts/city_geography.gd").new()
+	_geography.build(self,foundation)
 	_build_river(foundation)
+	_build_skyline(foundation)
+	if ResourceLoader.exists("res://scripts/lisbon_architecture.gd"):
+		_architecture = load("res://scripts/lisbon_architecture.gd").new()
+		for entry in [{"id":"saldanha","at":Vector3(270,0,306),"yaw":0.0},{"id":"bairro_alto","at":Vector3(184,8,696),"yaw":0.0},{"id":"pink_street","at":Vector3(305,0,985),"yaw":PI}]:
+			_nightlife[entry.id] = _architecture.build_nightlife(self,foundation,entry.id,entry.at,entry.yaw)
+	exploration_points.assign(get_bookmarks())
 	# Preserve OSM attribution in the data and the menu; no web service at runtime.
 
 func _prepare_materials() -> void:
@@ -49,7 +57,8 @@ func _prepare_materials() -> void:
 		mat.emission_enabled = true
 		mat.emission_texture = load(path+"_emission.png")
 		mat.emission = Color("ffe7bc")
-		mat.emission_energy_multiplier = 0.45
+		mat.emission_energy_multiplier = 0.12
+		mat.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
 		mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		_facades.append(mat)
 
@@ -111,7 +120,7 @@ func _load_sector(spec: Dictionary) -> void:
 		# Original stylised monument, positioned using the supplied footprint.
 		var monument := Node3D.new()
 		monument.name = "MonumentoSaldanha"
-		monument.position = _point(point)
+		monument.position = _point(point,ground_height(point[0],point[1]))
 		monument.set_meta("map_feature",true)
 		monument.set_meta("editor_stable_id","base/osm/saldanha/monumento")
 		root.add_child(monument)
@@ -128,7 +137,7 @@ func _load_sector(spec: Dictionary) -> void:
 	for district in manifest.districts:
 		if district.id == spec.district and _distance(_point(district.music.position),spec.bounds) < 0.01:
 			var light := OmniLight3D.new()
-			light.position = _point(district.music.position)+Vector3(0,3,0)
+			light.position = _point(district.music.position,ground_height(district.music.position[0],district.music.position[1]))+Vector3(0,3,0)
 			light.light_color = Color("d073a4") if district.id == "pink_street" else Color("d6a261")
 			light.omni_range = 15.0
 			light.shadow_enabled = false
@@ -158,7 +167,7 @@ func _mesh(parent: Node3D, verts: PackedVector3Array, normals: PackedVector3Arra
 func _build_building(parent: Node3D, data: Dictionary) -> void:
 	var node: Node3D = BUILDING.new()
 	node.name = "Predio_"+str(data.id).get_slice("/",2)
-	node.position = _point(data.position)
+	node.position = _point(data.position,ground_height(data.position[0],data.position[1]))
 	node.set_meta("map_feature",true)
 	node.set_meta("editor_stable_id","base/"+str(data.id))
 	node.set_meta("map_sector",parent.name)
@@ -173,10 +182,16 @@ func _build_building(parent: Node3D, data: Dictionary) -> void:
 		for i in ring.size():
 			var a := _point(ring[i])
 			var b := _point(ring[(i+1)%ring.size()])
+			var upper_a := a+Vector3.UP*height
+			var upper_b := b+Vector3.UP*height
+			# Foundations on authored slopes reach the real terrain at each corner.
+			# The roof stays level; no downhill facade is suspended above the street.
+			a.y = minf(0.0,ground_height(node.position.x+a.x,node.position.z+a.z)-node.position.y)-0.08
+			b.y = minf(0.0,ground_height(node.position.x+b.x,node.position.z+b.z)-node.position.y)-0.08
 			bounds = bounds.expand(a).expand(b)
 			var normal := Vector3(b.z-a.z,0,a.x-b.x).normalized()
 			var length := a.distance_to(b)/5.6
-			var points := [a,b,a+Vector3.UP*height,b,b+Vector3.UP*height,a+Vector3.UP*height]
+			var points := [a,b,upper_a,b,upper_b,upper_a]
 			var tex := [Vector2(0,1),Vector2(length,1),Vector2(0,1-height/3.1),Vector2(length,1),Vector2(length,1-height/3.1),Vector2(0,1-height/3.1)]
 			for j in 6:
 				verts.append(points[j]); normals.append(normal); uvs.append(tex[j])
@@ -187,6 +202,7 @@ func _build_building(parent: Node3D, data: Dictionary) -> void:
 		verts.append(_point(point,height)); normals.append(Vector3.UP); uvs.append(Vector2(point[0],point[1])*0.4)
 	var roof := _mesh(node,verts,normals,uvs,world._material("roof"),true)
 	roof.set_meta("editor_keep_material",true)
+	if _architecture != null: _architecture.decorate_building(self,node,data)
 
 func _build_surfaces(parent: Node3D, surfaces: Array) -> void:
 	var groups := {}
@@ -199,8 +215,8 @@ func _build_surfaces(parent: Node3D, surfaces: Array) -> void:
 	for key in groups:
 		var verts := PackedVector3Array(); var normals := PackedVector3Array(); var uvs := PackedVector2Array()
 		for point in groups[key]:
-			verts.append(_point(point,0.026 if key == "pink" else 0.018)); normals.append(Vector3.UP); uvs.append(Vector2(point[0],point[1]))
-		_mesh(node,verts,normals,uvs,world._material("city_pink",Color("d47b9e")) if key == "pink" else world._material(key))
+			verts.append(_point(point,ground_height(point[0],point[1])+(0.026 if key == "pink" else 0.018))); normals.append(Vector3.UP); uvs.append(Vector2(point[0],point[1]))
+		_mesh(node,verts,normals,uvs,_geography.ground_material(key))
 
 func _box(parent: Node3D, at: Vector3, dimensions: Vector3, mat: Material, solid := false) -> MeshInstance3D:
 	var node: MeshInstance3D = world._box(at,dimensions,mat,solid,parent)
@@ -208,7 +224,7 @@ func _box(parent: Node3D, at: Vector3, dimensions: Vector3, mat: Material, solid
 	return node
 
 func _build_lamp(parent: Node3D, point: Array) -> void:
-	var at := _point(point)
+	var at := _point(point,ground_height(point[0],point[1]))
 	var lamp := Node3D.new()
 	lamp.position = at
 	lamp.name = "Candeeiro"
@@ -221,12 +237,12 @@ func _build_lamp(parent: Node3D, point: Array) -> void:
 	var light := OmniLight3D.new()
 	light.position = Vector3(0,5.8,0)
 	light.light_color = Color("ffc178")
-	light.light_energy = 1.6
-	light.omni_range = 14.0
+	light.light_energy = 2.6
+	light.omni_range = 18.0
 	light.shadow_enabled = false
 	light.distance_fade_enabled = true
-	light.distance_fade_begin = 30.0
-	light.distance_fade_length = 15.0
+	light.distance_fade_begin = 70.0
+	light.distance_fade_length = 25.0
 	lamp.add_child(light)
 
 func _build_sign(parent: Node3D, data: Dictionary) -> void:
@@ -235,7 +251,7 @@ func _build_sign(parent: Node3D, data: Dictionary) -> void:
 	parent.add_child(sign)
 	var label := Label3D.new()
 	label.text = str(data.get("name",""))
-	label.position = _point(data.position,2.4)
+	label.position = _point(data.position,ground_height(data.position[0],data.position[1])+2.4)
 	label.font = load("res://assets/fonts/Interface.ttf")
 	label.font_size = 30
 	label.pixel_size = 0.0027
@@ -269,11 +285,9 @@ func _build_link(parent: Node3D, points: Array) -> void:
 func _build_river(parent: Node3D) -> void:
 	var pink: Dictionary = manifest.districts[2]
 	var start: Array = pink.portals.south
-	_build_link(parent,[start,[float(start[0]),990],[240,990],[240,1010]])
-	_box(parent,Vector3(240,-0.3,990),Vector3(310,0.6,60),world._material("city_stone"),true)
+	# The quay now belongs to the continuous terrain rather than a suspended strip.
 	_box(parent,Vector3(240,-0.3,1195),Vector3(310,0.6,50),world._material("city_stone"),true)
 	# Stylised Tejo, separate from the original OSM crops (which contain no river mesh).
-	_box(parent,Vector3(240,-1.0,1100),Vector3(650,0.15,160),world._material("glass",Color("354f56")))
 	var bridge: Node3D = BUILDING.new()
 	bridge.editor_bounds = AABB(Vector3(233,0,1020),Vector3(14,36,150))
 	bridge.name = "Ponte25AbrilEstilizada"
@@ -325,7 +339,9 @@ func get_bookmarks() -> Array:
 	var result: Array = []
 	for district in manifest.districts:
 		var at := _point(district.spawn)
+		at.y = ground_height(at.x,at.z)
 		var target := _point(district.look_at,2)
+		target.y = ground_height(target.x,target.z)+2
 		var position := at+Vector3(10,12,18)
 		if district.id == "saldanha":
 			for spec in manifest.sectors:
@@ -335,17 +351,21 @@ func get_bookmarks() -> Array:
 					position = target+Vector3(34,14,35)
 		result.append({"label":district.label+" · mapa recebido","position":position,"target":target})
 	result.append({"label":"Tejo / Ponte 25 de Abril","position":Vector3(263,20,1015),"target":Vector3(240,17,1085)})
+	for id in _nightlife:
+		var entry: Dictionary = _nightlife[id]
+		for view in entry.get("views",[]):
+			if view is Dictionary:
+				var point: Dictionary = view.duplicate()
+				point["label"] = point.get("label",String(point.get("id",id)).replace("_"," "))
+				result.append(point)
 	return result
 
 func is_valid_position(at: Vector3) -> bool:
-	if not at.is_finite() or at.y < -0.2 or at.y > 70: return false
-	for district in manifest.districts:
-		if _distance(at,district.bounds) < 0.01: return true
-	for link in manifest.links:
-		for index in link.points.size()-1:
-			var a := _point(link.points[index]); var b := _point(link.points[index+1])
-			if at.distance_to(Geometry3D.get_closest_point_to_segment(at,a,b)) < 9: return true
-	return at.x > 85 and at.x < 395 and ((at.z > 960 and at.z < 1020) or (at.z > 1170 and at.z < 1220) or (absf(at.x-240)<5.5 and at.z>=1020 and at.z<=1170 and at.y>7.5))
+	if not at.is_finite() or at.y < -0.2 or at.y > 90: return false
+	var polygon := PackedVector2Array()
+	for point in manifest.peninsula.polygon: polygon.append(Vector2(point[0],point[1]))
+	if Geometry2D.is_point_in_polygon(Vector2(at.x,at.z),polygon): return at.y >= ground_height(at.x,at.z)-0.5
+	return (at.x>85 and at.x<395 and at.z>1170 and at.z<1220) or (absf(at.x-240)<5.5 and at.z>=1020 and at.z<=1170 and at.y>7.5)
 
 func _batch_landmark(parent: Node3D) -> void:
 	var groups := {}
@@ -377,7 +397,7 @@ func _batch_landmark(parent: Node3D) -> void:
 func _build_venue(parent: Node3D, data: Dictionary) -> void:
 	var node := Node3D.new()
 	node.name = str(data.name).validate_node_name()
-	node.position = _point(data.position)
+	node.position = _point(data.position,ground_height(data.position[0],data.position[1]))
 	node.rotation.y = float(data.yaw)
 	node.set_meta("map_feature",true)
 	node.set_meta("editor_stable_id","base/"+str(data.id))
@@ -416,3 +436,128 @@ func _build_ramp(parent: Node3D, start_z: float, end_z: float, start_y: float, e
 	var normals := PackedVector3Array()
 	normals.resize(6); normals.fill(normal)
 	_mesh(parent,PackedVector3Array([a,b,c,a,c,d]),normals,PackedVector2Array([Vector2(0,0),Vector2(11,0),Vector2(11,39),Vector2(0,0),Vector2(11,39),Vector2(0,39)]),world._material("asphalt"),true)
+
+func ground_height(_x: float, z: float) -> float:
+	var profile: Array = manifest.get("peninsula",{}).get("profile",[[0,0],[1300,0]])
+	for index in profile.size()-1:
+		var a: Array = profile[index]; var b: Array = profile[index+1]
+		if z>=a[0] and z<=b[0]: return lerpf(a[1],b[1],(z-a[0])/(b[0]-a[0]))
+	return 0.0
+
+func set_quality_level(index: int) -> void:
+	load_radius = [165.0,215.0,275.0][clampi(index,0,2)]
+	unload_radius = load_radius+45
+
+func _build_skyline(parent: Node3D) -> void:
+	# Coarse building envelopes stay resident behind the streamed detailed shells.
+	for sector in manifest.get("skyline",[]):
+		var groups := {}
+		for feature in sector.buildings:
+			var style: int = feature.style
+			if not groups.has(style): groups[style] = []
+			groups[style].append(feature)
+		for style in groups:
+			var verts := PackedVector3Array(); var normals := PackedVector3Array(); var uvs := PackedVector2Array()
+			for data in groups[style]:
+				var origin := _point(data.position,ground_height(data.position[0],data.position[1]))
+				var height: float = data.height
+				for ring in data.rings:
+					for index in ring.size():
+						var a := _point(ring[index])+origin; var b := _point(ring[(index+1)%ring.size()])+origin
+						var normal := Vector3(b.z-a.z,0,a.x-b.x).normalized()
+						for at in [a,b,a+Vector3.UP*height,b,b+Vector3.UP*height,a+Vector3.UP*height]:
+							verts.append(at); normals.append(normal); uvs.append(Vector2(at.x/5.6,-at.y/3.1))
+				for point in data.roof:
+					var at := _point(point,height)+origin
+					verts.append(at); normals.append(Vector3.UP); uvs.append(Vector2(at.x/5.6,-at.z/5.6))
+			var node := _mesh(parent,verts,normals,uvs,_facades[int(style)])
+			node.visibility_range_begin = 128.0
+			node.visibility_range_end = 1100.0
+			node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			_skyline.append(node)
+
+func get_start_transform() -> Transform3D:
+	if _nightlife.has("saldanha"):
+		var data: Dictionary = _nightlife.saldanha
+		var point: Variant = data.get("spawn")
+		if point is Transform3D: return point
+		if point is Vector3:
+			return Transform3D(Basis(Vector3.UP,PI),point)
+	var district: Dictionary = manifest.districts[0]
+	return Transform3D(Basis.IDENTITY,_point(district.spawn,0.2))
+
+func get_start_street() -> Transform3D:
+	if _nightlife.has("saldanha"):
+		var data: Dictionary = _nightlife.saldanha
+		var entries: Array = data.get("entrances",[])
+		if not entries.is_empty():
+			var point: Variant = entries[0]
+			if point is Vector3: return Transform3D(Basis.IDENTITY,point+Vector3.UP*0.1)
+			if point is Dictionary and point.get("position") is Vector3: return Transform3D(Basis.IDENTITY,point.position+Vector3.UP*0.1)
+	return Transform3D(Basis.IDENTITY,_point(manifest.districts[0].spawn,0.15))
+
+func get_venue_routes() -> Array:
+	var routes: Array = []
+	for id in _nightlife:
+		var data: Dictionary = _nightlife[id]
+		for path in data.get("paths",[]):
+			if path is PackedVector3Array or path is Array: routes.append(path)
+	return routes
+
+func get_performance_venues() -> Array:
+	var venues: Array = []
+	for id in _nightlife:
+		var performance: Dictionary = _nightlife[id].get("performance",{})
+		if not performance.is_empty():
+			var data: Dictionary = performance.duplicate()
+			data["district"] = id
+			data["id"] = id+"/"+str(data.id)
+			venues.append(data)
+	return venues
+
+func get_exploration_routes() -> Array:
+	var routes: Array = []
+	for link in manifest.links:
+		var points: Array[Vector3] = []
+		for index in link.points.size()-1:
+			var a := Vector2(link.points[index][0],link.points[index][1]); var b := Vector2(link.points[index+1][0],link.points[index+1][1])
+			var count := maxi(1,ceili(a.distance_to(b)/8.0))
+			for part in count:
+				var p := a.lerp(b,float(part)/count)
+				points.append(Vector3(p.x,ground_height(p.x,p.y),p.y))
+		var last: Array = link.points[-1]
+		points.append(Vector3(last[0],ground_height(last[0],last[1]),last[1]))
+		routes.append({"id":link.id,"points":points})
+	for id in _nightlife:
+		var data: Dictionary = _nightlife[id]
+		for index in data.get("stairs",[]).size():
+			var path: Variant = data.stairs[index]
+			if path is PackedVector3Array or path is Array:
+				routes.append({"id":id+"_wooden_stairs_"+str(index),"points":Array(path)})
+	return routes
+
+func get_traffic_routes() -> Array:
+	var routes: Array = []
+	for corners in [[[65,320],[435,320],[435,710],[65,710]],[[65,710],[435,710],[435,972],[65,972]],[[-35,200],[65,200],[65,450],[-35,450]]]:
+		var points := PackedVector3Array()
+		for index in corners.size():
+			var a := Vector2(corners[index][0],corners[index][1]); var b := Vector2(corners[(index+1)%corners.size()][0],corners[(index+1)%corners.size()][1])
+			var count := maxi(1,ceili(a.distance_to(b)/12.0))
+			for part in count:
+				var p := a.lerp(b,float(part)/count)
+				points.append(Vector3(p.x,ground_height(p.x,p.y)+0.05,p.y))
+		routes.append(points)
+	return routes
+
+func get_visual_views() -> Array:
+	var result: Array = [
+		{"id":"peninsula_overview","position":Vector3(850,850,1500),"target":Vector3(220,0,450),"player":Vector3(270,0.2,320)},
+		{"id":"saldanha_praca","position":Vector3(290,6,242),"target":Vector3(258,5,183),"player":Vector3(285,0.15,236)},
+		{"id":"saldanha_avenida","position":Vector3(233,2.4,152),"target":Vector3(224,5,88),"player":Vector3(232,0.15,147)},
+		{"id":"bairro_alto_rua","position":Vector3(224,10.4,552),"target":Vector3(226,11,526),"player":Vector3(225,8.15,548)},
+		{"id":"pink_street_rua","position":Vector3(218,2.5,868),"target":Vector3(246,3,869),"player":Vector3(224,0.15,868)},
+		{"id":"peninsula_cais","position":Vector3(300,24,1026),"target":Vector3(240,18,1084),"player":Vector3(300,0.15,1026)}]
+	for id in _nightlife:
+		for view in _nightlife[id].get("views",[]):
+			if view is Dictionary: result.append(view)
+	return result

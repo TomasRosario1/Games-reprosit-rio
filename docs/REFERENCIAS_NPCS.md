@@ -1,6 +1,6 @@
 # Referências para a revisão de Lisboa e dos NPCs
 
-Análise feita em 20 de outubro de 2026. Os links foram fornecidos pelo criador; os parâmetros de rastreio foram removidos. Foram consultados os ficheiros indicados abaixo, nos commits registados. Nenhum jogo de referência foi compilado ou executado e nenhum recurso de GTA foi integrado no Álbum Visual.
+Análise inicial de 20 de outubro de 2026, ampliada na revisão de movimento e veículos de **22 de outubro**. Os links foram fornecidos pelo criador; os parâmetros de rastreio foram removidos. Foram consultados os ficheiros indicados abaixo, nos commits registados. Nenhum jogo de referência foi compilado ou executado e nenhum recurso de GTA foi integrado no Álbum Visual.
 
 Esta análise orienta uma implementação própria em Godot. A presença pública de um repositório não significa que todos os seus ficheiros, ou os recursos do jogo que ele consegue carregar, tenham uma licença permissiva.
 
@@ -76,6 +76,21 @@ Os projetos que importam GTA carregam os esqueletos, malhas, texturas e animaç�
 Movimento orgânico exige relacionar deslocação e passada: alternância de apoio, flexão do joelho/cotovelo, contrarrotação de bacia e peito, transferência de peso e braços em oposição às pernas. A malha deve conservar volume anatómico e evitar membros com secções retangulares. A referência GTA III orienta proporções, leitura da silhueta e texturas; não significa copiar as suas personagens ou o HUD.
 
 O catálogo de pelo menos dez homens e dez mulheres é distinto da população simultaneamente ativa. Limites próximos, animação mais simples à distância e atualização de IA espaçada têm de ser verificados no portátil HP antes de afirmar 60 FPS.
+
+### Consulta adicional para movimento e veículos — 22 de outubro
+
+Foi usado o mesmo commit SanAndreasUnity `f685c437f48721afc0787f27d22c85d96e8684c7`. Além dos ficheiros de IA acima, foram consultados:
+
+| Ficheiro | Observação aplicada na implementação própria |
+| --- | --- |
+| [`Ped/States/BaseMovementState.cs`](https://github.com/in0finite/SanAndreasUnity/blob/f685c437f48721afc0787f27d22c85d96e8684c7/Assets/Scripts/Behaviours/Ped/States/BaseMovementState.cs), [`WalkState.cs`](https://github.com/in0finite/SanAndreasUnity/blob/f685c437f48721afc0787f27d22c85d96e8684c7/Assets/Scripts/Behaviours/Ped/States/WalkState.cs) e [`RunState.cs`](https://github.com/in0finite/SanAndreasUnity/blob/f685c437f48721afc0787f27d22c85d96e8684c7/Assets/Scripts/Behaviours/Ped/States/RunState.cs) | Permanência nas transições e clips distintos de marcha/corrida, relacionados com a velocidade de deslocação. |
+| [`PedModel.cs`](https://github.com/in0finite/SanAndreasUnity/blob/f685c437f48721afc0787f27d22c85d96e8684c7/Assets/Scripts/Behaviours/PedModel.cs) | Separação entre movimento do corpo, modelo animado e ancoragem do ocupante ao veículo. |
+| [`Vehicles/Vehicle_Physics.cs`](https://github.com/in0finite/SanAndreasUnity/blob/f685c437f48721afc0787f27d22c85d96e8684c7/Assets/Scripts/Behaviours/Vehicles/Vehicle_Physics.cs) | Suporte e curso por roda, direção e travagem como responsabilidades separadas. |
+| [`Vehicles/Vehicle_Damage.cs`](https://github.com/in0finite/SanAndreasUnity/blob/f685c437f48721afc0787f27d22c85d96e8684c7/Assets/Scripts/Behaviours/Vehicles/Vehicle_Damage.cs) e [`Vehicles/Damage/VehicleDamage.cs`](https://github.com/in0finite/SanAndreasUnity/blob/f685c437f48721afc0787f27d22c85d96e8684c7/Assets/Scripts/Behaviours/Vehicles/Damage/VehicleDamage.cs) | Separação entre saúde, limiar/intervalo de impacto e dano visível das peças. |
+
+O repositório tem licença MIT, Copyright 2015 James King, mas `VehicleDamage.cs` contém referências a terceiros/RVP: não deve ser tratado automaticamente como material de autoria exclusivamente MIT. Estes ficheiros foram estudados descritivamente; nenhum código RVP foi incorporado. O controlador Godot usa `CharacterBody3D`, raycasts de contacto e deformação própria por zonas. A resolução das articulações, os vinte GLB e os clips exportados pelo Blender são próprios do Álbum Visual.
+
+A consulta orientou a organização dos sistemas; não forneceu animações, personagens ou veículos GTA prontos. As alterações concretas e capturas estão em [Revisão de Lisboa](REVISAO_LISBOA.md).
 
 ## Limites da análise
 

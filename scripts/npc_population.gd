@@ -108,6 +108,7 @@ func _refresh_membership() -> void:
 	var eligible: Array[CharacterBody3D] = []
 	var retained: Array[CharacterBody3D] = []
 	for ped in peds:
+		if ped.get_meta("editor_hidden",false): continue
 		var distance_squared := ped.global_position.distance_squared_to(player.global_position)
 		var limit := activation_radius + 5.0 if ped.simulation_enabled else activation_radius
 		if distance_squared <= limit * limit:
@@ -140,13 +141,18 @@ func _relay_message(text: String) -> void:
 		_message_timer = 2.5
 		message.emit(text)
 
-func append_region_routes(region: String, source_routes: Array) -> void:
+func append_region_routes(region: String, source_routes: Array, ground_sampler: Callable = Callable()) -> void:
 	# Inactive bodies keep identity; one global budget applies to every district.
 	if source_routes.is_empty(): return
 	var local_routes: Array[PackedVector3Array] = []
 	for points in source_routes:
 		var route := PackedVector3Array()
-		for point in points: route.append(Vector3(point[0],0.05,point[1]))
+		for point in points:
+			if point is Vector3:
+				route.append(point)
+			elif point is Array and point.size()>=2:
+				var height: float = ground_sampler.call(float(point[0]),float(point[1])) if ground_sampler.is_valid() else 0.0
+				route.append(Vector3(point[0],height+0.06,point[1]))
 		if route.size() > 1: local_routes.append(route)
 	if local_routes.is_empty(): return
 	for index in CATALOGUE_SIZE:
