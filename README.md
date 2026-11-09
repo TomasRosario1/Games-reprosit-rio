@@ -6,11 +6,15 @@ Jogo **desktop, offline e em terceira pessoa**, em Godot 4 Compatibility, para o
 
 O `Maps.rar` enviado pelo criador fornece os **598 contornos OSM** dos três bairros. A composição acrescenta **290 edifícios próprios**, terreno com desníveis, arquitetura, texturas e interiores produzidos para o jogo. A península ocupa cerca de **0,77 km²**, repartida em **191 setores de construções**; os setores próximos carregam à medida que o jogador se desloca. As distâncias, a costa e o relevo são adaptações de desenho, não uma reprodução geográfica de Lisboa à escala 1:1. [Origem dos dados e validação](docs/VALIDACAO_MAPAS.md).
 
-O editor continua disponível em **F10 → Ir para… → bairro → Testar neste bairro**. Conserva as alterações ao descarregar setores; o mapa da pausa mostra a península, ruas, bairros, ponte e posição do jogador. Esta versão está na branch **codex/album-visual-prototipo-02**; atualizar essa branch não faz merge em `main`.
+O editor continua disponível em **F10 → Ir para… → bairro → Testar neste bairro**. Conserva as alterações ao descarregar setores; o mapa da pausa mostra a península, ruas, bairros, ponte e posição do jogador. A versão para descarregar está na branch **main**.
+
+## Arquivo de personagens e revisão em vídeo
+
+Os vinte modelos atuais e o Emmet enviado estão organizados no [arquivo de personagens](arquivo/personagens/README.md), separado do jogo. A [revisão 01 do Emmet](arquivo/personagens/emmet/revisao_01/README.md) mostra vídeos da articulação com esqueleto sobreposto e aguarda feedback antes de avançar para locomoção, variantes e integração.
 
 ## Descarregar e abrir no Windows
 
-1. Abre [a versão 02 no GitHub](https://github.com/TomasRosario1/Games-reprosit-rio/tree/codex/album-visual-prototipo-02), com a tua conta ligada. Confirma a branch **codex/album-visual-prototipo-02**.
+1. Abre [o projeto no GitHub](https://github.com/TomasRosario1/Games-reprosit-rio/tree/main), com a tua conta ligada. Confirma a branch **main**.
 2. Clica no botão verde **Code → Download ZIP**. Não uses «Guardar como» sobre a página.
 3. Na pasta Transferências, clica no ZIP com o botão direito → **Extrair tudo → Extrair**.
 4. Abre o Godot → **Importar** → procura a pasta extraída → seleciona **project.godot → Importar e editar**.

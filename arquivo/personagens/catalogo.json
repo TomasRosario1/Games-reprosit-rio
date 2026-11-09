@@ -1,0 +1,660 @@
+{
+  "schema": 1,
+  "review_order": [
+    "articulacao_com_video_e_feedback",
+    "animacoes_com_video_e_feedback",
+    "variantes_com_feedback",
+    "integracao_se_aprovada"
+  ],
+  "current_game_snapshot": "60a593be2a7c248aecc5c77507b906782196b8cc",
+  "characters": [
+    {
+      "id": 0,
+      "gender": "male",
+      "style": "beto",
+      "name": "Camisa e malha",
+      "outfit": "shirt / slim",
+      "height": 1.83,
+      "triangles": 2248,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_00.glb",
+      "arquivo": "jogo_atual/person_00.glb",
+      "sha256": "5719a57d3281332d752b449ae3f8ebce5e1e2f30dde69987a9e1bd50059df7aa"
+    },
+    {
+      "id": 1,
+      "gender": "male",
+      "style": "alternativo",
+      "name": "Casaco comprido",
+      "outfit": "longcoat / slim",
+      "height": 1.86,
+      "triangles": 2220,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_01.glb",
+      "arquivo": "jogo_atual/person_01.glb",
+      "sha256": "1551a858e8de12e475f068922c8d8e39b809fe1e82c64b0e78fbb8d5f69e3169"
+    },
+    {
+      "id": 2,
+      "gender": "male",
+      "style": "chunga",
+      "name": "Fato de treino",
+      "outfit": "tracksuit / track",
+      "height": 1.77,
+      "triangles": 2212,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_02.glb",
+      "arquivo": "jogo_atual/person_02.glb",
+      "sha256": "9790da55ef0d3dd02bd057ca373ab4e110b052f97e4384d1cdbdd8d02f195e16"
+    },
+    {
+      "id": 3,
+      "gender": "male",
+      "style": "emo",
+      "name": "T-shirt e jeans justos",
+      "outfit": "tshirt / skinny",
+      "height": 1.74,
+      "triangles": 2254,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_03.glb",
+      "arquivo": "jogo_atual/person_03.glb",
+      "sha256": "a5223988dbb7317c8738a42834bd66e9b42fa6fcba7b185b599188b0c7e56a18"
+    },
+    {
+      "id": 4,
+      "gender": "male",
+      "style": "normal",
+      "name": "Blusão e ganga",
+      "outfit": "jacket / jeans",
+      "height": 1.8,
+      "triangles": 2216,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_04.glb",
+      "arquivo": "jogo_atual/person_04.glb",
+      "sha256": "9579d03e4ee89b173410e029827da5fdbd7b1a5d2b25cf4ec06a4b4f0d6c3016"
+    },
+    {
+      "id": 5,
+      "gender": "male",
+      "style": "indie",
+      "name": "Camisa aberta",
+      "outfit": "overshirt / slim",
+      "height": 1.88,
+      "triangles": 2510,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_05.glb",
+      "arquivo": "jogo_atual/person_05.glb",
+      "sha256": "f19bd1825423afe0dde6c53dc151dedd596e440ab18dda86dea934280eb32861"
+    },
+    {
+      "id": 6,
+      "gender": "male",
+      "style": "alternativo",
+      "name": "Casaco técnico",
+      "outfit": "hoodie / cargo",
+      "height": 1.79,
+      "triangles": 2312,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_06.glb",
+      "arquivo": "jogo_atual/person_06.glb",
+      "sha256": "b939202bb2ee9cb38ea727d0cbfe146820d5008153a45b366f05542565e14616"
+    },
+    {
+      "id": 7,
+      "gender": "male",
+      "style": "normal",
+      "name": "Sweat e calças largas",
+      "outfit": "sweat / wide",
+      "height": 1.72,
+      "triangles": 2212,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_07.glb",
+      "arquivo": "jogo_atual/person_07.glb",
+      "sha256": "fae2e09d6026a6ad99c0377a6568702a02bbfb1c685bc8f1aa85ea99e5109681"
+    },
+    {
+      "id": 8,
+      "gender": "male",
+      "style": "beto",
+      "name": "Polo e chinos",
+      "outfit": "polo / slim",
+      "height": 1.85,
+      "triangles": 2248,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_08.glb",
+      "arquivo": "jogo_atual/person_08.glb",
+      "sha256": "793349a5573920eca52b121d6710fe34d0fe1eb14c5814612b1bbbc7d6a39858"
+    },
+    {
+      "id": 9,
+      "gender": "male",
+      "style": "indie",
+      "name": "Blusão de ganga",
+      "outfit": "denim / straight",
+      "height": 1.81,
+      "triangles": 2216,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_09.glb",
+      "arquivo": "jogo_atual/person_09.glb",
+      "sha256": "fb62a6e23671c35ef549ccca90e650485dec27e824f437fb3d58283b9c8d2f06"
+    },
+    {
+      "id": 10,
+      "gender": "female",
+      "style": "beto",
+      "name": "Gabardina e saia reta",
+      "outfit": "coat / pencil",
+      "height": 1.72,
+      "triangles": 2356,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_10.glb",
+      "arquivo": "jogo_atual/person_10.glb",
+      "sha256": "0ba51651d08372e03237291d5f2b6bb8ae4e83fd97648e963669b7df8c75b697"
+    },
+    {
+      "id": 11,
+      "gender": "female",
+      "style": "alternativo",
+      "name": "Casaco e saia rodada",
+      "outfit": "jacket / flared",
+      "height": 1.69,
+      "triangles": 2314,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_11.glb",
+      "arquivo": "jogo_atual/person_11.glb",
+      "sha256": "5856cfb7a15c749dad4a39306833d2dba0e63df889eb8eaf50cf84e0fbf5a0c5"
+    },
+    {
+      "id": 12,
+      "gender": "female",
+      "style": "chunga",
+      "name": "Sweat e cargo",
+      "outfit": "hoodie / cargo",
+      "height": 1.67,
+      "triangles": 2408,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_12.glb",
+      "arquivo": "jogo_atual/person_12.glb",
+      "sha256": "ece56d318c1bc0b39e718659248df103375c1cb2fa7a5b5372e47ce0c2231d49"
+    },
+    {
+      "id": 13,
+      "gender": "female",
+      "style": "emo",
+      "name": "T-shirt e saia plissada",
+      "outfit": "tshirt / pleated",
+      "height": 1.65,
+      "triangles": 2382,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_13.glb",
+      "arquivo": "jogo_atual/person_13.glb",
+      "sha256": "2f0193803b1f85071949be4edf36f2feb8e6fa1d5c03629de04f23a0d2b81412"
+    },
+    {
+      "id": 14,
+      "gender": "female",
+      "style": "normal",
+      "name": "Malha e jeans",
+      "outfit": "sweat / jeans",
+      "height": 1.73,
+      "triangles": 2212,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_14.glb",
+      "arquivo": "jogo_atual/person_14.glb",
+      "sha256": "2947d544e90b4178acddebb0fec1bdd6ef380a6d17fc616814d408d5558d7097"
+    },
+    {
+      "id": 15,
+      "gender": "female",
+      "style": "indie",
+      "name": "Camisa e saia longa",
+      "outfit": "overshirt / longskirt",
+      "height": 1.76,
+      "triangles": 2268,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_15.glb",
+      "arquivo": "jogo_atual/person_15.glb",
+      "sha256": "793b3316cfd47db87a27195a409caa2cdf3880919d7ade7ad05213cff52c7074"
+    },
+    {
+      "id": 16,
+      "gender": "female",
+      "style": "alternativo",
+      "name": "Blusão e calças largas",
+      "outfit": "denim / wide",
+      "height": 1.7,
+      "triangles": 2554,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_16.glb",
+      "arquivo": "jogo_atual/person_16.glb",
+      "sha256": "9e60f8a47e3881d12840d118f0a5e41dc3a811b75ca36e86373de595ede7a229"
+    },
+    {
+      "id": 17,
+      "gender": "female",
+      "style": "normal",
+      "name": "Casaco curto e saia",
+      "outfit": "jacket / aline",
+      "height": 1.62,
+      "triangles": 2408,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_17.glb",
+      "arquivo": "jogo_atual/person_17.glb",
+      "sha256": "27e3bbbaf707a2b7d8931413caea0fd9b9c15d6a8b1085ef39924f8fcb77b953"
+    },
+    {
+      "id": 18,
+      "gender": "female",
+      "style": "beto",
+      "name": "Malha e calças direitas",
+      "outfit": "polo / straight",
+      "height": 1.78,
+      "triangles": 2248,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_18.glb",
+      "arquivo": "jogo_atual/person_18.glb",
+      "sha256": "b4718eddf53d6fa1fa9a3d8e2d4ec08c4ea0138df3bc2a942a3dca63e3924bc5"
+    },
+    {
+      "id": 19,
+      "gender": "female",
+      "style": "indie",
+      "name": "Casaco comprido e ganga",
+      "outfit": "longcoat / slim",
+      "height": 1.74,
+      "triangles": 2220,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "crouch_idle",
+        "jump",
+        "fall",
+        "land",
+        "talk",
+        "flinch",
+        "dance"
+      ],
+      "pose_revision": 2,
+      "forward_axis": "-Z",
+      "locomotion_reference_speed": {
+        "walk": 1.52,
+        "run": 3.81,
+        "crouch": 0.53
+      },
+      "game_scene": "res://assets/characters/person_19.glb",
+      "arquivo": "jogo_atual/person_19.glb",
+      "sha256": "8983d6323caeb3d36ce34e0e8af8a7a23779abb0290285ef60bd349fdf3a45af"
+    }
+  ],
+  "incoming": [
+    {
+      "id": "emmet",
+      "original": "emmet/original/gta_sa_emmet.glb",
+      "status": "articulacao_em_revisao_nao_integrado",
+      "sha256": "1430a2de665ef3b3f1c59970b68b6e554d9720426c72fbb8b4b3e998732f2332"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "videos": [
+    {
+      "file": "00_revisao_completa.mp4",
+      "sha256": "96023f7dc4f2bc37f64b49cc8a86193a6a8d08ccf31b5d139abac1eaeff9fb01",
+      "duration_seconds": 32.0,
+      "frames": 768,
+      "unique_decoded_frames": 768,
+      "codec_name": "h264",
+      "width": 960,
+      "height": 540,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "768"
+    },
+    {
+      "file": "01_esqueleto_360.mp4",
+      "sha256": "36f9b67d67ba07aed288e6ca7932e0e9630beb97a647ab9794e098da7e682bf9",
+      "duration_seconds": 8.0,
+      "frames": 192,
+      "unique_decoded_frames": 192,
+      "codec_name": "h264",
+      "width": 960,
+      "height": 540,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "02_bracos.mp4",
+      "sha256": "ee6eef9f6f3377623c675dad8b5842edb2285fb090073f2c0a41df5899aeaee7",
+      "duration_seconds": 8.0,
+      "frames": 192,
+      "unique_decoded_frames": 192,
+      "codec_name": "h264",
+      "width": 960,
+      "height": 540,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "03_pernas.mp4",
+      "sha256": "c2f4beda5c3c83571ae02e3fe4a7a8861dc7627df76c56a80116af912af9ce81",
+      "duration_seconds": 8.0,
+      "frames": 192,
+      "unique_decoded_frames": 192,
+      "codec_name": "h264",
+      "width": 960,
+      "height": 540,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "04_tronco.mp4",
+      "sha256": "8720fb617379ee347e0c67fcbf521b41ace44734626610fb330c2abd65bd57e3",
+      "duration_seconds": 8.0,
+      "frames": 192,
+      "unique_decoded_frames": 192,
+      "codec_name": "h264",
+      "width": 960,
+      "height": 540,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    }
+  ],
+  "texture_pixels_identical_to_upload": true,
+  "archive_validation": "20 unchanged game snapshots, intact original, 21-joint skin, four normalized influences, three diagnostic animations",
+  "godot_import": "headless editor import passed; .gdignore kept archive outside resource scan",
+  "game_integration": "none; no assets, scripts, scenes or project settings modified",
+  "review_status": "awaiting_creator_rig_feedback"
+}
