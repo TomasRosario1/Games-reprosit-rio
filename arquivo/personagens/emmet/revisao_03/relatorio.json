@@ -1,0 +1,26 @@
+{
+  "source_rig": "../revisao_02/emmet_articulacao_02.blend",
+  "approved_rig_unchanged": true,
+  "skin_review_changes": {
+    "trouser_seat_vertices": 15,
+    "reason": "retain pelvis volume while knees fold into vehicle"
+  },
+  "fps": 24,
+  "duration_per_clip": 8,
+  "vehicle_sources": "scripts/vehicle.gd exported from the actual game",
+  "review_only_vehicle_changes": [
+    "car cabin and driver-door aperture cut in the closed hull",
+    "driver door framed and hinged",
+    "driver B-pillar moved to rear of door",
+    "steering wheel adjusted20cm toward seat",
+    "glazing hidden for inspection",
+    "motorbike has visible stationary kickstand"
+  ],
+  "clips": [
+    "01_andar",
+    "02_entrar_carro",
+    "03_montar_mota"
+  ],
+  "game_integration": false,
+  "status": "animacoes_aguardam_feedback"
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "clip": "01_andar",
+    "bones_unchanged": 21,
+    "rest_vertices_unchanged": 1075,
+    "max_influences": 4,
+    "has_review_camera": true,
+    "fps": 24,
+    "frames": 192
+  },
+  {
+    "clip": "02_entrar_carro",
+    "bones_unchanged": 21,
+    "rest_vertices_unchanged": 1075,
+    "max_influences": 4,
+    "has_review_camera": true,
+    "fps": 24,
+    "frames": 192
+  },
+  {
+    "clip": "03_montar_mota",
+    "bones_unchanged": 21,
+    "rest_vertices_unchanged": 1075,
+    "max_influences": 4,
+    "has_review_camera": true,
+    "fps": 24,
+    "frames": 192
+  }
+]

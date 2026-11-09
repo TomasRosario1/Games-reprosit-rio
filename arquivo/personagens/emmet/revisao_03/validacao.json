@@ -1,0 +1,82 @@
+{
+  "animations": [
+    {
+      "clip": "01_andar",
+      "skin_bones": 21,
+      "baked_frames": 192,
+      "max_contact_error_m": 4.853754483134249e-07,
+      "max_root_step_m": 0.045133736377602415,
+      "rest_geometry_uv_preserved": true
+    },
+    {
+      "clip": "02_entrar_carro",
+      "skin_bones": 21,
+      "baked_frames": 192,
+      "max_contact_error_m": 0.0008644562465494167,
+      "max_root_step_m": 0.06845046448650878,
+      "rest_geometry_uv_preserved": true
+    },
+    {
+      "clip": "03_montar_mota",
+      "skin_bones": 21,
+      "baked_frames": 192,
+      "max_contact_error_m": 0.0061792843441489265,
+      "max_root_step_m": 0.05547582941391388,
+      "rest_geometry_uv_preserved": true
+    }
+  ],
+  "videos": [
+    {
+      "file": "00_animacoes_completas.mp4",
+      "duration_seconds": 24.0,
+      "unique_decoded_frames": 558,
+      "sha256": "3d5def9a497c88447e0114760f0b9f61b80a7b6aaa129def85f4a28c0c52350b",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "576"
+    },
+    {
+      "file": "01_andar.mp4",
+      "duration_seconds": 8.0,
+      "unique_decoded_frames": 192,
+      "sha256": "53f4e984778ded1b2a10250a1f86235a3a6f90f88d9e1b42e180faaf1d580fdf",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "02_entrar_carro.mp4",
+      "duration_seconds": 8.0,
+      "unique_decoded_frames": 192,
+      "sha256": "27133b5e1dcb3fd6ca915fa2dfb4c77177c4423331db382ba4a9b4806547e07e",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "03_montar_mota.mp4",
+      "duration_seconds": 8.0,
+      "unique_decoded_frames": 174,
+      "sha256": "7131fca5726dc90d333581329f605cf763fc628e4b2d41ab79597701c72645cb",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    }
+  ],
+  "native_godot_validation": "603 checks, 0 failures, Godot4.6.3, clips imported at native24fps",
+  "source_rig": "review02 bone placement preserved; trouser seat weights refined locally",
+  "game_integration": false,
+  "approval_status": "awaiting creator animation feedback"
+}

@@ -10,7 +10,7 @@ O editor continua disponível em **F10 → Ir para… → bairro → Testar nest
 
 ## Arquivo de personagens e revisão em vídeo
 
-Os vinte modelos atuais e o Emmet enviado estão organizados no [arquivo de personagens](arquivo/personagens/README.md), separado do jogo. A [revisão 02 do Emmet](arquivo/personagens/emmet/revisao_02/README.md) recentra os ossos dos braços e mostra vídeos com a sua posição real dentro da malha, além da comparação com a revisão anterior e aguarda feedback antes de avançar para locomoção, variantes e integração.
+Os vinte modelos atuais e o Emmet enviado estão organizados no [arquivo de personagens](arquivo/personagens/README.md), separado do jogo. A [revisão 03 do Emmet](arquivo/personagens/emmet/revisao_03/README.md) apresenta vídeos de andar, entrar no carro e montar a mota, depois da aprovação da articulação. Aguarda feedback sobre as animações antes das variantes e integração.
 
 ## Descarregar e abrir no Windows
 

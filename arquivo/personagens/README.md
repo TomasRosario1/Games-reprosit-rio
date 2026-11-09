@@ -5,11 +5,12 @@ Esta pasta guarda os modelos para consulta e trabalho posterior. Está excluída
 ## Emmet — modelo enviado
 
 - [Original intacto](emmet/original/gta_sa_emmet.glb).
-- [Revisão 02 atual: braços recentrados e vídeos de comparação](emmet/revisao_02/README.md).
+- [Revisão 03 atual: andar, entrar no carro e montar a mota](emmet/revisao_03/README.md).
+- [Revisão 02: articulação aprovada, preservada](emmet/revisao_02/README.md).
 - [Revisão 01 anterior: preservada para comparação](emmet/revisao_01/README.md).
 - [Metadados do ficheiro original](emmet/original/metadados.json).
 
-O Emmet **ainda não é a quarta personagem jogável**. Primeiro revemos a articulação; depois as animações de locomoção; a seguir as variantes de cor/forma. Cada etapa aguarda o feedback do criador. Só uma versão aprovada será integrada no jogo.
+O Emmet **ainda não é a quarta personagem jogável**. A articulação da revisão 02 foi aprovada. Agora revemos as animações de locomoção e entrada nos veículos; a seguir as variantes de cor/forma. Cada etapa aguarda o feedback do criador. Só uma versão aprovada será integrada no jogo.
 
 ## Personagens já existentes — cópia de arquivo
 
