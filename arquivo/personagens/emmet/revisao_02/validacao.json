@@ -1,0 +1,57 @@
+{
+  "videos": [
+    {
+      "file": "00_revisao_completa.mp4",
+      "sha256": "1f283124b4672cdf601f05a212dd61156ac4108a18ea316c827e36b64947e1d8",
+      "duration_seconds": 24.0,
+      "unique_decoded_frames": 576,
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "576"
+    },
+    {
+      "file": "01_esqueleto_360.mp4",
+      "sha256": "a93697cee0896485922fcfe89d7a3650edd9bcc04b946d1f29e086549f1ca4e4",
+      "duration_seconds": 8.0,
+      "unique_decoded_frames": 192,
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "02_bracos.mp4",
+      "sha256": "f1adda6afc20735f817e3590364114b97e695a8f184d294ca535e65b924807c9",
+      "duration_seconds": 8.0,
+      "unique_decoded_frames": 192,
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "03_comparacao_bracos.mp4",
+      "sha256": "cd620bb8c8c3657cc21ff3f82a8c207001d75cfa47fd3aa453066063a2dc482a",
+      "duration_seconds": 8.0,
+      "unique_decoded_frames": 192,
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    }
+  ],
+  "rig_validation": "actual exported joint pivots match corrected fit; 8 fitted points have at least3cm skin-depth margin;20 sampled arm-axis points inside original mesh",
+  "rest_geometry_and_uvs": "identical to review01; hands not scaled",
+  "review01_original_and_current_game": "unchanged",
+  "review_status": "awaiting_creator_arm_feedback",
+  "not_integrated_in_game": true
+}

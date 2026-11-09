@@ -1,14 +1,16 @@
 """Blender: original preserved, candidate rig and joint-check videos only.
 Run: blender -b --python arquivo/personagens/ferramentas/preparar_emmet.py
 Use -- --preview for one frame per clip; -- --render for the full sequences.
+Add --revision=02 after -- to build the arm-centering revision without overwriting01.
 """
 import bpy, math, json, sys
 from pathlib import Path
 from mathutils import Vector, Quaternion
 
 BASE = Path(__file__).resolve().parent.parent
-OUT = BASE / 'emmet/revisao_01'
-FRAMES = Path('/tmp/emmet-review/frames')
+REVISION = '02' if '--revision=02' in sys.argv else '01'
+OUT = BASE / ('emmet/revisao_'+REVISION)
+FRAMES = Path('/tmp/emmet-review/frames' if REVISION=='01' else '/tmp/emmet-review-02/frames')
 OUT.mkdir(parents=True, exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=str(BASE/'emmet/original/gta_sa_emmet.glb'))
@@ -40,20 +42,49 @@ spec = [
  ('neck',(0,0,1.45),(0,-.005,1.57),'chest'),
  ('head',(0,-.005,1.57),(0,-.005,1.78),'neck'),
 ]
+# Fit depth to actual front/back triangle intersections, not the surface facing
+# the review camera. Version01 is retained verbatim for comparison.
+fit_records=[]
+model.data.calc_loop_triangles()
+def depth_hits(x,z):
+    hits=[]
+    for triangle in model.data.loop_triangles:
+        a,b,c=[model.data.vertices[i].co for i in triangle.vertices]
+        bx,bz=b.x-a.x,b.z-a.z;cx,cz=c.x-a.x,c.z-a.z;det=bx*cz-bz*cx
+        if abs(det)<1e-10:continue
+        u=((x-a.x)*cz-(z-a.z)*cx)/det;v=(bx*(z-a.z)-bz*(x-a.x))/det
+        if u>=-1e-6 and v>=-1e-6 and u+v<=1+1e-6:hits.append(a.y+u*(b.y-a.y)+v*(c.y-a.y))
+    return sorted(set(round(v,7) for v in hits))
+def center_point(name,x,z):
+    hits=depth_hits(x,z)
+    if len(hits)<2:raise RuntimeError('Missing arm cross section '+name)
+    intervals=[(hits[i],hits[i+1]) for i in range(0,len(hits)-1,2)]
+    front,back=max(intervals,key=lambda p:p[1]-p[0])
+    at=(x,(front+back)*.5,z)
+    fit_records.append({'joint':name,'point':at,'surface_front_y':front,'surface_back_y':back,'depth_margin_m':(back-front)*.5})
+    return at
 for side, sign in [('L',1),('R',-1)]:
     def p(x,y,z): return (sign*x,y,z)
+    if REVISION=='02':
+        shoulder=center_point('shoulder.'+side,sign*.205,1.425)
+        elbow=center_point('elbow.'+side,sign*.335,1.205)
+        wrist=center_point('wrist.'+side,sign*.45,1.005)
+        hand_end=center_point('palm_end.'+side,sign*.505,.89)
+    else:
+        shoulder=p(.20,0,1.47);elbow=p(.35,-.005,1.21)
+        wrist=p(.47,-.025,1.015);hand_end=p(.515,-.035,.86)
     spec.extend([
-      ('clavicle.'+side,p(.025,0,1.45),p(.20,0,1.47),'chest'),
-      ('upper_arm.'+side,p(.20,0,1.47),p(.35,-.005,1.21),'clavicle.'+side),
-      ('forearm.'+side,p(.35,-.005,1.21),p(.47,-.025,1.015),'upper_arm.'+side),
-      ('hand.'+side,p(.47,-.025,1.015),p(.515,-.035,.86),'forearm.'+side),
+      ('clavicle.'+side,p(.025,0,1.45),shoulder,'chest'),
+      ('upper_arm.'+side,shoulder,elbow,'clavicle.'+side),
+      ('forearm.'+side,elbow,wrist,'upper_arm.'+side),
+      ('hand.'+side,wrist,hand_end,'forearm.'+side),
       ('thigh.'+side,p(.10,0,.90),p(.115,-.008,.49),'pelvis'),
       ('shin.'+side,p(.115,-.008,.49),p(.13,0,.12),'thigh.'+side),
       ('foot.'+side,p(.13,0,.12),p(.13,-.14,.055),'shin.'+side),
       ('toe.'+side,p(.13,-.14,.055),p(.13,-.20,.055),'foot.'+side),
     ])
 arm_data = bpy.data.armatures.new('Emmet_Armature')
-rig = bpy.data.objects.new('Emmet_Rig_Review01', arm_data)
+rig = bpy.data.objects.new('Emmet_Rig_Review'+REVISION, arm_data)
 bpy.context.collection.objects.link(rig)
 bpy.ops.object.select_all(action='DESELECT')
 rig.select_set(True); bpy.context.view_layer.objects.active = rig
@@ -90,7 +121,8 @@ for vertex in model.data.vertices:
         # The hanging hem is attached to the pelvis, not stretched with the knee.
         coat=smooth(.80,.90,z)*max(smooth(.16,.22,ax),smooth(.075,.12,abs(y)))
         torso=mix(leg,{'pelvis':1},coat)
-    arm=along(z,[(.94,'hand.'+side),(1.04,'forearm.'+side),(1.15,'forearm.'+side),(1.27,'upper_arm.'+side),(1.46,'upper_arm.'+side),(1.53,'clavicle.'+side)])
+    arm_anchors=[(.94,'hand.'+side),(1.04,'forearm.'+side),(1.15,'forearm.'+side),(1.27,'upper_arm.'+side),(1.46,'upper_arm.'+side),(1.53,'clavicle.'+side)] if REVISION=='01' else [(.95,'hand.'+side),(1.055,'forearm.'+side),(1.145,'forearm.'+side),(1.265,'upper_arm.'+side),(1.42,'upper_arm.'+side),(1.50,'clavicle.'+side)]
+    arm=along(z,arm_anchors)
     inner=.24-.07*smooth(1.36,1.49,z)
     arm_amount=smooth(inner,inner+.065,ax) if .70<z<1.55 else 0
     result=mix(torso,arm,arm_amount)
@@ -182,7 +214,7 @@ rig.animation_data_clear()
 # Actions still have fake users; Blender source opens at the neutral candidate.
 bpy.ops.object.select_all(action='DESELECT');model.select_set(True);rig.select_set(True)
 bpy.context.view_layer.objects.active=rig
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'emmet_articulacao_01.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/('emmet_articulacao_'+REVISION+'.blend')))
 # Build unmuted NLA tracks temporarily so glTF carries separate review animations.
 for action in list(bpy.data.actions):
     if action.name not in [x[0] for x in CLIPS]: continue
@@ -190,27 +222,37 @@ for action in list(bpy.data.actions):
     track=rig.animation_data.nla_tracks.new();track.name=action.name
     track.strips.new(action.name,1,action)
     track.mute=True
-bpy.ops.export_scene.gltf(filepath=str(OUT/'emmet_articulacao_01.glb'),export_format='GLB',use_selection=True,export_animations=True,export_nla_strips=True)
+bpy.ops.export_scene.gltf(filepath=str(OUT/('emmet_articulacao_'+REVISION+'.glb')),export_format='GLB',use_selection=True,export_animations=True,export_nla_strips=True)
 rig.animation_data_clear()
 report={'status':'aguarda_feedback_articulacao','height_m':1.8,'source_scale_applied':scale,'vertices':len(model.data.vertices),'triangles':sum(len(p.vertices)-2 for p in model.data.polygons),'bones':len(spec),'weight_method':'Blender heat initialized, anatomical-region correction, four normalized influences','unweighted_vertices':0,'max_influences':max(weights),'texture_preserved':True,'clips':[{'id':c,'duration_seconds':d,'description':t,'fps':FPS} for c,d,t in CLIPS],'joints':[{'name':n,'head':h,'tail':t,'parent':p} for n,h,t,p in spec],'limitations':['Not integrated in the game','Weights and bone placement require user visual review','No individual finger rig or cloth simulation','No walking/running/color/shape variants before rig feedback']}
+report['revision']=REVISION
+report['arm_fit_sections']=fit_records
+report['review_display']='actual bones inside wireframe mesh, no camera-depth offset' if REVISION=='02' else 'projected overlay for visibility'
+report['rendered_video_ids']=['01_esqueleto_360','02_bracos','03_comparacao_bracos'] if REVISION=='02' else [c for c,_,_ in CLIPS]
 (OUT/'relatorio.json').write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n')
 if '--preview' not in sys.argv and '--render' not in sys.argv: sys.exit(0)
 
-# Actual Blender deformation renders. The right panel projects the *real posed*
-# joints towards the orthographic camera to make internal bones visible through skin.
+# Actual Blender deformation renders. Review01 projects an overlay for visibility;
+# review02 renders real bone geometry inside a wireframe at unchanged depth.
 scene=bpy.context.scene
 scene.render.engine='BLENDER_WORKBENCH'
 scene.display.shading.light='STUDIO';scene.display.shading.color_type='TEXTURE'
 scene.display.shading.show_shadows=False;scene.display.shading.show_cavity=True
 scene.display.shading.background_type='WORLD'
+if REVISION=='02':scene.display.render_aa='8'
 scene.world=bpy.data.worlds.new('Review world');scene.world.color=(.045,.052,.065)
 scene.view_settings.view_transform='Standard'
-scene.render.resolution_x=960;scene.render.resolution_y=540;scene.render.resolution_percentage=100
+scene.render.resolution_x=1280 if REVISION=='02' else 960;scene.render.resolution_y=720 if REVISION=='02' else 540;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 bpy.ops.object.camera_add();camera=bpy.context.object;camera.data.type='ORTHO';camera.data.ortho_scale=4.2;scene.camera=camera
 model.hide_render=True
 left=bpy.data.objects.new('Deformacao_real',model.data.copy());bpy.context.collection.objects.link(left)
 right=bpy.data.objects.new('Mesmo_corpo_esqueleto',left.data);bpy.context.collection.objects.link(right)
+if REVISION=='02':
+    wire=right.modifiers.new('Malha de arame para ver profundidade real','WIREFRAME')
+    wire.thickness=.0015;wire.use_replace=True
+    wire_material=bpy.data.materials.new('Malha cinzenta');wire_material.diffuse_color=(.55,.65,.7,1)
+    right.material_slots[0].link='OBJECT';right.material_slots[0].material=wire_material
 mat=bpy.data.materials.new('Skeleton cyan');mat.diffuse_color=(.0,.85,1,1)
 joint_mat=bpy.data.materials.new('Joint yellow');joint_mat.diffuse_color=(1,.65,.02,1)
 lines=[];joints=[]
@@ -220,32 +262,66 @@ for name,_,_,_ in spec:
     bpy.ops.mesh.primitive_uv_sphere_add(segments=8,ring_count=4,radius=.012)
     dot=bpy.context.object;dot.name='Joint_'+name;dot.data.materials.append(joint_mat);joints.append(dot)
 
+old_rig=None;old_model=None
+if REVISION=='02':
+    with bpy.data.libraries.load(str(BASE/'emmet/revisao_01/emmet_articulacao_01.blend'),link=False) as (source,target):
+        target.objects=[n for n in source.objects if n in ['Emmet_Rig_Review01','Emmet_Skin']]
+    for obj in target.objects:
+        bpy.context.collection.objects.link(obj)
+        if obj.type=='ARMATURE':old_rig=obj
+        elif obj.type=='MESH':old_model=obj;old_model.hide_render=True
+    assert old_rig and old_model
+    old_rig.animation_data_clear()
+
+def evaluated_copy(obj):
+    evaluated=obj.evaluated_get(bpy.context.evaluated_depsgraph_get())
+    temp=evaluated.to_mesh();mesh=temp.copy();evaluated.to_mesh_clear()
+    return mesh
+
 def view(clip,t):
+    global rig,arm_data
+    comparison=clip=='03_comparacao_bracos'
     azimuth=2*math.pi*t/8 if clip=='01_esqueleto_360' else (.8 if clip=='03_pernas' else 0)
-    target=Vector((0,0,.91));camera.location=Vector((5*math.sin(azimuth),-5*math.cos(azimuth),1.05))
+    focus=1.27 if REVISION=='02' and clip!='01_esqueleto_360' else .91
+    camera.data.ortho_scale=3.3 if focus>1 else 4.2
+    target=Vector((0,0,focus));camera.location=Vector((5*math.sin(azimuth),-5*math.cos(azimuth),1.05 if REVISION=='01' else focus+.05))
     camera.rotation_euler=(target-camera.location).to_track_quat('-Z','Y').to_euler()
     right_axis=camera.rotation_euler.to_matrix()@Vector((1,0,0))
     near=(camera.location-target).normalized()
     left.location=-right_axis*.70;right.location=right_axis*.70
-    pose(clip,t)
-    depsgraph=bpy.context.evaluated_depsgraph_get()
-    evaluated=model.evaluated_get(depsgraph);temp=evaluated.to_mesh()
-    # A fresh evaluated mesh preserves UV loops and the texture on both panels.
-    old=left.data;mesh=temp.copy();left.data=mesh;right.data=mesh
-    evaluated.to_mesh_clear()
-    if old.users==0:bpy.data.meshes.remove(old)
+    actual_clip='02_bracos' if comparison else clip
+    pose(actual_clip,t)
+    stale={left.data,right.data}
+    if comparison:
+        new_rig,new_data=rig,arm_data
+        try:
+            rig,arm_data=old_rig,old_rig.data
+            pose(actual_clip,t)
+        finally:
+            rig,arm_data=new_rig,new_data
+        left.data=evaluated_copy(old_model)
+        right.data=evaluated_copy(model)
+    else:
+        mesh=evaluated_copy(model);left.data=mesh;right.data=mesh
+    for mesh in stale:
+        if mesh.users==0:bpy.data.meshes.remove(mesh)
+    if REVISION=='02':
+        wire.show_render=not comparison
+        right.material_slots[0].material=model.data.materials[0] if comparison else wire_material
     for line,dot,(name,_,_,_) in zip(lines,joints,spec):
+        line.hide_render=comparison;dot.hide_render=comparison
         bone=rig.pose.bones[name]
         a=rig.matrix_world@bone.head+right.location
         b=rig.matrix_world@bone.tail+right.location
         # Parallel projection moves lines closer without altering screen positions.
-        a+=near*.48;b+=near*.48
+        if REVISION=='01':a+=near*.48;b+=near*.48
         line.location=(a+b)*.5
         line.rotation_euler=(b-a).to_track_quat('Z','Y').to_euler();line.scale.z=(b-a).length
         dot.location=a
     bpy.context.view_layer.update()
 
-for clip,duration,title in CLIPS:
+render_clips=CLIPS if REVISION=='01' else [CLIPS[0],CLIPS[1],('03_comparacao_bracos',8,'Comparacao dos bracos - anterior e corrigido')]
+for clip,duration,title in render_clips:
     folder=FRAMES/clip;folder.mkdir(parents=True,exist_ok=True)
     samples=[48] if '--preview' in sys.argv else range(duration*FPS)
     for frame in samples:

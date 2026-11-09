@@ -1,0 +1,437 @@
+{
+  "status": "aguarda_feedback_articulacao",
+  "height_m": 1.8,
+  "source_scale_applied": 0.14837038862061658,
+  "vertices": 1075,
+  "triangles": 2106,
+  "bones": 21,
+  "weight_method": "Blender heat initialized, anatomical-region correction, four normalized influences",
+  "unweighted_vertices": 0,
+  "max_influences": 4,
+  "texture_preserved": true,
+  "clips": [
+    {
+      "id": "01_esqueleto_360",
+      "duration_seconds": 8,
+      "description": "Encaixe do esqueleto - frente, lado e costas",
+      "fps": 24
+    },
+    {
+      "id": "02_bracos",
+      "duration_seconds": 8,
+      "description": "Cotovelos, ombros e pulsos",
+      "fps": 24
+    },
+    {
+      "id": "03_pernas",
+      "duration_seconds": 8,
+      "description": "Anca, joelhos e tornozelos",
+      "fps": 24
+    },
+    {
+      "id": "04_tronco",
+      "duration_seconds": 8,
+      "description": "Coluna, pescoco e cabeca",
+      "fps": 24
+    }
+  ],
+  "joints": [
+    {
+      "name": "pelvis",
+      "head": [
+        0,
+        0,
+        0.9
+      ],
+      "tail": [
+        0,
+        0,
+        1.03
+      ],
+      "parent": null
+    },
+    {
+      "name": "spine",
+      "head": [
+        0,
+        0,
+        1.03
+      ],
+      "tail": [
+        0,
+        0,
+        1.23
+      ],
+      "parent": "pelvis"
+    },
+    {
+      "name": "chest",
+      "head": [
+        0,
+        0,
+        1.23
+      ],
+      "tail": [
+        0,
+        0,
+        1.45
+      ],
+      "parent": "spine"
+    },
+    {
+      "name": "neck",
+      "head": [
+        0,
+        0,
+        1.45
+      ],
+      "tail": [
+        0,
+        -0.005,
+        1.57
+      ],
+      "parent": "chest"
+    },
+    {
+      "name": "head",
+      "head": [
+        0,
+        -0.005,
+        1.57
+      ],
+      "tail": [
+        0,
+        -0.005,
+        1.78
+      ],
+      "parent": "neck"
+    },
+    {
+      "name": "clavicle.L",
+      "head": [
+        0.025,
+        0,
+        1.45
+      ],
+      "tail": [
+        0.205,
+        0.0536884,
+        1.425
+      ],
+      "parent": "chest"
+    },
+    {
+      "name": "upper_arm.L",
+      "head": [
+        0.205,
+        0.0536884,
+        1.425
+      ],
+      "tail": [
+        0.335,
+        0.04971325,
+        1.205
+      ],
+      "parent": "clavicle.L"
+    },
+    {
+      "name": "forearm.L",
+      "head": [
+        0.335,
+        0.04971325,
+        1.205
+      ],
+      "tail": [
+        0.45,
+        0.0251221,
+        1.005
+      ],
+      "parent": "upper_arm.L"
+    },
+    {
+      "name": "hand.L",
+      "head": [
+        0.45,
+        0.0251221,
+        1.005
+      ],
+      "tail": [
+        0.505,
+        0.01562315,
+        0.89
+      ],
+      "parent": "forearm.L"
+    },
+    {
+      "name": "thigh.L",
+      "head": [
+        0.1,
+        0,
+        0.9
+      ],
+      "tail": [
+        0.115,
+        -0.008,
+        0.49
+      ],
+      "parent": "pelvis"
+    },
+    {
+      "name": "shin.L",
+      "head": [
+        0.115,
+        -0.008,
+        0.49
+      ],
+      "tail": [
+        0.13,
+        0,
+        0.12
+      ],
+      "parent": "thigh.L"
+    },
+    {
+      "name": "foot.L",
+      "head": [
+        0.13,
+        0,
+        0.12
+      ],
+      "tail": [
+        0.13,
+        -0.14,
+        0.055
+      ],
+      "parent": "shin.L"
+    },
+    {
+      "name": "toe.L",
+      "head": [
+        0.13,
+        -0.14,
+        0.055
+      ],
+      "tail": [
+        0.13,
+        -0.2,
+        0.055
+      ],
+      "parent": "foot.L"
+    },
+    {
+      "name": "clavicle.R",
+      "head": [
+        -0.025,
+        0,
+        1.45
+      ],
+      "tail": [
+        -0.205,
+        0.052824199999999995,
+        1.425
+      ],
+      "parent": "chest"
+    },
+    {
+      "name": "upper_arm.R",
+      "head": [
+        -0.205,
+        0.052824199999999995,
+        1.425
+      ],
+      "tail": [
+        -0.335,
+        0.0481334,
+        1.205
+      ],
+      "parent": "clavicle.R"
+    },
+    {
+      "name": "forearm.R",
+      "head": [
+        -0.335,
+        0.0481334,
+        1.205
+      ],
+      "tail": [
+        -0.45,
+        0.0230653,
+        1.005
+      ],
+      "parent": "upper_arm.R"
+    },
+    {
+      "name": "hand.R",
+      "head": [
+        -0.45,
+        0.0230653,
+        1.005
+      ],
+      "tail": [
+        -0.505,
+        0.01334285,
+        0.89
+      ],
+      "parent": "forearm.R"
+    },
+    {
+      "name": "thigh.R",
+      "head": [
+        -0.1,
+        0,
+        0.9
+      ],
+      "tail": [
+        -0.115,
+        -0.008,
+        0.49
+      ],
+      "parent": "pelvis"
+    },
+    {
+      "name": "shin.R",
+      "head": [
+        -0.115,
+        -0.008,
+        0.49
+      ],
+      "tail": [
+        -0.13,
+        0,
+        0.12
+      ],
+      "parent": "thigh.R"
+    },
+    {
+      "name": "foot.R",
+      "head": [
+        -0.13,
+        0,
+        0.12
+      ],
+      "tail": [
+        -0.13,
+        -0.14,
+        0.055
+      ],
+      "parent": "shin.R"
+    },
+    {
+      "name": "toe.R",
+      "head": [
+        -0.13,
+        -0.14,
+        0.055
+      ],
+      "tail": [
+        -0.13,
+        -0.2,
+        0.055
+      ],
+      "parent": "foot.R"
+    }
+  ],
+  "limitations": [
+    "Not integrated in the game",
+    "Weights and bone placement require user visual review",
+    "No individual finger rig or cloth simulation",
+    "No walking/running/color/shape variants before rig feedback"
+  ],
+  "revision": "02",
+  "arm_fit_sections": [
+    {
+      "joint": "shoulder.L",
+      "point": [
+        0.205,
+        0.0536884,
+        1.425
+      ],
+      "surface_front_y": -0.0071851,
+      "surface_back_y": 0.1145619,
+      "depth_margin_m": 0.0608735
+    },
+    {
+      "joint": "elbow.L",
+      "point": [
+        0.335,
+        0.04971325,
+        1.205
+      ],
+      "surface_front_y": -0.0081074,
+      "surface_back_y": 0.1075339,
+      "depth_margin_m": 0.05782065
+    },
+    {
+      "joint": "wrist.L",
+      "point": [
+        0.45,
+        0.0251221,
+        1.005
+      ],
+      "surface_front_y": -0.0306659,
+      "surface_back_y": 0.0809101,
+      "depth_margin_m": 0.055788
+    },
+    {
+      "joint": "palm_end.L",
+      "point": [
+        0.505,
+        0.01562315,
+        0.89
+      ],
+      "surface_front_y": -0.0298324,
+      "surface_back_y": 0.0610787,
+      "depth_margin_m": 0.04545555
+    },
+    {
+      "joint": "shoulder.R",
+      "point": [
+        -0.205,
+        0.052824199999999995,
+        1.425
+      ],
+      "surface_front_y": -0.0082036,
+      "surface_back_y": 0.113852,
+      "depth_margin_m": 0.0610278
+    },
+    {
+      "joint": "elbow.R",
+      "point": [
+        -0.335,
+        0.0481334,
+        1.205
+      ],
+      "surface_front_y": -0.0096696,
+      "surface_back_y": 0.1059364,
+      "depth_margin_m": 0.057803
+    },
+    {
+      "joint": "wrist.R",
+      "point": [
+        -0.45,
+        0.0230653,
+        1.005
+      ],
+      "surface_front_y": -0.0328254,
+      "surface_back_y": 0.078956,
+      "depth_margin_m": 0.0558907
+    },
+    {
+      "joint": "palm_end.R",
+      "point": [
+        -0.505,
+        0.01334285,
+        0.89
+      ],
+      "surface_front_y": -0.0320933,
+      "surface_back_y": 0.058779,
+      "depth_margin_m": 0.045436149999999995
+    }
+  ],
+  "review_display": "actual bones inside wireframe mesh, no camera-depth offset",
+  "rendered_video_ids": [
+    "01_esqueleto_360",
+    "02_bracos",
+    "03_comparacao_bracos"
+  ]
+}
