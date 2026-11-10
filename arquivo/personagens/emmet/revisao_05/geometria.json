@@ -1,0 +1,1804 @@
+{
+  "01_carro": [
+    {
+      "time": 0.0,
+      "intersections": {}
+    },
+    {
+      "time": 0.041666666666666664,
+      "intersections": {}
+    },
+    {
+      "time": 0.08333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 0.125,
+      "intersections": {}
+    },
+    {
+      "time": 0.16666666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.20833333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.25,
+      "intersections": {}
+    },
+    {
+      "time": 0.2916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 0.3333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 0.375,
+      "intersections": {}
+    },
+    {
+      "time": 0.4166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 0.4583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 0.5,
+      "intersections": {}
+    },
+    {
+      "time": 0.5416666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.5833333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.625,
+      "intersections": {}
+    },
+    {
+      "time": 0.6666666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.7083333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.75,
+      "intersections": {}
+    },
+    {
+      "time": 0.7916666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.8333333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.875,
+      "intersections": {}
+    },
+    {
+      "time": 0.9166666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.9583333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 1.0,
+      "intersections": {}
+    },
+    {
+      "time": 1.0416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.0833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.125,
+      "intersections": {}
+    },
+    {
+      "time": 1.1666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.2083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.25,
+      "intersections": {}
+    },
+    {
+      "time": 1.2916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.3333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.375,
+      "intersections": {}
+    },
+    {
+      "time": 1.4166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.4583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.5,
+      "intersections": {}
+    },
+    {
+      "time": 1.5416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.5833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.625,
+      "intersections": {}
+    },
+    {
+      "time": 1.6666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.7083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.75,
+      "intersections": {}
+    },
+    {
+      "time": 1.7916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.8333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.875,
+      "intersections": {}
+    },
+    {
+      "time": 1.9166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.9583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 2.0,
+      "intersections": {}
+    },
+    {
+      "time": 2.0416666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.0833333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.125,
+      "intersections": {}
+    },
+    {
+      "time": 2.1666666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.2083333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.25,
+      "intersections": {}
+    },
+    {
+      "time": 2.2916666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.3333333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.375,
+      "intersections": {}
+    },
+    {
+      "time": 2.4166666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.4583333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.5,
+      "intersections": {}
+    },
+    {
+      "time": 2.5416666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.5833333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.625,
+      "intersections": {}
+    },
+    {
+      "time": 2.6666666666666665,
+      "intersections": {}
+    }
+  ],
+  "02_mota": [
+    {
+      "time": 0.0,
+      "intersections": {}
+    },
+    {
+      "time": 0.041666666666666664,
+      "intersections": {}
+    },
+    {
+      "time": 0.08333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 0.125,
+      "intersections": {}
+    },
+    {
+      "time": 0.16666666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.20833333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.25,
+      "intersections": {}
+    },
+    {
+      "time": 0.2916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 0.3333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 0.375,
+      "intersections": {}
+    },
+    {
+      "time": 0.4166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 0.4583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 0.5,
+      "intersections": {}
+    },
+    {
+      "time": 0.5416666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.5833333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.625,
+      "intersections": {}
+    },
+    {
+      "time": 0.6666666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.7083333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.75,
+      "intersections": {}
+    },
+    {
+      "time": 0.7916666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.8333333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.875,
+      "intersections": {}
+    },
+    {
+      "time": 0.9166666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.9583333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 1.0,
+      "intersections": {}
+    },
+    {
+      "time": 1.0416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.0833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.125,
+      "intersections": {}
+    },
+    {
+      "time": 1.1666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.2083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.25,
+      "intersections": {}
+    },
+    {
+      "time": 1.2916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.3333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.375,
+      "intersections": {}
+    },
+    {
+      "time": 1.4166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.4583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.5,
+      "intersections": {}
+    },
+    {
+      "time": 1.5416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.5833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.625,
+      "intersections": {}
+    },
+    {
+      "time": 1.6666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.7083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.75,
+      "intersections": {}
+    },
+    {
+      "time": 1.7916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.8333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.875,
+      "intersections": {}
+    },
+    {
+      "time": 1.9166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.9583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 2.0,
+      "intersections": {}
+    },
+    {
+      "time": 2.0416666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.0833333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.125,
+      "intersections": {}
+    },
+    {
+      "time": 2.1666666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.2083333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.25,
+      "intersections": {}
+    },
+    {
+      "time": 2.2916666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.3333333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.375,
+      "intersections": {}
+    },
+    {
+      "time": 2.4166666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.4583333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.5,
+      "intersections": {}
+    },
+    {
+      "time": 2.5416666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.5833333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.625,
+      "intersections": {}
+    },
+    {
+      "time": 2.6666666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.7083333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.75,
+      "intersections": {}
+    },
+    {
+      "time": 2.7916666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.8333333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.875,
+      "intersections": {}
+    },
+    {
+      "time": 2.9166666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.9583333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.0,
+      "intersections": {}
+    },
+    {
+      "time": 3.0416666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.0833333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.125,
+      "intersections": {}
+    },
+    {
+      "time": 3.1666666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.2083333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.25,
+      "intersections": {}
+    },
+    {
+      "time": 3.2916666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.3333333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.375,
+      "intersections": {}
+    },
+    {
+      "time": 3.4166666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.4583333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.5,
+      "intersections": {}
+    },
+    {
+      "time": 3.5416666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.5833333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.625,
+      "intersections": {}
+    },
+    {
+      "time": 3.6666666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.7083333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.75,
+      "intersections": {}
+    },
+    {
+      "time": 3.7916666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.8333333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.875,
+      "intersections": {}
+    },
+    {
+      "time": 3.9166666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.9583333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 4.0,
+      "intersections": {}
+    },
+    {
+      "time": 4.041666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.125,
+      "intersections": {}
+    },
+    {
+      "time": 4.166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.208333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.25,
+      "intersections": {}
+    },
+    {
+      "time": 4.291666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.375,
+      "intersections": {}
+    },
+    {
+      "time": 4.416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.458333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.5,
+      "intersections": {}
+    },
+    {
+      "time": 4.541666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.625,
+      "intersections": {}
+    },
+    {
+      "time": 4.666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.708333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.75,
+      "intersections": {}
+    },
+    {
+      "time": 4.791666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.875,
+      "intersections": {}
+    },
+    {
+      "time": 4.916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.958333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.0,
+      "intersections": {}
+    },
+    {
+      "time": 5.041666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.125,
+      "intersections": {}
+    },
+    {
+      "time": 5.166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.208333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.25,
+      "intersections": {}
+    },
+    {
+      "time": 5.291666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.375,
+      "intersections": {}
+    },
+    {
+      "time": 5.416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.458333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.5,
+      "intersections": {}
+    },
+    {
+      "time": 5.541666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.625,
+      "intersections": {}
+    },
+    {
+      "time": 5.666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.708333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.75,
+      "intersections": {}
+    },
+    {
+      "time": 5.791666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.875,
+      "intersections": {}
+    },
+    {
+      "time": 5.916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.958333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.0,
+      "intersections": {}
+    },
+    {
+      "time": 6.041666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.125,
+      "intersections": {}
+    },
+    {
+      "time": 6.166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.208333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.25,
+      "intersections": {}
+    },
+    {
+      "time": 6.291666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.375,
+      "intersections": {}
+    },
+    {
+      "time": 6.416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.458333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.5,
+      "intersections": {}
+    },
+    {
+      "time": 6.541666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.625,
+      "intersections": {}
+    },
+    {
+      "time": 6.666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.708333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.75,
+      "intersections": {}
+    },
+    {
+      "time": 6.791666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.875,
+      "intersections": {}
+    },
+    {
+      "time": 6.916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.958333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.0,
+      "intersections": {}
+    },
+    {
+      "time": 7.041666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.125,
+      "intersections": {}
+    },
+    {
+      "time": 7.166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.208333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.25,
+      "intersections": {}
+    },
+    {
+      "time": 7.291666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.375,
+      "intersections": {}
+    },
+    {
+      "time": 7.416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.458333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.5,
+      "intersections": {}
+    },
+    {
+      "time": 7.541666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.625,
+      "intersections": {}
+    },
+    {
+      "time": 7.666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.708333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.75,
+      "intersections": {}
+    },
+    {
+      "time": 7.791666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.875,
+      "intersections": {}
+    },
+    {
+      "time": 7.916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.958333333333333,
+      "intersections": {}
+    }
+  ],
+  "03_bicicleta": [
+    {
+      "time": 0.0,
+      "intersections": {}
+    },
+    {
+      "time": 0.041666666666666664,
+      "intersections": {}
+    },
+    {
+      "time": 0.08333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 0.125,
+      "intersections": {}
+    },
+    {
+      "time": 0.16666666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.20833333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.25,
+      "intersections": {}
+    },
+    {
+      "time": 0.2916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 0.3333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 0.375,
+      "intersections": {}
+    },
+    {
+      "time": 0.4166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 0.4583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 0.5,
+      "intersections": {}
+    },
+    {
+      "time": 0.5416666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.5833333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.625,
+      "intersections": {}
+    },
+    {
+      "time": 0.6666666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.7083333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.75,
+      "intersections": {}
+    },
+    {
+      "time": 0.7916666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.8333333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 0.875,
+      "intersections": {}
+    },
+    {
+      "time": 0.9166666666666666,
+      "intersections": {}
+    },
+    {
+      "time": 0.9583333333333334,
+      "intersections": {}
+    },
+    {
+      "time": 1.0,
+      "intersections": {}
+    },
+    {
+      "time": 1.0416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.0833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.125,
+      "intersections": {}
+    },
+    {
+      "time": 1.1666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.2083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.25,
+      "intersections": {}
+    },
+    {
+      "time": 1.2916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.3333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.375,
+      "intersections": {}
+    },
+    {
+      "time": 1.4166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.4583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.5,
+      "intersections": {}
+    },
+    {
+      "time": 1.5416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.5833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.625,
+      "intersections": {}
+    },
+    {
+      "time": 1.6666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.7083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.75,
+      "intersections": {}
+    },
+    {
+      "time": 1.7916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.8333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 1.875,
+      "intersections": {}
+    },
+    {
+      "time": 1.9166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 1.9583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 2.0,
+      "intersections": {}
+    },
+    {
+      "time": 2.0416666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.0833333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.125,
+      "intersections": {}
+    },
+    {
+      "time": 2.1666666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.2083333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.25,
+      "intersections": {}
+    },
+    {
+      "time": 2.2916666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.3333333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.375,
+      "intersections": {}
+    },
+    {
+      "time": 2.4166666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.4583333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.5,
+      "intersections": {}
+    },
+    {
+      "time": 2.5416666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.5833333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.625,
+      "intersections": {}
+    },
+    {
+      "time": 2.6666666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.7083333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.75,
+      "intersections": {}
+    },
+    {
+      "time": 2.7916666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.8333333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 2.875,
+      "intersections": {}
+    },
+    {
+      "time": 2.9166666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 2.9583333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.0,
+      "intersections": {}
+    },
+    {
+      "time": 3.0416666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.0833333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.125,
+      "intersections": {}
+    },
+    {
+      "time": 3.1666666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.2083333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.25,
+      "intersections": {}
+    },
+    {
+      "time": 3.2916666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.3333333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.375,
+      "intersections": {}
+    },
+    {
+      "time": 3.4166666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.4583333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.5,
+      "intersections": {}
+    },
+    {
+      "time": 3.5416666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.5833333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.625,
+      "intersections": {}
+    },
+    {
+      "time": 3.6666666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.7083333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.75,
+      "intersections": {}
+    },
+    {
+      "time": 3.7916666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.8333333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 3.875,
+      "intersections": {}
+    },
+    {
+      "time": 3.9166666666666665,
+      "intersections": {}
+    },
+    {
+      "time": 3.9583333333333335,
+      "intersections": {}
+    },
+    {
+      "time": 4.0,
+      "intersections": {}
+    },
+    {
+      "time": 4.041666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.125,
+      "intersections": {}
+    },
+    {
+      "time": 4.166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.208333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.25,
+      "intersections": {}
+    },
+    {
+      "time": 4.291666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.375,
+      "intersections": {}
+    },
+    {
+      "time": 4.416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.458333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.5,
+      "intersections": {}
+    },
+    {
+      "time": 4.541666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.625,
+      "intersections": {}
+    },
+    {
+      "time": 4.666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.708333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.75,
+      "intersections": {}
+    },
+    {
+      "time": 4.791666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 4.875,
+      "intersections": {}
+    },
+    {
+      "time": 4.916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 4.958333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.0,
+      "intersections": {}
+    },
+    {
+      "time": 5.041666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.125,
+      "intersections": {}
+    },
+    {
+      "time": 5.166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.208333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.25,
+      "intersections": {}
+    },
+    {
+      "time": 5.291666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.375,
+      "intersections": {}
+    },
+    {
+      "time": 5.416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.458333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.5,
+      "intersections": {}
+    },
+    {
+      "time": 5.541666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.625,
+      "intersections": {}
+    },
+    {
+      "time": 5.666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.708333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.75,
+      "intersections": {}
+    },
+    {
+      "time": 5.791666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 5.875,
+      "intersections": {}
+    },
+    {
+      "time": 5.916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 5.958333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.0,
+      "intersections": {}
+    },
+    {
+      "time": 6.041666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.125,
+      "intersections": {}
+    },
+    {
+      "time": 6.166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.208333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.25,
+      "intersections": {}
+    },
+    {
+      "time": 6.291666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.375,
+      "intersections": {}
+    },
+    {
+      "time": 6.416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.458333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.5,
+      "intersections": {}
+    },
+    {
+      "time": 6.541666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.625,
+      "intersections": {}
+    },
+    {
+      "time": 6.666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.708333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.75,
+      "intersections": {}
+    },
+    {
+      "time": 6.791666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 6.875,
+      "intersections": {}
+    },
+    {
+      "time": 6.916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 6.958333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.0,
+      "intersections": {}
+    },
+    {
+      "time": 7.041666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.083333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.125,
+      "intersections": {}
+    },
+    {
+      "time": 7.166666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.208333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.25,
+      "intersections": {}
+    },
+    {
+      "time": 7.291666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.333333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.375,
+      "intersections": {}
+    },
+    {
+      "time": 7.416666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.458333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.5,
+      "intersections": {}
+    },
+    {
+      "time": 7.541666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.583333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.625,
+      "intersections": {}
+    },
+    {
+      "time": 7.666666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.708333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.75,
+      "intersections": {}
+    },
+    {
+      "time": 7.791666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.833333333333333,
+      "intersections": {}
+    },
+    {
+      "time": 7.875,
+      "intersections": {}
+    },
+    {
+      "time": 7.916666666666667,
+      "intersections": {}
+    },
+    {
+      "time": 7.958333333333333,
+      "intersections": {}
+    }
+  ]
+}

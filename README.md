@@ -10,7 +10,7 @@ O editor continua disponível em **F10 → Ir para… → bairro → Testar nest
 
 ## Arquivo de personagens e revisão em vídeo
 
-Os vinte modelos atuais e o Emmet enviado estão organizados no [arquivo de personagens](arquivo/personagens/README.md), separado do jogo. A [revisão 04 do Emmet](arquivo/personagens/emmet/revisao_04/README.md) reúne as animações de entrada dos quatro veículos: carro, mota, bicicleta e trotinete, com vídeos individuais e uma sequência de 32 segundos. A caminhada da revisão 03 continua preservada. Aguarda feedback sobre as animações antes das variantes e integração.
+Os vinte modelos atuais e o Emmet enviado estão organizados no [arquivo de personagens](arquivo/personagens/README.md), separado do jogo. A [revisão 05 do Emmet](arquivo/personagens/emmet/revisao_05/README.md) corrige a entrada no carro e a montagem na mota e na bicicleta após feedback. A trotinete foi aprovada e permanece intacta. Há vídeos individuais e uma sequência de 32 segundos; a caminhada da revisão 03 continua preservada. As novas animações aguardam feedback antes das variantes e integração.
 
 ## Descarregar e abrir no Windows
 

@@ -1,0 +1,195 @@
+{
+  "new_animations": [
+    {
+      "clip": "01_carro",
+      "frames": 192,
+      "max_contact_error_m": 0.010872272057999687,
+      "approved_rest_model_preserved": true,
+      "geometry_scope": "stationary_opening_body_excluding_arms",
+      "geometry_sample_frames": 65,
+      "intersection_frames": 0
+    },
+    {
+      "clip": "02_mota",
+      "frames": 192,
+      "max_contact_error_m": 0.004338545006899028,
+      "approved_rest_model_preserved": true,
+      "geometry_scope": "legs_versus_vehicle_core_entire_clip",
+      "geometry_sample_frames": 192,
+      "intersection_frames": 0
+    },
+    {
+      "clip": "03_bicicleta",
+      "frames": 192,
+      "max_contact_error_m": 7.562981570034933e-07,
+      "approved_rest_model_preserved": true,
+      "geometry_scope": "legs_versus_vehicle_core_entire_clip",
+      "geometry_sample_frames": 192,
+      "intersection_frames": 0
+    }
+  ],
+  "videos": [
+    {
+      "file": "01_carro.mp4",
+      "frames": 192,
+      "duration_seconds": 8.0,
+      "unique_frames": 192,
+      "sha256": "e6cb666cceafcfca97aa13b1f28e56f37e366a7847625c9adaaccb449c9df9a7",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "02_mota.mp4",
+      "frames": 192,
+      "duration_seconds": 8.0,
+      "unique_frames": 185,
+      "sha256": "dc500c35a4a37d2a856bbcc8c9f0301520134e17315ca492b81c8d7667726105",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "03_bicicleta.mp4",
+      "frames": 192,
+      "duration_seconds": 8.0,
+      "unique_frames": 187,
+      "sha256": "cee8c3341285a46e63bd86ceed6ca84ee7117ea943036101b0863cc84ba892d6",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "00_quatro_veiculos.mp4",
+      "frames": 768,
+      "duration_seconds": 32.0,
+      "unique_frames": 755,
+      "sha256": "435c830917be0593fe7bedd49ffcf37d3f118b1e51a466d24d4494ed643f3c95",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "768"
+    }
+  ],
+  "native_godot": {
+    "checks": 2464,
+    "failures": 0,
+    "godot": "4.6.3-stable (official)",
+    "max_contact_error_m": 0.0108720231801271,
+    "max_joint_step_m": 0.126793816685677,
+    "sample_fps": 24
+  },
+  "source_checks": [
+    {
+      "clip": "01_carro",
+      "bones_unchanged": 21,
+      "rest_vertices_unchanged": 1075,
+      "uvs_unchanged": true,
+      "normalized_weights": true,
+      "has_review_camera": true,
+      "clothing_correctives": [],
+      "fps": 24,
+      "frames": 192
+    },
+    {
+      "clip": "02_mota",
+      "bones_unchanged": 21,
+      "rest_vertices_unchanged": 1075,
+      "uvs_unchanged": true,
+      "normalized_weights": true,
+      "has_review_camera": true,
+      "clothing_correctives": [
+        {
+          "name": "Roupa_sentada_0",
+          "vertices": 9,
+          "only_lower_body": true
+        },
+        {
+          "name": "Roupa_sentada_1",
+          "vertices": 8,
+          "only_lower_body": true
+        },
+        {
+          "name": "Roupa_sentada_2",
+          "vertices": 12,
+          "only_lower_body": true
+        },
+        {
+          "name": "Roupa_sentada_3",
+          "vertices": 15,
+          "only_lower_body": true
+        },
+        {
+          "name": "Roupa_sentada_4",
+          "vertices": 18,
+          "only_lower_body": true
+        },
+        {
+          "name": "Roupa_sentada_5",
+          "vertices": 18,
+          "only_lower_body": true
+        }
+      ],
+      "fps": 24,
+      "frames": 192
+    },
+    {
+      "clip": "03_bicicleta",
+      "bones_unchanged": 21,
+      "rest_vertices_unchanged": 1075,
+      "uvs_unchanged": true,
+      "normalized_weights": true,
+      "has_review_camera": true,
+      "clothing_correctives": [
+        {
+          "name": "Roupa_sentada_0",
+          "vertices": 9,
+          "only_lower_body": true
+        },
+        {
+          "name": "Roupa_sentada_1",
+          "vertices": 14,
+          "only_lower_body": true
+        },
+        {
+          "name": "Roupa_sentada_2",
+          "vertices": 17,
+          "only_lower_body": true
+        },
+        {
+          "name": "Roupa_sentada_3",
+          "vertices": 19,
+          "only_lower_body": true
+        },
+        {
+          "name": "Roupa_sentada_4",
+          "vertices": 21,
+          "only_lower_body": true
+        },
+        {
+          "name": "Roupa_sentada_5",
+          "vertices": 21,
+          "only_lower_body": true
+        }
+      ],
+      "fps": 24,
+      "frames": 192
+    }
+  ],
+  "approved_scooter_unchanged": true,
+  "approved_scooter_sha256": "65d0c4e39e215aa26d13d5fe92a53f59e7d23fac00d70f392fd22b2d6290803f",
+  "previous_reviews_preserved": true,
+  "game_integration": false,
+  "status": "novas_animacoes_aguardam_feedback"
+}

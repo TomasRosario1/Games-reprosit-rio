@@ -1,0 +1,23 @@
+[
+  {
+    "clip": "02_mota",
+    "source": "revisao_03/03_montar_mota.blend",
+    "bones": 21,
+    "fps": 24,
+    "frames": 192
+  },
+  {
+    "clip": "03_bicicleta",
+    "source": "revisao_04/04_montar_bicicleta.blend",
+    "bones": 21,
+    "fps": 24,
+    "frames": 192
+  },
+  {
+    "clip": "01_carro",
+    "source": "revisao_03/02_entrar_carro.blend",
+    "bones": 21,
+    "fps": 24,
+    "frames": 192
+  }
+]

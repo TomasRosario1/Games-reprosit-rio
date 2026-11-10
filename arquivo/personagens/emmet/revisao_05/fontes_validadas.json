@@ -1,0 +1,97 @@
+[
+  {
+    "clip": "01_carro",
+    "bones_unchanged": 21,
+    "rest_vertices_unchanged": 1075,
+    "uvs_unchanged": true,
+    "normalized_weights": true,
+    "has_review_camera": true,
+    "clothing_correctives": [],
+    "fps": 24,
+    "frames": 192
+  },
+  {
+    "clip": "02_mota",
+    "bones_unchanged": 21,
+    "rest_vertices_unchanged": 1075,
+    "uvs_unchanged": true,
+    "normalized_weights": true,
+    "has_review_camera": true,
+    "clothing_correctives": [
+      {
+        "name": "Roupa_sentada_0",
+        "vertices": 9,
+        "only_lower_body": true
+      },
+      {
+        "name": "Roupa_sentada_1",
+        "vertices": 8,
+        "only_lower_body": true
+      },
+      {
+        "name": "Roupa_sentada_2",
+        "vertices": 12,
+        "only_lower_body": true
+      },
+      {
+        "name": "Roupa_sentada_3",
+        "vertices": 15,
+        "only_lower_body": true
+      },
+      {
+        "name": "Roupa_sentada_4",
+        "vertices": 18,
+        "only_lower_body": true
+      },
+      {
+        "name": "Roupa_sentada_5",
+        "vertices": 18,
+        "only_lower_body": true
+      }
+    ],
+    "fps": 24,
+    "frames": 192
+  },
+  {
+    "clip": "03_bicicleta",
+    "bones_unchanged": 21,
+    "rest_vertices_unchanged": 1075,
+    "uvs_unchanged": true,
+    "normalized_weights": true,
+    "has_review_camera": true,
+    "clothing_correctives": [
+      {
+        "name": "Roupa_sentada_0",
+        "vertices": 9,
+        "only_lower_body": true
+      },
+      {
+        "name": "Roupa_sentada_1",
+        "vertices": 14,
+        "only_lower_body": true
+      },
+      {
+        "name": "Roupa_sentada_2",
+        "vertices": 17,
+        "only_lower_body": true
+      },
+      {
+        "name": "Roupa_sentada_3",
+        "vertices": 19,
+        "only_lower_body": true
+      },
+      {
+        "name": "Roupa_sentada_4",
+        "vertices": 21,
+        "only_lower_body": true
+      },
+      {
+        "name": "Roupa_sentada_5",
+        "vertices": 21,
+        "only_lower_body": true
+      }
+    ],
+    "fps": 24,
+    "frames": 192
+  }
+]

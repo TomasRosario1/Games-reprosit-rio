@@ -1,0 +1,102 @@
+{
+  "02_mota": [
+    {
+      "name": "Roupa_sentada_0",
+      "vertices_corrected": 10,
+      "largest_iteration_correction_m": 0.18772943684674884,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.4
+    },
+    {
+      "name": "Roupa_sentada_1",
+      "vertices_corrected": 13,
+      "largest_iteration_correction_m": 0.1069121361023383,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.8
+    },
+    {
+      "name": "Roupa_sentada_2",
+      "vertices_corrected": 16,
+      "largest_iteration_correction_m": 0.19772031051281586,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 5.1
+    },
+    {
+      "name": "Roupa_sentada_3",
+      "vertices_corrected": 17,
+      "largest_iteration_correction_m": 0.22248749026079842,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 5.4
+    },
+    {
+      "name": "Roupa_sentada_4",
+      "vertices_corrected": 18,
+      "largest_iteration_correction_m": 0.23633158499967086,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 5.7
+    },
+    {
+      "name": "Roupa_sentada_5",
+      "vertices_corrected": 18,
+      "largest_iteration_correction_m": 0.2374904929473033,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 6.0
+    }
+  ],
+  "03_bicicleta": [
+    {
+      "name": "Roupa_sentada_0",
+      "vertices_corrected": 12,
+      "largest_iteration_correction_m": 0.10944271120471914,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.4
+    },
+    {
+      "name": "Roupa_sentada_1",
+      "vertices_corrected": 20,
+      "largest_iteration_correction_m": 0.1993755116500986,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.8
+    },
+    {
+      "name": "Roupa_sentada_2",
+      "vertices_corrected": 21,
+      "largest_iteration_correction_m": 0.23995643913303916,
+      "residual_triangle_pairs": 0,
+      "iterations": 3,
+      "sample_time": 5.1
+    },
+    {
+      "name": "Roupa_sentada_3",
+      "vertices_corrected": 21,
+      "largest_iteration_correction_m": 0.25673032264373896,
+      "residual_triangle_pairs": 0,
+      "iterations": 3,
+      "sample_time": 5.4
+    },
+    {
+      "name": "Roupa_sentada_4",
+      "vertices_corrected": 21,
+      "largest_iteration_correction_m": 0.2670447888633503,
+      "residual_triangle_pairs": 0,
+      "iterations": 4,
+      "sample_time": 5.7
+    },
+    {
+      "name": "Roupa_sentada_5",
+      "vertices_corrected": 21,
+      "largest_iteration_correction_m": 0.2678832382024769,
+      "residual_triangle_pairs": 0,
+      "iterations": 4,
+      "sample_time": 6.0
+    }
+  ]
+}

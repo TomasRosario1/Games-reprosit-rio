@@ -5,13 +5,14 @@ Esta pasta guarda os modelos para consulta e trabalho posterior. Está excluída
 ## Emmet — modelo enviado
 
 - [Original intacto](emmet/original/gta_sa_emmet.glb).
-- [Revisão 04 atual: animações dos quatro veículos — carro, mota, bicicleta e trotinete](emmet/revisao_04/README.md).
+- [Revisão 05 atual: carro, mota e bicicleta corrigidos após feedback](emmet/revisao_05/README.md).
+- [Revisão 04: quatro veículos — trotinete aprovada e preservada](emmet/revisao_04/README.md).
 - [Revisão 03: andar, entrar no carro e montar a mota — preservada](emmet/revisao_03/README.md).
 - [Revisão 02: articulação aprovada, preservada](emmet/revisao_02/README.md).
 - [Revisão 01 anterior: preservada para comparação](emmet/revisao_01/README.md).
 - [Metadados do ficheiro original](emmet/original/metadados.json).
 
-O Emmet **ainda não é a quarta personagem jogável**. A articulação da revisão 02 foi aprovada. Agora revemos as animações de locomoção e entrada nos veículos; a seguir as variantes de cor/forma. Cada etapa aguarda o feedback do criador. Só uma versão aprovada será integrada no jogo.
+O Emmet **ainda não é a quarta personagem jogável**. A articulação da revisão 02 e a animação da trotinete da revisão 04 foram aprovadas. Agora revemos as restantes animações de locomoção e entrada nos veículos; a seguir as variantes de cor/forma. Cada etapa aguarda o feedback do criador. Só uma versão aprovada será integrada no jogo.
 
 ## Personagens já existentes — cópia de arquivo
 
