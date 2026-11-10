@@ -1,0 +1,7 @@
+{
+	"checks": 1550,
+	"failures": 0,
+	"godot": "4.6.3-stable (official)",
+	"max_contact_error_m": 0.00267953611910343,
+	"sample_fps": 24
+}

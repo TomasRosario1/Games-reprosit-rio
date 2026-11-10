@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-PT">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Emmet — quatro veículos</title>
+<style>
+body{margin:0;background:#171a20;color:#eee;font:17px system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:24px}h1{font-size:28px}h2{font-size:21px}section{margin:30px 0}video{display:block;width:100%;background:#000}button,a{color:inherit}button{background:#303847;border:1px solid #596578;border-radius:5px;padding:8px 14px;margin:6px 4px 6px 0;cursor:pointer}a{color:#b7d9ff}p{line-height:1.5}.note{color:#b9c0cd}
+</style>
+<main>
+<h1>Emmet — animações dos quatro veículos</h1>
+<p>Carro, mota, bicicleta e trotinete. Vídeos reais do modelo articulado; animações no arquivo para feedback, ainda separadas do jogo atual.</p>
+<section><h2>Todos os veículos — 32 segundos</h2><p>0–8 s: carro · 8–16 s: mota · 16–24 s: bicicleta · 24–32 s: trotinete</p><video controls preload="metadata" playsinline src="00_todos_os_veiculos.mp4"></video><a href="00_todos_os_veiculos.mp4" download>Descarregar vídeo completo</a></section>
+<section><h2>Carro</h2><video controls preload="metadata" playsinline src="../revisao_03/02_entrar_carro.mp4"></video><p class="note">Vídeo da revisão 03 preservado. Os vidros estão ocultos para observar a entrada e a posição sentada.</p></section>
+<section><h2>Mota</h2><video controls preload="metadata" playsinline src="../revisao_03/03_montar_mota.mp4"></video></section>
+<section><h2>Bicicleta — novo</h2><video controls preload="metadata" playsinline src="04_montar_bicicleta.mp4"></video></section>
+<section><h2>Trotinete — novo</h2><video controls preload="metadata" playsinline src="05_subir_trotinete.mp4"></video></section>
+<p>Para o feedback, indica o veículo, o segundo e o que gostavas de ajustar.</p>
+<script>
+document.querySelectorAll('video').forEach(video=>{
+ const controls=document.createElement('div');
+ [0.25,0.5,1].forEach(rate=>{const button=document.createElement('button');button.type='button';button.textContent=String(rate).replace('.',',')+'×';button.onclick=()=>{video.playbackRate=rate;};controls.append(button);});
+ video.after(controls);
+ video.addEventListener('play',()=>document.querySelectorAll('video').forEach(other=>{if(other!==video)other.pause();}));
+});
+</script>
+</main></html>

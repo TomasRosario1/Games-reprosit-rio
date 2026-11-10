@@ -1,0 +1,131 @@
+{
+  "vehicles": [
+    {
+      "type": "car",
+      "clip": "02_entrar_carro",
+      "bones": 21,
+      "rest_geometry_and_uv_preserved": true,
+      "glb_sha256": "71df683de1c97b4721f1002e91f08ebe16e41660c30ccd62932193cee3092e5e"
+    },
+    {
+      "type": "motorbike",
+      "clip": "03_montar_mota",
+      "bones": 21,
+      "rest_geometry_and_uv_preserved": true,
+      "glb_sha256": "2f638dbdfd64e3f511e81d24192d96af66e56536646b2a18c419b1644ffc78f1"
+    },
+    {
+      "type": "bicycle",
+      "clip": "04_montar_bicicleta",
+      "bones": 21,
+      "rest_geometry_and_uv_preserved": true,
+      "glb_sha256": "61681ba68e5d01390d094fac5d4b94b667c00ca23e19473e0625b0bf42cfc95d"
+    },
+    {
+      "type": "scooter",
+      "clip": "05_subir_trotinete",
+      "bones": 21,
+      "rest_geometry_and_uv_preserved": true,
+      "glb_sha256": "4ea79690c9c5cef6cc7c5636c524f8a23f509583c3509109a1afbba251c1fdbf"
+    }
+  ],
+  "videos": [
+    {
+      "file": "emmet/revisao_03/02_entrar_carro.mp4",
+      "frames": 192,
+      "duration_seconds": 8.0,
+      "unique_decoded_frames": 192,
+      "sha256": "27133b5e1dcb3fd6ca915fa2dfb4c77177c4423331db382ba4a9b4806547e07e",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "emmet/revisao_03/03_montar_mota.mp4",
+      "frames": 192,
+      "duration_seconds": 8.0,
+      "unique_decoded_frames": 174,
+      "sha256": "7131fca5726dc90d333581329f605cf763fc628e4b2d41ab79597701c72645cb",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "emmet/revisao_04/04_montar_bicicleta.mp4",
+      "frames": 192,
+      "duration_seconds": 8.0,
+      "unique_decoded_frames": 191,
+      "sha256": "9d377c92ae217d73b1bf14424959b704d5600da2926d8ce39d1833a1855777a9",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "emmet/revisao_04/05_subir_trotinete.mp4",
+      "frames": 192,
+      "duration_seconds": 8.0,
+      "unique_decoded_frames": 191,
+      "sha256": "65d0c4e39e215aa26d13d5fe92a53f59e7d23fac00d70f392fd22b2d6290803f",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "emmet/revisao_04/00_todos_os_veiculos.mp4",
+      "frames": 768,
+      "duration_seconds": 32.0,
+      "unique_decoded_frames": 748,
+      "sha256": "1cbeccdae74271272415eaa649011e06ae33afa877aadecc11c724be778f6926",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "768"
+    }
+  ],
+  "native_godot": {
+    "checks": 1550,
+    "failures": 0,
+    "godot": "4.6.3-stable (official)",
+    "max_contact_error_m": 0.00267953611910343,
+    "sample_fps": 24
+  },
+  "new_sources": [
+    {
+      "clip": "04_montar_bicicleta",
+      "bones_unchanged": 21,
+      "rest_vertices_unchanged": 1075,
+      "uvs_unchanged": true,
+      "normalized_skin_weights": true,
+      "has_animated_review_camera": true,
+      "fps": 24,
+      "frames": 192
+    },
+    {
+      "clip": "05_subir_trotinete",
+      "bones_unchanged": 21,
+      "rest_vertices_unchanged": 1075,
+      "uvs_unchanged": true,
+      "normalized_skin_weights": true,
+      "has_animated_review_camera": true,
+      "fps": 24,
+      "frames": 192
+    }
+  ],
+  "previous_reviews_preserved": true,
+  "game_integration": false,
+  "status": "aguarda_feedback_das_animacoes"
+}

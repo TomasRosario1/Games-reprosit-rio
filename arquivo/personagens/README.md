@@ -5,7 +5,8 @@ Esta pasta guarda os modelos para consulta e trabalho posterior. Está excluída
 ## Emmet — modelo enviado
 
 - [Original intacto](emmet/original/gta_sa_emmet.glb).
-- [Revisão 03 atual: andar, entrar no carro e montar a mota](emmet/revisao_03/README.md).
+- [Revisão 04 atual: animações dos quatro veículos — carro, mota, bicicleta e trotinete](emmet/revisao_04/README.md).
+- [Revisão 03: andar, entrar no carro e montar a mota — preservada](emmet/revisao_03/README.md).
 - [Revisão 02: articulação aprovada, preservada](emmet/revisao_02/README.md).
 - [Revisão 01 anterior: preservada para comparação](emmet/revisao_01/README.md).
 - [Metadados do ficheiro original](emmet/original/metadados.json).

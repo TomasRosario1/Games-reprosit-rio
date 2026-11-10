@@ -653,9 +653,9 @@
     {
       "id": "emmet",
       "original": "emmet/original/gta_sa_emmet.glb",
-      "status": "animacoes_andar_carro_mota_aguardam_feedback",
+      "status": "animacoes_dos_quatro_veiculos_aguardam_feedback",
       "sha256": "1430a2de665ef3b3f1c59970b68b6e554d9720426c72fbb8b4b3e998732f2332",
-      "latest_review": "emmet/revisao_03",
+      "latest_review": "emmet/revisao_04",
       "rig_approved_revision": "emmet/revisao_02"
     }
   ]

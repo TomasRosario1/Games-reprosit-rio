@@ -1,0 +1,22 @@
+[
+  {
+    "clip": "04_montar_bicicleta",
+    "bones_unchanged": 21,
+    "rest_vertices_unchanged": 1075,
+    "uvs_unchanged": true,
+    "normalized_skin_weights": true,
+    "has_animated_review_camera": true,
+    "fps": 24,
+    "frames": 192
+  },
+  {
+    "clip": "05_subir_trotinete",
+    "bones_unchanged": 21,
+    "rest_vertices_unchanged": 1075,
+    "uvs_unchanged": true,
+    "normalized_skin_weights": true,
+    "has_animated_review_camera": true,
+    "fps": 24,
+    "frames": 192
+  }
+]

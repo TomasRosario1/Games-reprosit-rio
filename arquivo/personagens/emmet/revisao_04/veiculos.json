@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "scope": "animacoes_de_entrada_dos_quatro_tipos_de_veiculo_do_projeto",
+  "rig_approved_revision": "../revisao_02",
+  "game_integration": false,
+  "combined_video": "00_todos_os_veiculos.mp4",
+  "vehicles": [
+    {
+      "type": "car",
+      "name": "Carro",
+      "clip": "02_entrar_carro",
+      "video": "../revisao_03/02_entrar_carro.mp4",
+      "blend": "../revisao_03/02_entrar_carro.blend",
+      "glb": "../revisao_03/02_entrar_carro.glb",
+      "combined_start_seconds": 0,
+      "duration_seconds": 8,
+      "status": "revisao_03_preservada"
+    },
+    {
+      "type": "motorbike",
+      "name": "Mota",
+      "clip": "03_montar_mota",
+      "video": "../revisao_03/03_montar_mota.mp4",
+      "blend": "../revisao_03/03_montar_mota.blend",
+      "glb": "../revisao_03/03_montar_mota.glb",
+      "combined_start_seconds": 8,
+      "duration_seconds": 8,
+      "status": "revisao_03_preservada"
+    },
+    {
+      "type": "bicycle",
+      "name": "Bicicleta",
+      "clip": "04_montar_bicicleta",
+      "video": "04_montar_bicicleta.mp4",
+      "blend": "04_montar_bicicleta.blend",
+      "glb": "04_montar_bicicleta.glb",
+      "combined_start_seconds": 16,
+      "duration_seconds": 8,
+      "status": "nova_animacao_aguarda_feedback"
+    },
+    {
+      "type": "scooter",
+      "name": "Trotinete",
+      "clip": "05_subir_trotinete",
+      "video": "05_subir_trotinete.mp4",
+      "blend": "05_subir_trotinete.blend",
+      "glb": "05_subir_trotinete.glb",
+      "combined_start_seconds": 24,
+      "duration_seconds": 8,
+      "status": "nova_animacao_aguarda_feedback"
+    }
+  ]
+}
