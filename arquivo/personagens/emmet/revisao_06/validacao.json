@@ -1,0 +1,298 @@
+{
+  "new_animations": [
+    {
+      "clip": "01_mota",
+      "frames": 192,
+      "max_contact_error_m": 0.004733263878441536,
+      "max_left_grip_error_m": 0.004733263878441536,
+      "left_grasp_before_tilt": true,
+      "approved_rest_model_preserved": true,
+      "geometry_scope": "both_leg_surfaces_against_all_visible_vehicle_meshes_except_stand",
+      "intersection_frames": 0,
+      "knee_bend_forward": true,
+      "minimum_anatomical_clearance_at_controls_m": 0.005014891982078551
+    },
+    {
+      "clip": "02_bicicleta",
+      "frames": 192,
+      "max_contact_error_m": 0.004490287119028956,
+      "max_left_grip_error_m": 0.004490287119028956,
+      "left_grasp_before_tilt": true,
+      "approved_rest_model_preserved": true,
+      "geometry_scope": "both_leg_surfaces_against_all_visible_vehicle_meshes_except_stand",
+      "intersection_frames": 0,
+      "knee_bend_forward": true,
+      "minimum_anatomical_clearance_at_controls_m": 0.06558557903766632
+    }
+  ],
+  "videos": [
+    {
+      "file": "01_mota.mp4",
+      "frames": 192,
+      "duration_seconds": 8.0,
+      "unique_frames": 189,
+      "sha256": "9404934a8e3f623844d9218d5d6547ef160d1edd7fcadaba845ce1cac90c81b1",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "02_bicicleta.mp4",
+      "frames": 192,
+      "duration_seconds": 8.0,
+      "unique_frames": 187,
+      "sha256": "42c8feccfe474bf807c19911eb348f6f3363b88556b6fa3ea52f2ca93a9a1ba4",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "192"
+    },
+    {
+      "file": "00_quatro_veiculos.mp4",
+      "frames": 768,
+      "duration_seconds": 32.0,
+      "unique_frames": 759,
+      "sha256": "db56d4186761fdddbb1ce7aac91de6a71a1850e7ea43c4a4b4fab2e5003af5b0",
+      "codec_name": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "768"
+    }
+  ],
+  "native_godot": {
+    "checks": 3818,
+    "failures": 0,
+    "godot": "4.6.3-stable (official)",
+    "max_contact_error_m": 0.00473310938104987,
+    "max_joint_step_m": 0.137053608894348,
+    "max_left_grip_error_m": 0.00473310938104987,
+    "sample_fps": 24
+  },
+  "source_checks": [
+    {
+      "clip": "01_mota",
+      "bones_unchanged": 21,
+      "rest_vertices_unchanged": 1075,
+      "uvs_unchanged": true,
+      "normalized_weights": true,
+      "static_review_camera": true,
+      "pose_correctives": [
+        {
+          "name": "Mao_esquerda_pega",
+          "vertices": 47,
+          "scope": "left_fingers"
+        },
+        {
+          "name": "Roupa_ao_sentar_0",
+          "vertices": 0,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_1",
+          "vertices": 0,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_2",
+          "vertices": 0,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_3",
+          "vertices": 0,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_4",
+          "vertices": 7,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_5",
+          "vertices": 12,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_6",
+          "vertices": 20,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_7",
+          "vertices": 12,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_8",
+          "vertices": 10,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_9",
+          "vertices": 7,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_10",
+          "vertices": 7,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_11",
+          "vertices": 8,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_12",
+          "vertices": 10,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_13",
+          "vertices": 14,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_14",
+          "vertices": 20,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_15",
+          "vertices": 25,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_16",
+          "vertices": 24,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_17",
+          "vertices": 25,
+          "scope": "lower_body_clothing"
+        }
+      ],
+      "fps": 24,
+      "frames": 192
+    },
+    {
+      "clip": "02_bicicleta",
+      "bones_unchanged": 21,
+      "rest_vertices_unchanged": 1075,
+      "uvs_unchanged": true,
+      "normalized_weights": true,
+      "static_review_camera": true,
+      "pose_correctives": [
+        {
+          "name": "Mao_esquerda_pega",
+          "vertices": 47,
+          "scope": "left_fingers"
+        },
+        {
+          "name": "Roupa_ao_sentar_0",
+          "vertices": 0,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_1",
+          "vertices": 0,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_2",
+          "vertices": 0,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_3",
+          "vertices": 0,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_4",
+          "vertices": 3,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_5",
+          "vertices": 3,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_6",
+          "vertices": 4,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_7",
+          "vertices": 4,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_8",
+          "vertices": 4,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_9",
+          "vertices": 4,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_10",
+          "vertices": 8,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_11",
+          "vertices": 8,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_12",
+          "vertices": 8,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_13",
+          "vertices": 11,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_14",
+          "vertices": 13,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_15",
+          "vertices": 18,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_16",
+          "vertices": 20,
+          "scope": "lower_body_clothing"
+        },
+        {
+          "name": "Roupa_ao_sentar_17",
+          "vertices": 19,
+          "scope": "lower_body_clothing"
+        }
+      ],
+      "fps": 24,
+      "frames": 192
+    }
+  ],
+  "car_and_scooter_preserved_including_decoded_frames": true,
+  "previous_reviews_preserved": true,
+  "game_integration": false,
+  "status": "aguarda_feedback_visual"
+}

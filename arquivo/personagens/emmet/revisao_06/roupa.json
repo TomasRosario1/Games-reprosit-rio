@@ -1,0 +1,294 @@
+{
+  "01_mota": [
+    {
+      "name": "Roupa_ao_sentar_0",
+      "vertices_corrected": 0,
+      "largest_iteration_correction_m": 0,
+      "residual_triangle_pairs": 0,
+      "iterations": 1,
+      "sample_time": 3.2
+    },
+    {
+      "name": "Roupa_ao_sentar_1",
+      "vertices_corrected": 0,
+      "largest_iteration_correction_m": 0,
+      "residual_triangle_pairs": 0,
+      "iterations": 1,
+      "sample_time": 3.4
+    },
+    {
+      "name": "Roupa_ao_sentar_2",
+      "vertices_corrected": 0,
+      "largest_iteration_correction_m": 0,
+      "residual_triangle_pairs": 0,
+      "iterations": 1,
+      "sample_time": 3.6
+    },
+    {
+      "name": "Roupa_ao_sentar_3",
+      "vertices_corrected": 0,
+      "largest_iteration_correction_m": 0,
+      "residual_triangle_pairs": 0,
+      "iterations": 1,
+      "sample_time": 3.8
+    },
+    {
+      "name": "Roupa_ao_sentar_4",
+      "vertices_corrected": 8,
+      "largest_iteration_correction_m": 0.36226542342338525,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.0
+    },
+    {
+      "name": "Roupa_ao_sentar_5",
+      "vertices_corrected": 13,
+      "largest_iteration_correction_m": 0.34931589007372815,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.041666666666667
+    },
+    {
+      "name": "Roupa_ao_sentar_6",
+      "vertices_corrected": 21,
+      "largest_iteration_correction_m": 0.3467581861570665,
+      "residual_triangle_pairs": 0,
+      "iterations": 4,
+      "sample_time": 4.083333333333333
+    },
+    {
+      "name": "Roupa_ao_sentar_7",
+      "vertices_corrected": 13,
+      "largest_iteration_correction_m": 0.31827514103060633,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.125
+    },
+    {
+      "name": "Roupa_ao_sentar_8",
+      "vertices_corrected": 11,
+      "largest_iteration_correction_m": 0.2952532769416209,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.166666666666667
+    },
+    {
+      "name": "Roupa_ao_sentar_9",
+      "vertices_corrected": 8,
+      "largest_iteration_correction_m": 0.2742134464768577,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.2
+    },
+    {
+      "name": "Roupa_ao_sentar_10",
+      "vertices_corrected": 10,
+      "largest_iteration_correction_m": 0.16485947651444643,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.291666666666667
+    },
+    {
+      "name": "Roupa_ao_sentar_11",
+      "vertices_corrected": 10,
+      "largest_iteration_correction_m": 0.17515105025394184,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.333333333333333
+    },
+    {
+      "name": "Roupa_ao_sentar_12",
+      "vertices_corrected": 11,
+      "largest_iteration_correction_m": 0.1870295364218525,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.5
+    },
+    {
+      "name": "Roupa_ao_sentar_13",
+      "vertices_corrected": 16,
+      "largest_iteration_correction_m": 0.22127421515301565,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.8
+    },
+    {
+      "name": "Roupa_ao_sentar_14",
+      "vertices_corrected": 23,
+      "largest_iteration_correction_m": 0.25931988338415646,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 5.1
+    },
+    {
+      "name": "Roupa_ao_sentar_15",
+      "vertices_corrected": 27,
+      "largest_iteration_correction_m": 0.2888665731402887,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 5.4
+    },
+    {
+      "name": "Roupa_ao_sentar_16",
+      "vertices_corrected": 28,
+      "largest_iteration_correction_m": 0.2554050153153799,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 5.8
+    },
+    {
+      "name": "Roupa_ao_sentar_17",
+      "vertices_corrected": 28,
+      "largest_iteration_correction_m": 0.23402802493254185,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 6.4
+    }
+  ],
+  "02_bicicleta": [
+    {
+      "name": "Roupa_ao_sentar_0",
+      "vertices_corrected": 0,
+      "largest_iteration_correction_m": 0,
+      "residual_triangle_pairs": 0,
+      "iterations": 1,
+      "sample_time": 3.2
+    },
+    {
+      "name": "Roupa_ao_sentar_1",
+      "vertices_corrected": 0,
+      "largest_iteration_correction_m": 0,
+      "residual_triangle_pairs": 0,
+      "iterations": 1,
+      "sample_time": 3.4
+    },
+    {
+      "name": "Roupa_ao_sentar_2",
+      "vertices_corrected": 0,
+      "largest_iteration_correction_m": 0,
+      "residual_triangle_pairs": 0,
+      "iterations": 1,
+      "sample_time": 3.6
+    },
+    {
+      "name": "Roupa_ao_sentar_3",
+      "vertices_corrected": 0,
+      "largest_iteration_correction_m": 0,
+      "residual_triangle_pairs": 0,
+      "iterations": 1,
+      "sample_time": 3.8
+    },
+    {
+      "name": "Roupa_ao_sentar_4",
+      "vertices_corrected": 4,
+      "largest_iteration_correction_m": 0.07416474736780615,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.0
+    },
+    {
+      "name": "Roupa_ao_sentar_5",
+      "vertices_corrected": 4,
+      "largest_iteration_correction_m": 0.08221644262257233,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.041666666666667
+    },
+    {
+      "name": "Roupa_ao_sentar_6",
+      "vertices_corrected": 5,
+      "largest_iteration_correction_m": 0.0955338489405434,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.083333333333333
+    },
+    {
+      "name": "Roupa_ao_sentar_7",
+      "vertices_corrected": 5,
+      "largest_iteration_correction_m": 0.11468720243763586,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.125
+    },
+    {
+      "name": "Roupa_ao_sentar_8",
+      "vertices_corrected": 5,
+      "largest_iteration_correction_m": 0.12785112720651998,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.166666666666667
+    },
+    {
+      "name": "Roupa_ao_sentar_9",
+      "vertices_corrected": 5,
+      "largest_iteration_correction_m": 0.13842904630170524,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.2
+    },
+    {
+      "name": "Roupa_ao_sentar_10",
+      "vertices_corrected": 9,
+      "largest_iteration_correction_m": 0.1530327195304778,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.291666666666667
+    },
+    {
+      "name": "Roupa_ao_sentar_11",
+      "vertices_corrected": 9,
+      "largest_iteration_correction_m": 0.1556488273756263,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.333333333333333
+    },
+    {
+      "name": "Roupa_ao_sentar_12",
+      "vertices_corrected": 9,
+      "largest_iteration_correction_m": 0.1599327307064923,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.5
+    },
+    {
+      "name": "Roupa_ao_sentar_13",
+      "vertices_corrected": 12,
+      "largest_iteration_correction_m": 0.1547893258865912,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 4.8
+    },
+    {
+      "name": "Roupa_ao_sentar_14",
+      "vertices_corrected": 17,
+      "largest_iteration_correction_m": 0.20260429582534503,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 5.1
+    },
+    {
+      "name": "Roupa_ao_sentar_15",
+      "vertices_corrected": 20,
+      "largest_iteration_correction_m": 0.2589540495458077,
+      "residual_triangle_pairs": 0,
+      "iterations": 2,
+      "sample_time": 5.4
+    },
+    {
+      "name": "Roupa_ao_sentar_16",
+      "vertices_corrected": 20,
+      "largest_iteration_correction_m": 0.2820330289536268,
+      "residual_triangle_pairs": 0,
+      "iterations": 4,
+      "sample_time": 5.8
+    },
+    {
+      "name": "Roupa_ao_sentar_17",
+      "vertices_corrected": 20,
+      "largest_iteration_correction_m": 0.2853716598420536,
+      "residual_triangle_pairs": 0,
+      "iterations": 4,
+      "sample_time": 6.4
+    }
+  ]
+}

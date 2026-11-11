@@ -1,0 +1,216 @@
+[
+  {
+    "clip": "01_mota",
+    "bones_unchanged": 21,
+    "rest_vertices_unchanged": 1075,
+    "uvs_unchanged": true,
+    "normalized_weights": true,
+    "static_review_camera": true,
+    "pose_correctives": [
+      {
+        "name": "Mao_esquerda_pega",
+        "vertices": 47,
+        "scope": "left_fingers"
+      },
+      {
+        "name": "Roupa_ao_sentar_0",
+        "vertices": 0,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_1",
+        "vertices": 0,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_2",
+        "vertices": 0,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_3",
+        "vertices": 0,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_4",
+        "vertices": 7,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_5",
+        "vertices": 12,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_6",
+        "vertices": 20,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_7",
+        "vertices": 12,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_8",
+        "vertices": 10,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_9",
+        "vertices": 7,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_10",
+        "vertices": 7,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_11",
+        "vertices": 8,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_12",
+        "vertices": 10,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_13",
+        "vertices": 14,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_14",
+        "vertices": 20,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_15",
+        "vertices": 25,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_16",
+        "vertices": 24,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_17",
+        "vertices": 25,
+        "scope": "lower_body_clothing"
+      }
+    ],
+    "fps": 24,
+    "frames": 192
+  },
+  {
+    "clip": "02_bicicleta",
+    "bones_unchanged": 21,
+    "rest_vertices_unchanged": 1075,
+    "uvs_unchanged": true,
+    "normalized_weights": true,
+    "static_review_camera": true,
+    "pose_correctives": [
+      {
+        "name": "Mao_esquerda_pega",
+        "vertices": 47,
+        "scope": "left_fingers"
+      },
+      {
+        "name": "Roupa_ao_sentar_0",
+        "vertices": 0,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_1",
+        "vertices": 0,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_2",
+        "vertices": 0,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_3",
+        "vertices": 0,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_4",
+        "vertices": 3,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_5",
+        "vertices": 3,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_6",
+        "vertices": 4,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_7",
+        "vertices": 4,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_8",
+        "vertices": 4,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_9",
+        "vertices": 4,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_10",
+        "vertices": 8,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_11",
+        "vertices": 8,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_12",
+        "vertices": 8,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_13",
+        "vertices": 11,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_14",
+        "vertices": 13,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_15",
+        "vertices": 18,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_16",
+        "vertices": 20,
+        "scope": "lower_body_clothing"
+      },
+      {
+        "name": "Roupa_ao_sentar_17",
+        "vertices": 19,
+        "scope": "lower_body_clothing"
+      }
+    ],
+    "fps": 24,
+    "frames": 192
+  }
+]

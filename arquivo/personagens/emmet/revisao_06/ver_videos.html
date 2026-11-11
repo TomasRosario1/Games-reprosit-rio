@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="pt-PT"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Emmet — mão esquerda antes de montar</title>
+<style>body{margin:0;background:#171a20;color:#eee;font:17px system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:24px}h1{font-size:28px}h2{font-size:21px}section{margin:30px 0}video{display:block;width:100%;background:#000}button{color:inherit;background:#303847;border:1px solid #596578;border-radius:5px;padding:8px 14px;margin:6px 4px 6px 0;cursor:pointer}a{color:#b7d9ff}p{line-height:1.5}</style>
+<main><h1>Mota e bicicleta — mão esquerda primeiro</h1>
+<p>Primeiro agarra, depois inclina, só depois passa a perna. A câmara permanece contínua para poderes avaliar o movimento. O carro e a trotinete anteriores foram preservados.</p>
+<section><h2>Os quatro veículos — 32 segundos</h2><video controls preload="metadata" playsinline src="00_quatro_veiculos.mp4"></video><a download href="00_quatro_veiculos.mp4">Descarregar vídeo completo</a></section>
+<section><h2>Mota — nova montagem</h2><video controls preload="metadata" playsinline src="01_mota.mp4"></video></section>
+<section><h2>Bicicleta — nova montagem</h2><video controls preload="metadata" playsinline src="02_bicicleta.mp4"></video></section>
+<section><h2>Carro — sem alterações</h2><video controls preload="metadata" playsinline src="../revisao_05/01_carro.mp4"></video></section>
+<section><h2>Trotinete — sem alterações</h2><video controls preload="metadata" playsinline src="../revisao_04/05_subir_trotinete.mp4"></video></section>
+<p>Indica o veículo e o segundo de qualquer ajuste. As novas animações continuam no arquivo para revisão antes de entrarem no jogo.</p>
+<script>document.querySelectorAll('video').forEach(video=>{const controls=document.createElement('div');[.25,.5,1].forEach(rate=>{const button=document.createElement('button');button.type='button';button.textContent=String(rate).replace('.',',')+'×';button.onclick=()=>{video.playbackRate=rate;};controls.append(button);});video.after(controls);video.addEventListener('play',()=>document.querySelectorAll('video').forEach(other=>{if(other!==video)other.pause();}));});</script>
+</main></html>

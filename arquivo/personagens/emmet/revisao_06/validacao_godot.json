@@ -1,0 +1,9 @@
+{
+	"checks": 3818,
+	"failures": 0,
+	"godot": "4.6.3-stable (official)",
+	"max_contact_error_m": 0.00473310938104987,
+	"max_joint_step_m": 0.137053608894348,
+	"max_left_grip_error_m": 0.00473310938104987,
+	"sample_fps": 24
+}

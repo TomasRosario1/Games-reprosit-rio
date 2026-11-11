@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "game_integration": false,
+  "combined_video": "00_quatro_veiculos.mp4",
+  "vehicles": [
+    {"type": "car", "video": "../revisao_05/01_carro.mp4", "blend": "../revisao_05/01_carro.blend", "glb": "../revisao_05/01_carro.glb", "start_seconds": 0, "status": "aceite_para_ja_preservado"},
+    {"type": "motorbike", "video": "01_mota.mp4", "blend": "01_mota.blend", "glb": "01_mota.glb", "start_seconds": 8, "status": "nova_montagem_aguarda_feedback"},
+    {"type": "bicycle", "video": "02_bicicleta.mp4", "blend": "02_bicicleta.blend", "glb": "02_bicicleta.glb", "start_seconds": 16, "status": "nova_montagem_aguarda_feedback"},
+    {"type": "scooter", "video": "../revisao_04/05_subir_trotinete.mp4", "blend": "../revisao_04/05_subir_trotinete.blend", "glb": "../revisao_04/05_subir_trotinete.glb", "start_seconds": 24, "status": "preservado"}
+  ]
+}
